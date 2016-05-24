@@ -1,0 +1,281 @@
+Value 	Description
+AA 	Aruba
+AC 	Antigua and Barbuda
+AF 	United States Air Force
+AG 	Algeria
+AJ 	Azerbaijan
+AK 	Alaska
+AL 	S=Alabama C=Albania
+AM 	Armenia
+AO 	Angola
+AQ 	AQ - Documentation not available
+AR 	S= Arkansas; M=United States Army
+AS 	Australia
+AU 	Austria
+AV 	Anguilla
+AZ 	Arizona
+BA 	Bahrain
+BB 	Barbados
+BC 	Botswana
+BD 	Bermuda
+BE 	Belgium
+BF 	Bahamas
+BG 	Bangladesh
+BH 	Belize
+BK 	Bosnia/Herzegovina
+BL 	Bolivia
+BM 	Burma
+BN 	Benin
+BO 	Byelarus
+BP 	Solomon Islands
+BR 	Brazil
+BS 	Bassas Da India
+BT 	Bhutan
+BU 	Bulgaria
+BV 	Bouvet Island
+BX 	Brunei
+BY 	Burundi
+CA 	C=Canada; S=California
+CB 	Cambodia
+CD 	Chad
+CE 	Sri Lanka
+CF 	Congo
+CG 	M=United States Coast Guard C=Zaire
+CH 	China
+CI 	Chile
+CJ 	Cayman Islands
+CK 	Cocos Keeling Islands
+CM 	Cameroon
+CN 	Comoros
+CO 	C=Colombia; S=Colorado
+CQ 	Northern Mariana Islands
+CR 	Coral Sea Islands
+CS 	Costa Rica
+CT 	S=Connecticut C=Central African Rep
+CU 	Cuba
+CV 	Cape Verde
+CW 	Cook Islands
+CY 	Cyprus
+CZ 	Czechoslovakia
+DA 	Denmark
+DC 	District of Columbia
+DE 	Delaware
+DJ 	Djibouti
+DO 	Dominica
+DR 	Dominican Republic
+EC 	Ecuador
+EG 	Egypt
+EI 	Ireland
+EK 	Equatorial Guinea
+EN 	Estonia
+ES 	El Salvador
+ET 	Ethiopia
+EU 	Europa Island
+EZ 	Czech Republic
+FG 	French Guiana
+FI 	Finland
+FJ 	Fiji
+FK 	Falkland Isl Islas Maluinas
+FL 	Florida
+FM 	Federated States of Micronesia
+FO 	Faroe Islands
+FP 	French Polynesia
+FR 	France
+FS 	French Southern Antarctic
+GA 	S=Georgia C=Gambia
+GB 	Gabon
+GG 	C=Georgia
+GH 	Ghana
+GI 	Gilbraltar
+GJ 	Grenada
+GK 	Guernsey
+GL 	Greenland
+GM 	Germany
+GO 	Glorioso Islands
+GP 	Guadeloupe
+GQ 	Guam
+GR 	Greece
+GT 	Guatemala
+GV 	Guinea
+GY 	Guyana
+GZ 	Gaza Strip
+HA 	Haiti
+HI 	Hawaii
+HK 	Hong Kong
+HM 	Heard & McDonald Isl
+HO 	Honduras
+HR 	Croatia
+HU 	Hungary
+IA 	Iowa
+IC 	Iceland
+ID 	S=Idaho C=Indonesia
+IL 	Illinois
+IM 	Isle of Man
+IN 	S=Indiana C=India
+IO 	British Indian Ocean Territory
+IP 	Clipperton Island
+IR 	Iran
+IS 	Israel
+IT 	Italy
+IV 	Ivory Coast
+IY 	Iraq Saudi Arabia Neutral Zone
+IZ 	Iraq
+JA 	Japan
+JE 	Jersey
+JM 	Jamaica
+JN 	Jan Mayen
+JO 	Jordan
+JU 	Juan De Nova Isl
+KE 	Kenya
+KG 	Kyrgyzstan
+KN 	Korea Democratic Peoples Rep
+KR 	Kiribati
+KS 	S=Kansas C=Korea Repubic of
+KT 	Christmas Island
+KU 	Kuwait
+KV 	Kosovo
+KY 	Kentucky
+KZ 	Kazakhstan
+LA 	S=Louisiana C=Laos
+LE 	Lebanon
+LG 	Latavia
+LH 	Lithuania
+LI 	Liberia
+LO 	Slovakia
+LS 	Liechtenstein
+LT 	Lesotho
+LU 	Luxembourg
+LY 	Libya
+MA 	S=Massachusetts C=Madagascar
+MB 	Martinique
+MC 	M=Military civilian C=Macau
+MD 	S=Maryland C=Moldavia
+ME 	Maine
+MF 	Mayotte
+MG 	Mongolia
+MH 	Monserrat
+MI 	S=Michigan C=Malawi
+MK 	Macedonia
+ML 	Mali
+MN 	S=Minnesota C=Monaco
+MO 	S=Missouri C=Morocco
+MP 	Mauritius
+MR 	Mauritania
+MS 	Mississippi
+MT 	C = Malta; S = Montana
+MU 	Oman
+MV 	Maldives
+MX 	Mexico
+MY 	Malaysia
+MZ 	Mozambique
+NA 	United States Navy
+NC 	S=North Carolina C=New Caledonia
+ND 	North Dakota
+NE 	S=Nebraska C=Niue
+NF 	Norfolk Island
+NG 	Niger
+NH 	S=New Hampshire C=Vanuatu
+NI 	Nigeria
+NJ 	New Jersey
+NL 	Netherlands
+NM 	New Mexico
+NO 	Norway
+NP 	Nepal
+NQ 	Pacific Trust Territories
+NR 	Naura
+NS 	Suriname
+NT 	Netherlands Antilles
+NU 	Nicaragua
+NV 	Nevada
+NY 	New York
+NZ 	New Zealand
+OH 	Ohio
+OK 	Oklahoma
+OR 	Oregon
+PA 	S=Pennsylvania C=Paraguay
+PC 	Pitcairn Islands
+PE 	Peru
+PF 	Paracel Islands
+PG 	Spratly Island
+PK 	Pakistan
+PL 	Poland
+PM 	Panama
+PO 	Portugal
+PP 	Papua & New Guinea
+PQ 	Canal Zone- inactive after 10/79
+PS 	Republic of Palau
+PU 	Guinea Bissau
+QA 	Qatar
+RE 	Reunion
+RI 	Rhode Island
+RM 	RM - Documentation not available
+RO 	Pomania
+RP 	Philippines
+RQ 	Puerto Rico
+RS 	Russia
+RW 	Rwanda
+SA 	Saudi Arabia
+SB 	St Pierre & Miquelon
+SC 	S=South Carolina C=St Christopher & Nevis
+SD 	South Dakota
+SE 	Seychelles
+SF 	South Africa
+SG 	Senegal
+SH 	St Helena
+SI 	Slovenia
+SL 	Sierra Leone
+SM 	San Marino
+SN 	Singapore
+SO 	Somalia
+SP 	Spain
+SR 	Serbia
+ST 	St Lucia
+SU 	Sudan
+SV 	Svalbard
+SW 	Sweden
+SY 	Syria
+SZ 	Switzerland
+TC 	United Arab Emirates
+TD 	Trinidad & Tobago
+TE 	Tromelin Island
+TH 	Thailand
+TI 	Tajikistan
+TK 	Turks & Caicos Islands
+TL 	Tokelau
+TN 	S=Tennessee C=Tonga
+TO 	Togo
+TP 	Sao Tome & Principe
+TS 	Tunisia
+TU 	Turkey
+TV 	Tuvalu
+TW 	Taiwan
+TX 	S=Texas C=Turkmenistan
+TZ 	Tanzaniz
+UG 	Uganda
+UK 	United Kingdom
+UP 	Ukraine
+US 	United States of America
+UT 	Utah
+UV 	Burkina
+UY 	Urugay
+UZ 	Uzbekistan
+VA 	Virginia
+VC 	St Vincent & The Grenadines
+VE 	Venezuela
+VI 	British Virgin Islands
+VM 	Vietnam
+VQ 	Virgin Islands
+VT 	S=Vermont C=Vatican City
+WA 	S=Washington C=Namibia
+WE 	West Bank
+WF 	Wallis & Futuna
+WI 	S=Wisconsin C=Western Sahara
+WS 	Western Samoa
+WV 	West Virginia
+WY 	Wyoming
+WZ 	Swaziland
+YI 	YI - Documentation not available
+YM 	Yemen
+YO 	Yugoslavia
+ZA 	Zambia
+ZI 	Zimbabwe

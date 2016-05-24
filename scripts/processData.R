@@ -1,0 +1,75 @@
+# Data for federal prison feature
+
+library(openxlsx)
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+xldt <- "data/Data for interactive feature 5_20_2016.xlsx"
+
+########################################################################################################
+# Growth in the federal prison pop
+########################################################################################################
+# Prison pop over time
+growth <- readWorkbook(xldt, sheet="Slide 2", startRow=3, colNames = F)
+growth <- as.data.frame(t(growth))
+
+colnames(growth) <- c("year", "pop_total")
+growth <- growth %>% filter(year != "FY")
+growth$year <- as.numeric(as.character(growth$year))
+growth$pop_total <- as.numeric(as.character(growth$pop_total))
+
+# May 2016 in Excel converted into womp
+growth <- growth %>% mutate(year = ifelse(year==42491, 2016, year))
+write.csv(growth, "data/growth.csv", row.names=F)
+
+# Growth drivers
+drivers <- readWorkbook(xldt, sheet="Slide 4", startRow=3, colNames = T)
+drivers <- drivers %>% gather(year, admissions, -X1) %>%
+  rename(offense = X1)
+drivers$year <- as.numeric(drivers$year)
+write.csv(drivers, "data/drivers.csv", row.names=F)
+
+#Admissions vs standing population over time
+admissions <- readWorkbook(xldt, sheet="Slide 6", rows=c(34:43), colNames = T, skipEmptyRows = T)
+admissions <- admissions %>% gather(year, admissions, -Admissions) %>%
+  rename(offense = Admissions)
+admissions$year <- str_replace(admissions$year, "FY.", "")
+
+standingpop <- readWorkbook(xldt, sheet="Slide 6", rows=c(45:54), colNames = T, skipEmptyRows = T)
+standingpop <- standingpop %>% gather(year, standing, -Stock) %>%
+  rename(offense = Stock)
+standingpop$year <- str_replace(standingpop$year, "FY.", "")
+
+sentences <- left_join(standingpop, admissions, by=c("year", "offense"))
+sentences$year <- as.numeric(sentences$year)
+sentences <- sentences %>% filter(offense %in% c("Drug", "Weapon", "Immigration", "Sex"))
+write.csv(sentences, "data/sentences.csv", row.names=F)
+rm(admissions, standingpop)
+
+# Mandatory minimums by offense
+mandmins <- readWorkbook(xldt, sheet="Slide 8", rows=c(5:14), cols=c(3,4,6), colNames = F, skipEmptyRows = T)
+colnames(mandmins) <- c("offense", "mandmin_0", "mandmin_1")
+mandmins <- mandmins %>% mutate(total = mandmin_0 + mandmin_1, mandmin_pct = mandmin_1/total)
+write.csv(mandmins, "data/mandmins.csv", row.names=F)
+
+########################################################################################################
+# Section 2
+########################################################################################################
+# Race and ethnicity
+race <- readWorkbook(xldt, sheet="Slide 3", rows=c(3:8), colNames = T)
+race <- race %>% gather(year, pop_total, -X1) %>%
+  rename(race = X1)
+race <- race %>% spread(race, pop_total) %>%
+  rename(race_asian = `Asian American`, race_black = Black, race_hispanic = Hispanic, race_aian = `Native American`, race_white = White)
+race$year <- as.numeric(race$year)
+write.csv(race, "data/raceeth.csv", row.names=F)
+
+########################################################################################################
+# Conclusions
+########################################################################################################
+jointimpact <- readWorkbook(xldt, sheet="Slide 10", startRow=4, colNames = T)
+colnames(jointimpact) <- c("year", "pop_baseline", "pop_jointimpact")
+jointimpact$year <- str_replace(jointimpact$year, "FY ", "")
+jointimpact$year <- as.numeric(jointimpact$year)
+write.csv(jointimpact, "data/jointimpact.csv", row.names=F)
