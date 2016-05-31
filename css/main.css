@@ -1,0 +1,185 @@
+/*general page style*/
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: Lato, sans-serif !important;
+    font-weight: 400;
+    font-size: 16pt;
+    color: #333;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #333;
+}
+
+h1 {
+    font: 400 30px/1.3em Lato, sans-serif;
+    margin: 0 0 .5em;
+}
+
+h2 {
+    font: 400 24px/1.3em Lato, sans-serif;
+    margin: 0 0 .5em;
+}
+
+h3 {
+    font: 400 20px/1.3em Lato, sans-serif;
+    margin: 0 0 .5em;
+}
+
+h4 {
+    font: 600 16px/1.3em Lato, sans-serif;
+    margin: 0 0 .5em;
+}
+
+h5 {
+    font: 700 14px/1.3em Lato, sans-serif;
+    margin: 0 0 .5em;
+    text-transform: uppercase;
+}
+
+h6 {}
+
+p,
+ul,
+li {
+    font: 400 16px/24px Lato, sans-serif;
+    margin: 0 0 .5em;
+    color: #333;
+}
+
+#maincontent {
+    padding-top: 65px;
+}
+
+hr {
+    width: 100%;
+    display: inline-block;
+    border: 0 !important;
+    height: 0 !important;
+    border-bottom: 1px solid #ccc !important;
+    border-bottom-color: #ccc !important;
+    color: #ccc !important;
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
+    display: block;
+}
+
+
+/* opening image and title*/
+
+#openimg {
+    margin-top: 50px;
+    background-image: url("../img/introcropped.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 350px;
+    width: 100%;
+}
+
+#titleparent {
+    height: 350px;
+    display: table;
+}
+
+#titleholder {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+h1.projtitle {
+    background-color: #fdbf11;
+    padding: 20px;
+    font-size: 30px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+
+/* intro and footer */
+
+#intro {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+footer {
+    background-color: #f1f2f2;
+}
+
+footer {
+    margin-top: 25px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    bottom: 0;
+}
+
+footer p {
+    font-size: 14px;
+}
+
+footer h2 {
+    text-transform: uppercase;
+}
+
+footer h2,
+h3,
+h4 {
+    font-weight: 700;
+}
+
+.credits {
+    font-size: 14px;
+    margin-top: 1em;
+    margin-bottom: 16px;
+}
+
+.job {
+    font-size: 16px;
+    margin-bottom: 4px;
+    margin-top: 12px;
+}
+
+.urbanstatement {
+    font-style: italic;
+    color: #666666;
+    font-size: 13px;
+    margin-bottom: 1em;
+}
+
+@media (min-width: 1600px) {
+    #openimg {
+        height: 350px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 1050px) {
+    #openimg {
+        height: 300px;
+        width: 100%;
+    }
+    #titleparent {
+        height: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    #openimg {
+        background-image: url("../img/mobileIntroImage.jpg");
+        height: 250px;
+    }
+    #titleparent {
+        height: 250px;
+    }
+}

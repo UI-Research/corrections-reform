@@ -1,2 +1,4 @@
 docs/
 *.xlsx
+shp/
+.Rproj.user
