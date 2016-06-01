@@ -1,5 +1,5 @@
 var width = 500,
-    height = 450,
+    height = 600,
     r = 40
 
 function graph1() {
