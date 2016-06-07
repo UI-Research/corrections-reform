@@ -73,3 +73,26 @@ colnames(jointimpact) <- c("year", "pop_baseline", "pop_jointimpact")
 jointimpact$year <- str_replace(jointimpact$year, "FY ", "")
 jointimpact$year <- as.numeric(jointimpact$year)
 write.csv(jointimpact, "data/jointimpact.csv", row.names=F)
+
+########################################################################################################
+# Expected years served - wonky formatted sheet
+########################################################################################################
+readTimeServed <- function(columns, offense) {
+	dt <- readWorkbook("data/time_served_6_3.xlsx", sheet=1, rows=c(1,3,4), cols=columns, colNames = T)
+	colnames(dt) <- c("mandmin_convict", "years_served", "years_remaining")
+	dt$offense <- offense
+	return(dt)
+}
+ts1 <- readTimeServed(c(1,2,3), "total")
+ts2 <- readTimeServed(c(1,5,6), "drug")
+ts3 <- readTimeServed(c(1,8,9), "weapon")
+# not using immigration
+# ts4 <- readTimeServed(c(1,11,12), "immigration")
+ts5 <- readTimeServed(c(1,14,15), "sex")
+
+timeserved <- bind_rows(ts1, ts2, ts3, ts5)
+timeserved$mandmin_convict[timeserved$mandmin_convict=="Convicted of Offense Carrying Mandatory Minimum"] <- 1
+timeserved$mandmin_convict[timeserved$mandmin_convict=="Not Convicted of Offense Carrying Mandatory Minimum"] <- 0
+
+timeserved <- timeserved %>% mutate(years_expected = years_served + years_remaining)
+write.csv(timeserved, "data/expectedyears.csv", row.names=F)
