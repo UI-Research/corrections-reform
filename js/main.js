@@ -9,7 +9,7 @@ var margin = {
     top: 10,
     right: 15,
     bottom: 25,
-    left: 25
+    left: 30
 };
 
 var width = $graphic1.width() - margin.left - margin.right,
@@ -23,7 +23,6 @@ function graph1() {
     var svg = d3.select("#graphic1").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .attr("id", "svg1")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -33,10 +32,10 @@ function graph1() {
         .sections(d3.selectAll('#section1 > div'))
         .on('active', function (i) {
             console.log("section1 " + i);
-            d3.select("#svg1").selectAll("text")
+            svg.selectAll("text")
                 .remove();
 
-            d3.select("#svg1").append("text")
+            svg.append("text")
                 .attr("x", width / 2)
                 .attr("y", height / 2)
                 .attr("fill", "#000000")
@@ -45,12 +44,31 @@ function graph1() {
 }
 
 function graph2() {
+    function drawMap() {
+
+        var projection = d3.geo.albersUsa()
+            .scale(width * 1.2)
+            .translate([width / 2, height / 2]);
+
+        var path = d3.geo.path()
+            .projection(projection);
+
+        svg.append("g")
+            .attr("class", "districts")
+            .selectAll("path")
+            .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
+            .enter().append("path")
+            .attr("d", path)
+            .attr("districtcode", function (d) {
+                return d.properties.code;
+            });
+    }
+
     $graphic2.empty();
 
-    var svg2 = d3.select("#graphic2").append("svg")
+    var svg = d3.select("#graphic2").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .attr("id", "svg2")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -60,24 +78,28 @@ function graph2() {
         .sections(d3.selectAll('#section2 > div'))
         .on('active', function (i) {
             console.log("section2 " + i);
-            d3.select("#svg2").selectAll("text")
-                .remove();
 
-            d3.select("#svg2").append("text")
-                .attr("x", width / 2)
-                .attr("y", height / 2)
-                .attr("fill", "#000000")
-                .html("section2 " + i);
+            if (i == 0) {
+                drawMap();
+            } else {
+                svg.selectAll("g, text")
+                    .remove();
+
+                svg.append("text")
+                    .attr("x", width / 2)
+                    .attr("y", height / 2)
+                    .attr("fill", "#000000")
+                    .html("section2 " + i);
+            }
         });
 }
 
 function graph3() {
     $graphic3.empty();
 
-    var svg3 = d3.select("#graphic3").append("svg")
+    var svg = d3.select("#graphic3").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .attr("id", "svg3")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -87,10 +109,10 @@ function graph3() {
         .sections(d3.selectAll('#section3 > div'))
         .on('active', function (i) {
             console.log("section3 " + i);
-            d3.select("#svg3").selectAll("text")
+            svg.selectAll("text")
                 .remove();
 
-            d3.select("#svg3").append("text")
+            svg.append("text")
                 .attr("x", width / 2)
                 .attr("y", height / 2)
                 .attr("fill", "#000000")

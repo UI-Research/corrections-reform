@@ -146,7 +146,7 @@ h4 {
 }
 
 
-/*graphics*/
+/*graphics setup*/
 
 .subsection {
     opacity: .2;
@@ -175,9 +175,15 @@ h4 {
 }
 
 svg {
-    background-color: #eee;
+    border: 1px solid #1696d2;
 }
 
+/*graph elements*/
+.districts {
+    stroke: #000000;
+    stroke-width: 1px;
+    fill: #1696d2;
+}
 
 /*mobile adjustments*/
 
