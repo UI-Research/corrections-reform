@@ -5,7 +5,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 
-xldt <- "data/Data for interactive feature 5_20_2016.xlsx"
+xldt <- "data/original/Data for interactive feature 5_20_2016.xlsx"
 
 ########################################################################################################
 # Growth in the federal prison pop
@@ -96,3 +96,12 @@ timeserved$mandmin_convict[timeserved$mandmin_convict=="Not Convicted of Offense
 
 timeserved <- timeserved %>% mutate(years_expected = years_served + years_remaining)
 write.csv(timeserved, "data/expectedyears.csv", row.names=F)
+
+########################################################################################################
+# Geographic data
+# District where sentenced -> eventual prison
+########################################################################################################
+georaw <- read.csv("data/original/dist_zip_faclcsv.csv", colClasses="character")
+
+prisonbydistrict <- as.data.frame(table(georaw$dist, georaw$arsfacl)) %>% rename(dist = Var1, arsfacl = Var2) %>%
+  filter(Freq != 0)

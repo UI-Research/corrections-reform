@@ -2,3 +2,4 @@ docs/
 *.xlsx
 shp/
 .Rproj.user
+data/original/

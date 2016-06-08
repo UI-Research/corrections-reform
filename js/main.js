@@ -1,15 +1,31 @@
-var width = 500,
-    height = 600,
-    r = 40
+var map_data_url = "data/judicialdistricts.json",
+    districts,
+    $graphic1 = $("#graphic1"),
+    $graphic2 = $("#graphic2"),
+    $graphic3 = $("#graphic3");
+
+var chart_aspect_height = 1.75;
+var margin = {
+    top: 10,
+    right: 15,
+    bottom: 25,
+    left: 25
+};
+
+var width = $graphic1.width() - margin.left - margin.right,
+    height = 500;
+console.log($graphic1.width(), width);
 
 function graph1() {
-    var svg = d3.select('#graphic1')
-        .append('svg')
+
+    $graphic1.empty();
+
+    var svg = d3.select("#graphic1").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
         .attr("id", "svg1")
-        .attr({
-            width: width,
-            height: height
-        });
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var gs = graphScroll()
         .container(d3.select('#container1'))
@@ -27,16 +43,16 @@ function graph1() {
                 .html("section1 " + i);
         });
 }
-graph1();
 
 function graph2() {
-    var svg2 = d3.select('#graphic2')
-        .append('svg')
+    $graphic2.empty();
+
+    var svg2 = d3.select("#graphic2").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
         .attr("id", "svg2")
-        .attr({
-            width: width,
-            height: 600
-        });
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var gs2 = graphScroll()
         .container(d3.select('#container2'))
@@ -54,16 +70,16 @@ function graph2() {
                 .html("section2 " + i);
         });
 }
-graph2();
 
 function graph3() {
-    var svg3 = d3.select('#graphic3')
-        .append('svg')
+    $graphic3.empty();
+
+    var svg3 = d3.select("#graphic3").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
         .attr("id", "svg3")
-        .attr({
-            width: width,
-            height: 500
-        });
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var gs3 = graphScroll()
         .container(d3.select('#container3'))
@@ -81,4 +97,19 @@ function graph3() {
                 .html("section3 " + i);
         });
 }
-graph3();
+
+
+function drawgraphs() {
+    graph1();
+    graph2();
+    graph3();
+}
+$(window).load(function () {
+    if (Modernizr.svg) { // if svg is supported, draw dynamic chart
+        d3.json(map_data_url, function (json) {
+            districts = json;
+            drawgraphs();
+            window.onresize = drawgraphs();
+        });
+    }
+});
