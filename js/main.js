@@ -1,4 +1,8 @@
 var map_data_url = "data/judicialdistricts.json",
+    main_data_url = "data/data.json",
+    data_main,
+    data,
+    VALUE,
     districts,
     $graphic1 = $("#graphic1"),
     $graphic2 = $("#graphic2"),
@@ -6,10 +10,10 @@ var map_data_url = "data/judicialdistricts.json",
 
 var chart_aspect_height = 1.75;
 var margin = {
-    top: 10,
+    top: 60,
     right: 15,
     bottom: 25,
-    left: 30
+    left: 70
 };
 
 var width = $graphic1.width() - margin.left - margin.right,
@@ -31,38 +35,246 @@ function graph1() {
         .graph(d3.selectAll('#graphic1'))
         .sections(d3.selectAll('#section1 > div'))
         .on('active', function (i) {
-            console.log("section1 " + i);
-            svg.selectAll("text")
-                .remove();
 
-            svg.append("text")
-                .attr("x", width / 2)
-                .attr("y", height / 2)
-                .attr("fill", "#000000")
-                .html("section1 " + i);
+            console.log("section1 " + i);
+            if (i == 0) {
+                data = data_main.growth;
+
+                svg.selectAll("*")
+                    .remove();
+
+
+                //line chart
+                VALUE = "pop_total";
+                var x = d3.scale.linear()
+                    .range([0, width])
+                    .domain(d3.extent(data, function (d) {
+                        return d.year;
+                    }));
+
+                var y = d3.scale.linear()
+                    .range([height, 0])
+                    .domain([0, d3.max(data, function (d) {
+                        return d[VALUE];
+                    })]);
+
+                var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .ticks(6)
+                    .tickFormat(function (d) {
+                        return d;
+                    })
+                    .orient("bottom");
+
+                var gx = svg.append("g")
+                    .attr("class", "x axis-show")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .ticks(6)
+                    .orient("left");
+
+                var gy = svg.append("g")
+                    .attr("class", "y axis-show")
+                    .call(yAxis);
+
+                var line = d3.svg.line()
+                    //.interpolate("cardinal")
+                    .x(function (d) {
+                        return x(d.year);
+                    })
+                    .y(function (d) {
+                        return y(d[VALUE]);
+                    });
+
+                svg.append("path")
+                    .datum(data)
+                    .attr("class", "chartline")
+                    .attr("d", line);
+
+
+            } else if (i == 1) {
+                data = (data_main.sentences).filter(function (d) {
+                    return d.offense == "drug";
+                });
+
+                console.log(data);
+                svg.selectAll("*")
+                    .remove();
+
+
+                //line chart
+                VALUE = "pop_total";
+                var x = d3.scale.linear()
+                    .range([0, width])
+                    .domain(d3.extent(data, function (d) {
+                        return d.year;
+                    }));
+
+                var y = d3.scale.linear()
+                    .range([height, 0])
+                    .domain([0, d3.max(data, function (d) {
+                        return d[VALUE];
+                    })]);
+
+                var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .ticks(6)
+                    .tickFormat(function (d) {
+                        return d;
+                    })
+                    .orient("bottom");
+
+                var gx = svg.append("g")
+                    .attr("class", "x axis-show")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .ticks(6)
+                    .orient("left");
+
+                var gy = svg.append("g")
+                    .attr("class", "y axis-show")
+                    .call(yAxis);
+
+                var line = d3.svg.line()
+                    //.interpolate("cardinal")
+                    .x(function (d) {
+                        return x(d.year);
+                    })
+                    .y(function (d) {
+                        return y(d[VALUE]);
+                    });
+
+                svg.append("path")
+                    .datum(data)
+                    .attr("class", "chartline")
+                    .attr("d", line);
+            } else if (i == 3) {
+                svg.selectAll("*")
+                    .remove();
+
+                data = data_main.mandmin_drug;
+                console.log(data);
+                svg.selectAll("*")
+                    .remove();
+                var x = d3.scale.linear()
+                    .range([0, width])
+                    .domain([0, 1]);
+
+                var y = d3.scale.linear()
+                    .range([height, 0])
+                    .domain([0, d3.max(data, function (d) {
+                        return d.years;
+                    })]);
+
+                var bars = svg.selectAll(".bar")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "bar");
+
+                bars.append("rect")
+                    .attr('class', function (d) {
+                        return d.mm_status;
+                    })
+                    .attr("x", function (d) {
+                        return x(d.share_cum - d.share);
+                    })
+                    .attr("width", function (d) {
+                        return x(d.share);
+                    })
+                    .attr("height", y(0) - 0)
+                    .attr("y", 0);
+
+            } else if (i == 4) {
+                svg.selectAll("*")
+                    .remove();
+
+                data = data_main.mandmin_drug;
+                console.log(data);
+                svg.selectAll("*")
+                    .remove();
+                var x = d3.scale.linear()
+                    .range([0, width])
+                    .domain([0, 1]);
+
+                var y = d3.scale.linear()
+                    .range([height, 0])
+                    .domain([0, d3.max(data, function (d) {
+                        return d.years;
+                    })]);
+
+                var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .ticks(6)
+                    .tickFormat(d3.format("%"))
+                    .orient("bottom");
+
+                var gx = svg.append("g")
+                    .attr("class", "x axis-show")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .ticks(6)
+                    .orient("left");
+
+                var gy = svg.append("g")
+                    .attr("class", "y axis-show")
+                    .call(yAxis);
+
+                svg.append("text")
+                    .attr("class", "graphtitle")
+                    .attr("x", width / 2)
+                    .attr("y", 0)
+                    .text("Average expected time served");
+
+                var bars = svg.selectAll(".bar")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "bar");
+
+                bars.append("rect")
+                    .attr('class', function (d) {
+                        return d.mm_status;
+                    })
+                    .attr("x", function (d) {
+                        return x(d.share_cum - d.share);
+                    })
+                    .attr("width", function (d) {
+                        return x(d.share);
+                    })
+                    .attr("height", function (d) {
+                        return y(0) - y(d.years);
+                    })
+                    .attr("y", function (d) {
+                        return y(d.years);
+                    });
+
+            } else {
+                svg.selectAll("*")
+                    .remove();
+
+            }
         });
 }
 
 function graph2() {
-    function drawMap() {
 
-        var projection = d3.geo.albersUsa()
-            .scale(width * 1.2)
-            .translate([width / 2, height / 2]);
+    //map setup
+    var projection = d3.geo.albersUsa()
+        .scale(width * 1.2)
+        .translate([width / 2, height / 2]);
 
-        var path = d3.geo.path()
-            .projection(projection);
-
-        svg.append("g")
-            .attr("class", "districts")
-            .selectAll("path")
-            .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
-            .enter().append("path")
-            .attr("d", path)
-            .attr("districtcode", function (d) {
-                return d.properties.code;
-            });
-    }
+    var path = d3.geo.path()
+        .projection(projection);
 
     $graphic2.empty();
 
@@ -80,7 +292,16 @@ function graph2() {
             console.log("section2 " + i);
 
             if (i == 0) {
-                drawMap();
+                //map of judicial districts
+                svg.append("g")
+                    .attr("class", "districts")
+                    .selectAll("path")
+                    .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .attr("districtcode", function (d) {
+                        return d.properties.code;
+                    });
             } else {
                 svg.selectAll("g, text")
                     .remove();
@@ -128,10 +349,13 @@ function drawgraphs() {
 }
 $(window).load(function () {
     if (Modernizr.svg) { // if svg is supported, draw dynamic chart
-        d3.json(map_data_url, function (json) {
-            districts = json;
-            drawgraphs();
-            window.onresize = drawgraphs();
+        d3.json(main_data_url, function (json) {
+            d3.json(map_data_url, function (mapjson) {
+                data_main = json;
+                districts = mapjson;
+                drawgraphs();
+                window.onresize = drawgraphs();
+            });
         });
     }
 });

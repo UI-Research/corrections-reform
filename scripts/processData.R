@@ -4,6 +4,7 @@ library(openxlsx)
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(jsonlite)
 
 xldt <- "data/original/Data for interactive feature 5_20_2016.xlsx"
 
@@ -44,6 +45,7 @@ standingpop$year <- str_replace(standingpop$year, "FY.", "")
 sentences <- left_join(standingpop, admissions, by=c("year", "offense"))
 sentences$year <- as.numeric(sentences$year)
 sentences <- sentences %>% filter(offense %in% c("Drug", "Weapon", "Immigration", "Sex"))
+sentences$offense <- tolower(sentences$offense)
 write.csv(sentences, "data/sentences.csv", row.names=F)
 rm(admissions, standingpop)
 
@@ -78,7 +80,7 @@ write.csv(jointimpact, "data/jointimpact.csv", row.names=F)
 # Expected years served - wonky formatted sheet
 ########################################################################################################
 readTimeServed <- function(columns, offense) {
-	dt <- readWorkbook("data/time_served_6_3.xlsx", sheet=1, rows=c(1,3,4), cols=columns, colNames = T)
+	dt <- readWorkbook("data/original/time_served_6_3.xlsx", sheet=1, rows=c(1,3,4), cols=columns, colNames = T)
 	colnames(dt) <- c("mandmin_convict", "years_served", "years_remaining")
 	dt$offense <- offense
 	return(dt)
@@ -105,3 +107,20 @@ georaw <- read.csv("data/original/dist_zip_faclcsv.csv", colClasses="character")
 
 prisonbydistrict <- as.data.frame(table(georaw$dist, georaw$arsfacl)) %>% rename(dist = Var1, arsfacl = Var2) %>%
   filter(Freq != 0)
+
+
+########################################################################################################
+# JSON for viz instead of a bunch of CSVs
+########################################################################################################
+
+growthj <- toJSON(growth)
+
+sentencesj <- toJSON(sentences)
+
+# data for mandatory minimum section
+mandminj <- '[{"mm_status": "applied", "share": 0.59, "years": 11.157141, "share_cum": 0.59}, 
+{"mm_status": "notapplied", "share":  0.2137228, "years": 5.541562, "share_cum": 0.8037228}, 
+{"mm_status": "notapplicable", "share": 0.1962772, "years": 5.541562, "share_cum": 1}]'
+
+dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, "}", sep="")
+write(dtjson, "data/data.json")
