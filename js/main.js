@@ -8,16 +8,15 @@ var map_data_url = "data/judicialdistricts.json",
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
 
-var chart_aspect_height = 1.75;
 var margin = {
-    top: 60,
+    top: 30,
     right: 15,
     bottom: 25,
     left: 70
 };
 
 var width = $graphic1.width() - margin.left - margin.right,
-    height = 500;
+    height = 450;
 console.log($graphic1.width(), width);
 
 function graph1() {
@@ -231,8 +230,9 @@ function graph1() {
 
                 svg.append("text")
                     .attr("class", "graphtitle")
+                    .attr("text-anchor", "middle")
                     .attr("x", width / 2)
-                    .attr("y", 0)
+                    .attr("y", -10)
                     .text("Average expected time served");
 
                 var bars = svg.selectAll(".bar")
