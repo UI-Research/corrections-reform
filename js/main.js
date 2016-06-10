@@ -79,6 +79,13 @@ function graph1() {
                     .attr("class", "y axis-show")
                     .call(yAxis);
 
+                svg.append("text")
+                    .attr("class", "axistitle")
+                    .attr("text-anchor", "middle")
+                    .attr("x", 0)
+                    .attr("y", -5)
+                    .text("Federal prison population");
+
                 var line = d3.svg.line()
                     //.interpolate("cardinal")
                     .x(function (d) {
@@ -92,6 +99,21 @@ function graph1() {
                     .datum(data)
                     .attr("class", "chartline")
                     .attr("d", line);
+
+                /*var dots = svg.selectAll(".dot")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "dot");
+
+                dots.append("circle")
+                    .attr("r", 3)
+                    .attr("cx", function (d) {
+                        return x(d.year);
+                    })
+                    .attr("cy", function (d) {
+                        return y(d[VALUE]);
+                    });*/
 
 
             } else if (i == 1) {
@@ -161,6 +183,14 @@ function graph1() {
                 console.log(data);
                 svg.selectAll("*")
                     .remove();
+
+                svg.append("text")
+                    .attr("class", "graphtitle")
+                    .attr("text-anchor", "middle")
+                    .attr("x", width / 2)
+                    .attr("y", -10)
+                    .text("This will be a real grid of circles");
+                
                 var x = d3.scale.linear()
                     .range([0, width])
                     .domain([0, 1]);
@@ -189,6 +219,37 @@ function graph1() {
                     })
                     .attr("height", y(0) - 0)
                     .attr("y", 0);
+
+                var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .tickSize(height)
+                    .tickFormat("")
+                    .orient("bottom")
+                    .ticks(10);
+
+                var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .tickSize(width)
+                    .tickFormat("")
+                    .orient("right");
+
+                var gx = svg.append("g")
+                    .attr("class", "x axis")
+                    .call(xAxis);
+
+                var gy = svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis);
+
+                gx.selectAll("g").filter(function (d) {
+                        return d;
+                    })
+                    .classed("minor", true);
+
+                gy.selectAll("g").filter(function (d) {
+                        return d;
+                    })
+                    .classed("minor", true);
 
             } else if (i == 4) {
                 svg.selectAll("*")
