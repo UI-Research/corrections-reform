@@ -56,6 +56,29 @@ mandmins <- mandmins %>% mutate(total = mandmin_0 + mandmin_1, mandmin_pct = man
 #write.csv(mandmins, "data/mandmins.csv", row.names=F)
 
 ########################################################################################################
+# Expected years served - wonky formatted sheet
+########################################################################################################
+readTimeServed <- function(columns, offense) {
+  dt <- readWorkbook("data/original/time_served_6_3.xlsx", sheet=1, rows=c(1,3,4), cols=columns, colNames = T)
+  colnames(dt) <- c("mandmin_convict", "years_served", "years_remaining")
+  dt$offense <- offense
+  return(dt)
+}
+ts1 <- readTimeServed(c(1,2,3), "total")
+ts2 <- readTimeServed(c(1,5,6), "drug")
+ts3 <- readTimeServed(c(1,8,9), "weapon")
+# not using immigration
+# ts4 <- readTimeServed(c(1,11,12), "immigration")
+ts5 <- readTimeServed(c(1,14,15), "sex")
+
+timeserved <- bind_rows(ts1, ts2, ts3, ts5)
+timeserved$mandmin_convict[timeserved$mandmin_convict=="Convicted of Offense Carrying Mandatory Minimum"] <- 1
+timeserved$mandmin_convict[timeserved$mandmin_convict=="Not Convicted of Offense Carrying Mandatory Minimum"] <- 0
+
+timeserved <- timeserved %>% mutate(years_expected = years_served + years_remaining)
+#write.csv(timeserved, "data/expectedyears.csv", row.names=F)
+
+########################################################################################################
 # Section 2
 ########################################################################################################
 # Race and ethnicity
@@ -79,6 +102,12 @@ histories <- histories %>% mutate(offense = ifelse(offense=="public.order", "pub
                                                           offense)))
 #write.csv(histories, "data/criminalhistories.csv", row.names=F)
 
+# Prison security for those convicted of drug offenses
+security <- readWorkbook(xldt, sheet="Slide 9", rows=c(6:9), cols=c(1,8), colNames = F, skipEmptyRows = T)
+colnames(security) <- c("security", "number")
+# Sentence case
+security$security <- paste0(toupper(substr(security$security, 1, 1)), tolower(substring(security$security, 2)))
+
 ########################################################################################################
 # Conclusions
 ########################################################################################################
@@ -87,29 +116,6 @@ colnames(jointimpact) <- c("year", "pop_baseline", "pop_jointimpact")
 jointimpact$year <- str_replace(jointimpact$year, "FY ", "")
 jointimpact$year <- as.numeric(jointimpact$year)
 #write.csv(jointimpact, "data/jointimpact.csv", row.names=F)
-
-########################################################################################################
-# Expected years served - wonky formatted sheet
-########################################################################################################
-readTimeServed <- function(columns, offense) {
-	dt <- readWorkbook("data/original/time_served_6_3.xlsx", sheet=1, rows=c(1,3,4), cols=columns, colNames = T)
-	colnames(dt) <- c("mandmin_convict", "years_served", "years_remaining")
-	dt$offense <- offense
-	return(dt)
-}
-ts1 <- readTimeServed(c(1,2,3), "total")
-ts2 <- readTimeServed(c(1,5,6), "drug")
-ts3 <- readTimeServed(c(1,8,9), "weapon")
-# not using immigration
-# ts4 <- readTimeServed(c(1,11,12), "immigration")
-ts5 <- readTimeServed(c(1,14,15), "sex")
-
-timeserved <- bind_rows(ts1, ts2, ts3, ts5)
-timeserved$mandmin_convict[timeserved$mandmin_convict=="Convicted of Offense Carrying Mandatory Minimum"] <- 1
-timeserved$mandmin_convict[timeserved$mandmin_convict=="Not Convicted of Offense Carrying Mandatory Minimum"] <- 0
-
-timeserved <- timeserved %>% mutate(years_expected = years_served + years_remaining)
-#write.csv(timeserved, "data/expectedyears.csv", row.names=F)
 
 ########################################################################################################
 # Geographic data
@@ -128,11 +134,13 @@ prisonbydistrict <- as.data.frame(table(georaw$dist, georaw$arsfacl)) %>% rename
 growthj <- toJSON(growth)
 sentencesj <- toJSON(sentences)
 historiesj <- toJSON(histories)
+securityj <- toJSON(security)
+impactj <- toJSON(jointimpact)
 
 # data for mandatory minimum section
 mandminj <- '[{"mm_status": "applied", "share": 0.59, "years": 11.157141, "share_cum": 0.59}, 
 {"mm_status": "notapplied", "share":  0.2137228, "years": 5.541562, "share_cum": 0.8037228}, 
 {"mm_status": "notapplicable", "share": 0.1962772, "years": 5.541562, "share_cum": 1}]'
 
-dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, ', "histories": ', historiesj, "}", sep="")
+dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, ', "histories": ', historiesj, ', "security_drug": ', securityj, ', "jointimpact": ', impactj, "}", sep="")
 write(dtjson, "data/data.json")

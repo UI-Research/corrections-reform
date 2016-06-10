@@ -9,7 +9,7 @@ var map_data_url = "data/judicialdistricts.json",
     $graphic3 = $("#graphic3");
 
 var margin = {
-    top: 30,
+    top: 60,
     right: 15,
     bottom: 45,
     left: 70
@@ -434,6 +434,13 @@ function graph2() {
                     });
 
                 svg.append("text")
+                    .attr("class", "graphtitle")
+                    .attr("text-anchor", "middle")
+                    .attr("x", width / 2)
+                    .attr("y", -10)
+                    .text("Average expected time served");
+
+                svg.append("text")
                     .attr("class", "axistitle")
                     .attr("text-anchor", "start")
                     .attr("x", 0)
@@ -446,6 +453,98 @@ function graph2() {
                     .attr("x", width)
                     .attr("y", height + 30)
                     .text("Most criminal history");
+
+            } else if (i == 3) {
+                svg.selectAll("*")
+                    .remove();
+
+                //bar chart of criminal histories
+                data = data_main.security_drug;
+                console.log(data);
+                VALUE = "number";
+
+                var y = d3.scale.linear()
+                    .range([height, 0])
+                    .domain([0, d3.max(data, function (d) {
+                        return d[VALUE];
+                    })]);
+
+                var x = d3.scale.ordinal()
+                    .rangeRoundBands([0, width], .1)
+                    .domain(data.map(function (d) {
+                        return d.security;
+                    }));
+
+                var bars = svg.selectAll(".bar")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "bar");
+
+                bars.append("rect")
+                    .attr("x", function (d) {
+                        return x(d.security);
+                    })
+                    .attr("width", x.rangeBand())
+                    .attr("y", function (d) {
+                        return y(d[VALUE]);
+                    })
+                    .attr("height", function (d) {
+                        return height - y(d[VALUE]);
+                    })
+
+                var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .tickSize(0)
+                    .tickFormat(function (d, i) {
+                        //return MONEY_MOBILE[i];
+                        return d;
+                    })
+                    .orient("bottom");
+
+                var gx = svg.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .attr("class", "x axis-show")
+                    .call(xAxis);
+
+                var barlabels = svg.selectAll(".point-label")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "pointlabel");
+
+                barlabels.append("text")
+                    .attr("y", function (d) {
+                        return y(d[VALUE]) - 8;
+                    })
+                    .attr("x", function (d) {
+                        return x(d.security) + x.rangeBand() / 2;
+                    })
+                    .attr("text-anchor", "middle")
+                    .text(function (d) {
+                        return d3.format(",.0f")(d[VALUE]);
+                    });
+
+                /*svg.append("text")
+                    .attr("class", "graphtitle")
+                    .attr("text-anchor", "middle")
+                    .attr("x", width / 2)
+                    .attr("y", -10)
+                    .text("Average expected time served");
+                
+                svg.append("text")
+                    .attr("class", "axistitle")
+                    .attr("text-anchor", "start")
+                    .attr("x", 0)
+                    .attr("y", height + 30)
+                    .text("Little or no criminal history");
+
+                svg.append("text")
+                    .attr("class", "axistitle")
+                    .attr("text-anchor", "end")
+                    .attr("x", width)
+                    .attr("y", height + 30)
+                    .text("Most criminal history");*/
 
             } else {
                 svg.selectAll("g, text")
@@ -478,11 +577,122 @@ function graph3() {
             svg.selectAll("text")
                 .remove();
 
-            svg.append("text")
-                .attr("x", width / 2)
-                .attr("y", height / 2)
-                .attr("fill", "#000000")
-                .html("section3 " + i);
+            data = data_main.jointimpact;
+            
+            var COLORS = ["#1696d2", "#fdbf11"]
+            var color = d3.scale.ordinal()
+                .range(COLORS)
+                .domain(["pop_baseline", "pop_jointimpact"]);
+
+            var y = d3.scale.linear()
+                .domain([0, d3.max(data, function (d) {
+                    return d.pop_baseline;
+                })])
+                .range([height, 0], .1)
+
+            var x = d3.scale.linear()
+                .domain(d3.extent(data, function (d) {
+                    return d.year;
+                }))
+                .range([0, width]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom")
+                .tickFormat(function (d) {
+                    return d;
+                })
+                .ticks(10);
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .ticks(6);
+
+            var gy = svg.append("g")
+                .attr("class", "y axis-show")
+                .call(yAxis);
+
+            var gx = svg.append("g")
+                .attr("class", "x axis-show")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            var line = d3.svg.line()
+                .x(function (d) {
+                    return x(d.year);
+                })
+                .y(function (d) {
+                    return y(d.number);
+                });
+
+            color.domain(d3.keys(data[0]).filter(function (key) {
+                return key == "pop_baseline" | key == "pop_jointimpact";
+            }));
+
+            var types = color.domain().map(function (name) {
+                return {
+                    name: name,
+                    values: data.map(function (d) {
+                        return {
+                            year: d.year,
+                            number: +d[name]
+                        };
+                    })
+                };
+            });
+
+
+            var lines = svg.selectAll(".chartline")
+                .data(types)
+                .enter().append("g")
+                .attr("class", "type");
+
+            lines.append("path")
+                .attr("class", "chartline")
+                .attr("d", function (d) {
+                    return line(d.values);
+                })
+                .style("stroke", function (d) {
+                    return color(d.name);
+                });
+
+            //direct line labels
+            /*lines.append("text")
+                .datum(function (d) {
+                    return {
+                        name: d.name,
+                        value: d.values[d.values.length - 1]
+                    };
+                })
+                .attr("transform", function (d) {
+                    return "translate(" + x(d.value.episode) + "," + y(d.value.minutes) + ")";
+                })
+                .attr("x", 3)
+                .attr("dy", ".35em")
+                .attr("fill", function (d, i) {
+                    return COLORS[i];
+                })
+                .text(function (d, i) {
+                    return LINELABELS[i];
+                })
+                .attr("class", "axis");*/
+
+            //dots for tmas line
+            /*var dots = svg.selectAll(".dot")
+                .data(data_total)
+                .enter()
+                .append("g")
+                .attr("class", "dot");
+
+            dots.append("circle")
+                .attr("r", 3)
+                .attr("cx", function (d) {
+                    return x(d.episode);
+                })
+                .attr("cy", function (d) {
+                    return y(d.tmasmin);
+                });*/
         });
 }
 
