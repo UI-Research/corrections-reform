@@ -11,7 +11,7 @@ var map_data_url = "data/judicialdistricts.json",
 var margin = {
     top: 30,
     right: 15,
-    bottom: 25,
+    bottom: 45,
     left: 70
 };
 
@@ -181,8 +181,6 @@ function graph1() {
 
                 data = data_main.mandmin_drug;
                 console.log(data);
-                svg.selectAll("*")
-                    .remove();
 
                 svg.append("text")
                     .attr("class", "graphtitle")
@@ -190,7 +188,7 @@ function graph1() {
                     .attr("x", width / 2)
                     .attr("y", -10)
                     .text("This will be a real grid of circles");
-                
+
                 var x = d3.scale.linear()
                     .range([0, width])
                     .domain([0, 1]);
@@ -257,8 +255,7 @@ function graph1() {
 
                 data = data_main.mandmin_drug;
                 console.log(data);
-                svg.selectAll("*")
-                    .remove();
+
                 var x = d3.scale.linear()
                     .range([0, width])
                     .domain([0, 1]);
@@ -363,6 +360,93 @@ function graph2() {
                     .attr("districtcode", function (d) {
                         return d.properties.code;
                     });
+            } else if (i == 2) {
+                svg.selectAll("*")
+                    .remove();
+
+                //bar chart of criminal histories
+                data = data_main.histories.filter(function (d) {
+                    return d.offense == "drug";
+                });
+                console.log(data);
+                VALUE = "number";
+
+                var y = d3.scale.linear()
+                    .range([height, 0])
+                    .domain([0, d3.max(data, function (d) {
+                        return d[VALUE];
+                    })]);
+
+                var x = d3.scale.ordinal()
+                    .rangeRoundBands([0, width], .1)
+                    .domain(data.map(function (d) {
+                        return d.category;
+                    }));
+
+                var bars = svg.selectAll(".bar")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "bar");
+
+                bars.append("rect")
+                    .attr("x", function (d) {
+                        return x(d.category);
+                    })
+                    .attr("width", x.rangeBand())
+                    .attr("y", function (d) {
+                        return y(d[VALUE]);
+                    })
+                    .attr("height", function (d) {
+                        return height - y(d[VALUE]);
+                    })
+
+                var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .tickSize(0)
+                    .tickFormat(function (d, i) {
+                        //return MONEY_MOBILE[i];
+                        return d;
+                    })
+                    .orient("bottom");
+
+                var gx = svg.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .attr("class", "x axis-show")
+                    .call(xAxis);
+
+                var barlabels = svg.selectAll(".point-label")
+                    .data(data)
+                    .enter()
+                    .append("g")
+                    .attr("class", "pointlabel");
+
+                barlabels.append("text")
+                    .attr("y", function (d) {
+                        return y(d[VALUE]) - 8;
+                    })
+                    .attr("x", function (d) {
+                        return x(d.category) + x.rangeBand() / 2;
+                    })
+                    .attr("text-anchor", "middle")
+                    .text(function (d) {
+                        return d3.format(",.0f")(d[VALUE]);
+                    });
+
+                svg.append("text")
+                    .attr("class", "axistitle")
+                    .attr("text-anchor", "start")
+                    .attr("x", 0)
+                    .attr("y", height + 30)
+                    .text("Little or no criminal history");
+
+                svg.append("text")
+                    .attr("class", "axistitle")
+                    .attr("text-anchor", "end")
+                    .attr("x", width)
+                    .attr("y", height + 30)
+                    .text("Most criminal history");
+
             } else {
                 svg.selectAll("g, text")
                     .remove();

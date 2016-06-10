@@ -216,6 +216,14 @@ svg {
     font-style: italic;
 }
 
+.graphtitle {
+    font-size: 14px;
+}
+
+.pointlabel {
+    font-size: 12px;
+}
+
 .chartline {
   fill: none;
   stroke: #1696d2;
@@ -259,8 +267,8 @@ span.notapplicable {
     fill: #1696d2;
 }
 
-.graphtitle {
-    font-size: 14px;
+.bar {
+    fill: #1696d2;
 }
 
 /*mobile adjustments*/
