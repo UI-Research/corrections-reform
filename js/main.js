@@ -568,132 +568,121 @@ function graph3() {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var gs3 = graphScroll()
-        .container(d3.select('#container3'))
-        .graph(d3.selectAll('#graphic3'))
-        .sections(d3.selectAll('#section3 > div'))
-        .on('active', function (i) {
-            console.log("section3 " + i);
-            svg.selectAll("text")
-                .remove();
+    data = data_main.jointimpact;
 
-            data = data_main.jointimpact;
-            
-            var COLORS = ["#1696d2", "#fdbf11"]
-            var color = d3.scale.ordinal()
-                .range(COLORS)
-                .domain(["pop_baseline", "pop_jointimpact"]);
+    var linevars = ["pop_baseline", "pop_jointimpact"];
+    var COLORS = ["#1696d2", "#fdbf11"]
+    var color = d3.scale.ordinal()
+        .range(COLORS)
+        .domain(["pop_baseline", "pop_jointimpact"]);
 
-            var y = d3.scale.linear()
-                .domain([0, d3.max(data, function (d) {
-                    return d.pop_baseline;
-                })])
-                .range([height, 0], .1)
+    var y = d3.scale.linear()
+        .domain([0, d3.max(data, function (d) {
+            return d.pop_baseline;
+        })])
+        .range([height, 0], .1)
 
-            var x = d3.scale.linear()
-                .domain(d3.extent(data, function (d) {
-                    return d.year;
-                }))
-                .range([0, width]);
+    var x = d3.scale.linear()
+        .domain(d3.extent(data, function (d) {
+            return d.year;
+        }))
+        .range([0, width]);
 
-            var xAxis = d3.svg.axis()
-                .scale(x)
-                .orient("bottom")
-                .tickFormat(function (d) {
-                    return d;
-                })
-                .ticks(10);
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(function (d) {
+            return d;
+        })
+        .ticks(10);
 
-            var yAxis = d3.svg.axis()
-                .scale(y)
-                .orient("left")
-                .ticks(6);
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(6);
 
-            var gy = svg.append("g")
-                .attr("class", "y axis-show")
-                .call(yAxis);
+    var gy = svg.append("g")
+        .attr("class", "y axis-show")
+        .call(yAxis);
 
-            var gx = svg.append("g")
-                .attr("class", "x axis-show")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
+    var gx = svg.append("g")
+        .attr("class", "x axis-show")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
 
-            var line = d3.svg.line()
-                .x(function (d) {
-                    return x(d.year);
-                })
-                .y(function (d) {
-                    return y(d.number);
-                });
-
-            color.domain(d3.keys(data[0]).filter(function (key) {
-                return key == "pop_baseline" | key == "pop_jointimpact";
-            }));
-
-            var types = color.domain().map(function (name) {
-                return {
-                    name: name,
-                    values: data.map(function (d) {
-                        return {
-                            year: d.year,
-                            number: +d[name]
-                        };
-                    })
-                };
-            });
-
-
-            var lines = svg.selectAll(".chartline")
-                .data(types)
-                .enter().append("g")
-                .attr("class", "type");
-
-            lines.append("path")
-                .attr("class", "chartline")
-                .attr("d", function (d) {
-                    return line(d.values);
-                })
-                .style("stroke", function (d) {
-                    return color(d.name);
-                });
-
-            //direct line labels
-            /*lines.append("text")
-                .datum(function (d) {
-                    return {
-                        name: d.name,
-                        value: d.values[d.values.length - 1]
-                    };
-                })
-                .attr("transform", function (d) {
-                    return "translate(" + x(d.value.episode) + "," + y(d.value.minutes) + ")";
-                })
-                .attr("x", 3)
-                .attr("dy", ".35em")
-                .attr("fill", function (d, i) {
-                    return COLORS[i];
-                })
-                .text(function (d, i) {
-                    return LINELABELS[i];
-                })
-                .attr("class", "axis");*/
-
-            //dots for tmas line
-            /*var dots = svg.selectAll(".dot")
-                .data(data_total)
-                .enter()
-                .append("g")
-                .attr("class", "dot");
-
-            dots.append("circle")
-                .attr("r", 3)
-                .attr("cx", function (d) {
-                    return x(d.episode);
-                })
-                .attr("cy", function (d) {
-                    return y(d.tmasmin);
-                });*/
+    var line = d3.svg.line()
+        .x(function (d) {
+            return x(d.year);
+        })
+        .y(function (d) {
+            return y(d.number);
         });
+
+    color.domain(d3.keys(data[0]).filter(function (key) {
+        return key == "pop_baseline" | key == "pop_jointimpact";
+    }));
+
+    var types = linevars.map(function (name) {
+        return {
+            name: name,
+            values: data.map(function (d) {
+                return {
+                    year: d.year,
+                    number: +d[name]
+                };
+            })
+        };
+    });
+
+    var lines = svg.selectAll(".chartline")
+        .data(types)
+        .enter().append("g")
+        .attr("class", "chartline");
+
+    lines.append("path")
+        .attr("class", function (d) {
+            return d.name;
+        })
+        .attr("d", function (d) {
+            return line(d.values);
+        });
+
+    //direct line labels
+    /*lines.append("text")
+        .datum(function (d) {
+            return {
+                name: d.name,
+                value: d.values[d.values.length - 1]
+            };
+        })
+        .attr("transform", function (d) {
+            return "translate(" + x(d.value.episode) + "," + y(d.value.minutes) + ")";
+        })
+        .attr("x", 3)
+        .attr("dy", ".35em")
+        .attr("fill", function (d, i) {
+            return COLORS[i];
+        })
+        .text(function (d, i) {
+            return LINELABELS[i];
+        })
+        .attr("class", "axis");*/
+
+    //dots for tmas line
+    /*var dots = svg.selectAll(".dot")
+        .data(data_total)
+        .enter()
+        .append("g")
+        .attr("class", "dot");
+
+    dots.append("circle")
+        .attr("r", 3)
+        .attr("cx", function (d) {
+            return x(d.episode);
+        })
+        .attr("cy", function (d) {
+            return y(d.tmasmin);
+        });*/
 }
 
 

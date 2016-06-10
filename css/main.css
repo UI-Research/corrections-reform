@@ -151,6 +151,7 @@ h4 {
 .section {
     margin-bottom: 400px;
 }
+
 .subsection {
     opacity: .2;
     margin-top: 60px;
@@ -180,6 +181,7 @@ h4 {
 svg {
     /*border: 1px solid #1696d2;*/
 }
+
 
 /*graph elements*/
 
@@ -225,15 +227,29 @@ svg {
 }
 
 .chartline {
-  fill: none;
-  stroke: #1696d2;
-  stroke-width: 1px;
+    fill: none;
+    stroke: #1696d2;
+    stroke-width: 1px;
+}
+
+.pop_baseline {
+    fill: none;
+    stroke: #fdbf11;
+    stroke-width: 2px;
+    opacity: 0.5;
+}
+
+.pop_jointimpact {
+    fill: none;
+    stroke: #1696d2;
+    stroke-width: 2px;
+    opacity: 0.5;
 }
 
 .dot {
     fill: #ffffff;
     stroke: #1696d2;
-    stroke-width: 1;
+    stroke-width: 1px;
 }
 
 .applied {
@@ -270,6 +286,7 @@ span.notapplicable {
 .bar {
     fill: #1696d2;
 }
+
 
 /*mobile adjustments*/
 
