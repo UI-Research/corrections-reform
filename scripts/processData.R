@@ -44,9 +44,23 @@ standingpop$year <- str_replace(standingpop$year, "FY.", "")
 
 sentences <- left_join(standingpop, admissions, by=c("year", "offense"))
 sentences$year <- as.numeric(sentences$year)
-sentences <- sentences %>% filter(offense %in% c("Drug", "Weapon", "Immigration", "Sex"))
+sentences_total <- sentences %>% group_by (year) %>%
+  summarize(standing = sum(standing), admissions = sum(admissions)) %>%
+  mutate(offense = "Total")
+sentences <- rbind(sentences, sentences_total)
+
+# Create "other" cateogry
+admissions <- sentences %>% select(-standing) %>% spread(offense, admissions) %>% 
+  mutate(Other = Total - Drug - Immigration - Sex - Weapon) %>% 
+  gather(offense, admissions, -year)
+standing <- sentences %>% select(-admissions) %>% spread(offense, standing) %>% 
+  mutate(Other = Total - Drug - Immigration - Sex - Weapon) %>% 
+  gather(offense, standing, -year)
+sentences <- left_join(admissions, standing, by=c("year", "offense"))
+
+sentences <- sentences %>% filter(offense %in% c("Drug", "Weapon", "Immigration", "Sex", "Other", "Total"))
 sentences$offense <- tolower(sentences$offense)
-#write.csv(sentences, "data/sentences.csv", row.names=F)
+write.csv(sentences, "data/sentences.csv", row.names=F)
 rm(admissions, standingpop)
 
 # Mandatory minimums by offense

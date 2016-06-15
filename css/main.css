@@ -224,26 +224,78 @@ svg {
 
 .pointlabel {
     font-size: 12px;
+    fill: #000;
 }
 
 .chartline {
     fill: none;
-    stroke: #1696d2;
     stroke-width: 1px;
 }
 
-.pop_baseline {
-    fill: none;
+.pop_baseline,
+.admissions {
     stroke: #fdbf11;
-    stroke-width: 2px;
-    opacity: 0.5;
 }
 
+.pop_jointimpact,
+.standing,
+.blueline {
+    stroke: #1696d2;
+}
+
+.pop_baseline,
 .pop_jointimpact {
-    fill: none;
+    opacity: 0.5;
+    stroke-width: 2px;
+}
+
+.layer {
+    opacity: 0.75;
+}
+
+.drug.layer {
+    fill: #1696d2;
+}
+
+.immigration.layer {
+    fill: #fdbf11;
+}
+
+.sex.layer {
+    fill: #000000;
+}
+
+.weapon.layer {
+    fill: #ec008b;
+}
+
+.other.layer {
+    fill: #d2d2d2;
+}
+
+.drug.chartline {
     stroke: #1696d2;
     stroke-width: 2px;
-    opacity: 0.5;
+}
+
+.immigration.chartline {
+    stroke: #fdbf11;
+    stroke-width: 2px;
+}
+
+.sex.chartline {
+    stroke: #000000;
+    stroke-width: 2px;
+}
+
+.weapon.chartline {
+    stroke: #ec008b;
+    stroke-width: 2px;
+}
+
+.other.chartline {
+    stroke: #d2d2d2;
+    stroke-width: 2px;
 }
 
 .dot {
