@@ -331,16 +331,16 @@ svg {
     fill: #d2d2d2;
 }
 
-span.applied {
+span.blue {
     background-color: #1696d2;
     color: #ffffff;
 }
 
-span.notapplied {
+span.lightblue {
     background-color: #cfe8f3;
 }
 
-span.notapplicable {
+span.grey {
     background-color: #d2d2d2;
 }
 

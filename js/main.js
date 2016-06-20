@@ -28,6 +28,8 @@ function graph1() {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    var x, y, xAxis, yAxis, gx, gy
 
     var gs = graphScroll()
         .container(d3.select('#container1'))
@@ -41,7 +43,6 @@ function graph1() {
 
                 svg.selectAll("*")
                     .remove();
-
 
                 //line chart
                 VALUE = "pop_total";
@@ -622,7 +623,7 @@ function graph2() {
                     .attr("text-anchor", "start")
                     .attr("x", 0)
                     .attr("y", height + 30)
-                    .text("Little or no criminal history");
+                    .text("No criminal history");
 
                 svg.append("text")
                     .attr("class", "axistitle")
