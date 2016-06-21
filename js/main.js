@@ -53,6 +53,7 @@ function graph1() {
         .attr("y", -5)
         .text("Federal prison population");
 
+    //initial graph
     function init0() {
         data = data_main.growth;
 
@@ -98,15 +99,17 @@ function graph1() {
             .attr("d", line);
     }
 
+    //stacked area chart -> two lines chart
     function init1() {
-        data = (data_main.sentences).filter(function (d) {
-            return d.offense != "total";
-        });
+        data = data_main.sentences;
 
+        //chart 1
         VALUE = "standing";
         var ORDER = ["drug", "weapon", "immigration", "sex", "other"]
 
-        //line chart
+        //chart 2
+        var LINEVARS = ["standing", "admissions"];
+        var LABELS = ["Standing population", "Admissions"];
 
         var y = d3.scale.linear()
             .domain([0, 220000])
@@ -118,6 +121,15 @@ function graph1() {
             }))
             .range([0, width]);
 
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .tickFormat(function (d) {
+                return d;
+            })
+            .ticks(10);
+
+        //chart 1
         var nest = d3.nest()
             .key(function (d) {
                 return d.offense;
@@ -135,10 +147,12 @@ function graph1() {
                 return d.year;
             })
             .y(function (d) {
-                return d[VALUE];
+                return d.standing;
             });
 
-        var layers = stack(nest.entries(data));
+        var layers = stack(nest.entries(data.filter(function (d) {
+            return d.offense != "total";
+        })));
 
         var area = d3.svg.area()
             .interpolate("cardinal")
@@ -152,7 +166,7 @@ function graph1() {
                 return y(d.y0 + d.y);
             });
 
-        var line = d3.svg.line()
+        var line1 = d3.svg.line()
             .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
@@ -160,14 +174,6 @@ function graph1() {
             .y(function (d) {
                 return y(d.y + d.y0);
             });
-
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom")
-            .tickFormat(function (d) {
-                return d;
-            })
-            .ticks(10);
 
         var segments = svg.selectAll(".segment")
             .data(layers)
@@ -188,7 +194,7 @@ function graph1() {
                 return d.key + " chartline graph1";
             })
             .attr("d", function (d) {
-                return line(d.values);
+                return line1(d.values);
             })
             .attr("opacity", 0);
 
@@ -212,31 +218,7 @@ function graph1() {
             })
             .attr("opacity", 0);
 
-        var gx = svg.append("g")
-            .attr("class", "x axis-show axis1")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-    }
-
-    function init2() {
-        data = (data_main.sentences).filter(function (d) {
-            return d.offense == "total";
-        });
-
-        var y = d3.scale.linear()
-            .domain([0, 220000])
-            .range([height, 0], .1);
-
-        var x = d3.scale.linear()
-            .domain(d3.extent(data, function (d) {
-                return d.year;
-            }))
-            .range([0, width]);
-
-        var LINEVARS = ["standing", "admissions"];
-        var LABELS = ["Standing population", "Admissions"];
-
-        var line = d3.svg.line()
+        var line2 = d3.svg.line()
             .x(function (d) {
                 return x(d.year);
             })
@@ -244,10 +226,13 @@ function graph1() {
                 return y(d.number);
             });
 
+        //chart 2
         var types = LINEVARS.map(function (name) {
             return {
                 name: name,
-                values: data.map(function (d) {
+                values: (data.filter(function (d) {
+                    return d.offense == "total";
+                })).map(function (d) {
                     return {
                         year: d.year,
                         number: +d[name]
@@ -266,7 +251,7 @@ function graph1() {
                 return d.name + " graph2 chartline";
             })
             .attr("d", function (d) {
-                return line(d.values);
+                return line2(d.values);
             })
             .attr("opacity", 0);
 
@@ -291,11 +276,14 @@ function graph1() {
             })
             .attr("opacity", 0);
 
+        var gx = svg.append("g")
+            .attr("class", "x axis-show axis1")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
     }
 
     init0();
     init1();
-    init2();
 
     var gs = graphScroll()
         .container(d3.select('#container1'))
