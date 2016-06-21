@@ -427,7 +427,7 @@ function graph1() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.select(".graph0, .axis0")
+                d3.select(".graph0, .axis0, .lineaxis")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
@@ -458,7 +458,7 @@ function graph1() {
 
             } else if (i == 3) {
 
-                d3.selectAll(".graph0, .graph1, .graph2, .axis-show, .linesaxis, .graph4")
+                d3.selectAll(".graph0, .graph1, .graph2, .axis1, .axis0, .linesaxis, .graph4")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -470,7 +470,7 @@ function graph1() {
 
             } else if (i == 4) {
 
-                d3.selectAll(".graph0, .graph1, .graph2, .axis-show, .linesaxis, .graph3")
+                d3.selectAll(".graph0, .graph1, .graph2, .axis1, .axis0, .linesaxis, .graph3")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
