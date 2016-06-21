@@ -264,9 +264,9 @@ svg {
     stroke-width: 2px;
 }
 
-.layer {
+/*.layer {
     opacity: 0.75;
-}
+}*/
 
 .drug.layer {
     fill: #1696d2;

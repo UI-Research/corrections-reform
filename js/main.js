@@ -7,6 +7,7 @@ var map_data_url = "data/judicialdistricts.json",
     $graphic1 = $("#graphic1"),
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
+var ORDER = ["drug", "weapon", "immigration", "sex", "other"];
 
 var margin = {
     top: 60,
@@ -21,6 +22,8 @@ console.log($graphic1.width(), width);
 
 function graph1() {
 
+    VALUE = "pop_total";
+
     $graphic1.empty();
 
     var svg = d3.select("#graphic1").append("svg")
@@ -28,8 +31,271 @@ function graph1() {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    
-    var x, y, xAxis, yAxis, gx, gy
+
+    //line chart common elements
+    var y = d3.scale.linear()
+        .range([height, 0])
+        .domain([0, 220000]);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .ticks(6)
+        .orient("left");
+
+    var gy = svg.append("g")
+        .attr("class", "y axis-show")
+        .call(yAxis);
+
+    svg.append("text")
+        .attr("class", "axistitle")
+        .attr("text-anchor", "middle")
+        .attr("x", 0)
+        .attr("y", -5)
+        .text("Federal prison population");
+
+    function init0() {
+        data = data_main.growth;
+
+        //line chart
+        VALUE = "pop_total";
+        var x = d3.scale.linear()
+            .range([0, width])
+            .domain(d3.extent(data, function (d) {
+                return d.year;
+            }));
+
+        var y = d3.scale.linear()
+            .range([height, 0])
+            .domain([0, d3.max(data, function (d) {
+                return d[VALUE];
+            })]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .ticks(6)
+            .tickFormat(function (d) {
+                return d;
+            })
+            .orient("bottom");
+
+        var gx = svg.append("g")
+            .attr("class", "x axis-show axis0")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        var line = d3.svg.line()
+            //.interpolate("cardinal")
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y(function (d) {
+                return y(d[VALUE]);
+            });
+
+        svg.append("path")
+            .datum(data)
+            .attr("class", "chartline standing graph0")
+            .attr("d", line);
+    }
+
+    function init1() {
+        data = (data_main.sentences).filter(function (d) {
+            return d.offense != "total";
+        });
+
+        VALUE = "standing";
+        var ORDER = ["drug", "weapon", "immigration", "sex", "other"]
+
+        //line chart
+
+        var y = d3.scale.linear()
+            .domain([0, 220000])
+            .range([height, 0], .1);
+
+        var x = d3.scale.linear()
+            .domain(d3.extent(data, function (d) {
+                return d.year;
+            }))
+            .range([0, width]);
+
+        var nest = d3.nest()
+            .key(function (d) {
+                return d.offense;
+            })
+            .sortKeys(function (a, b) {
+                return ORDER.indexOf(a) - ORDER.indexOf(b);
+            })
+
+        var stack = d3.layout.stack()
+            .offset("zero")
+            .values(function (d) {
+                return d.values;
+            })
+            .x(function (d) {
+                return d.year;
+            })
+            .y(function (d) {
+                return d[VALUE];
+            });
+
+        var layers = stack(nest.entries(data));
+
+        var area = d3.svg.area()
+            .interpolate("cardinal")
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y0(function (d) {
+                return y(d.y0);
+            })
+            .y1(function (d) {
+                return y(d.y0 + d.y);
+            });
+
+        var line = d3.svg.line()
+            .interpolate("cardinal")
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y(function (d) {
+                return y(d.y + d.y0);
+            });
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .tickFormat(function (d) {
+                return d;
+            })
+            .ticks(10);
+
+        var segments = svg.selectAll(".segment")
+            .data(layers)
+            .enter().append("g")
+            .attr("class", "segment");
+
+        segments.append("path")
+            .attr("class", function (d) {
+                return d.key + " layer graph1";
+            })
+            .attr("d", function (d) {
+                return area(d.values);
+            })
+            .attr("opacity", 0);
+
+        segments.append("path")
+            .attr("class", function (d) {
+                return d.key + " chartline graph1";
+            })
+            .attr("d", function (d) {
+                return line(d.values);
+            })
+            .attr("opacity", 0);
+
+        segments.append("text")
+            .datum(function (d) {
+                return {
+                    name: d.key,
+                    value: d.values[d.values.length - 1]
+                };
+            })
+            .attr("class", "pointlabel graph1")
+            .attr("text-anchor", "end")
+            .attr("x", function (d) {
+                return x(d.value.year) - 10;
+            })
+            .attr("y", function (d) {
+                return y(d.value.y0 + d.value.y * 0.5);
+            })
+            .text(function (d) {
+                return d.name;
+            })
+            .attr("opacity", 0);
+
+        var gx = svg.append("g")
+            .attr("class", "x axis-show axis1")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+    }
+
+    function init2() {
+        data = (data_main.sentences).filter(function (d) {
+            return d.offense == "total";
+        });
+
+        var y = d3.scale.linear()
+            .domain([0, 220000])
+            .range([height, 0], .1);
+
+        var x = d3.scale.linear()
+            .domain(d3.extent(data, function (d) {
+                return d.year;
+            }))
+            .range([0, width]);
+
+        var LINEVARS = ["standing", "admissions"];
+        var LABELS = ["Standing population", "Admissions"];
+
+        var line = d3.svg.line()
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y(function (d) {
+                return y(d.number);
+            });
+
+        var types = LINEVARS.map(function (name) {
+            return {
+                name: name,
+                values: data.map(function (d) {
+                    return {
+                        year: d.year,
+                        number: +d[name]
+                    };
+                })
+            };
+        });
+
+        var lines = svg.selectAll(".lines")
+            .data(types)
+            .enter().append("g")
+            .attr("class", "lines");
+
+        lines.append("path")
+            .attr("class", function (d) {
+                return d.name + " graph2 chartline";
+            })
+            .attr("d", function (d) {
+                return line(d.values);
+            })
+            .attr("opacity", 0);
+
+        //direct line labels
+        lines.append("text")
+            .datum(function (d) {
+                return {
+                    name: d.name,
+                    value: d.values[d.values.length - 1]
+                };
+            })
+            .attr("class", "pointlabel graph2")
+            .attr("text-anchor", "end")
+            .attr("x", function (d) {
+                return x(d.value.year);
+            })
+            .attr("y", function (d) {
+                return y(d.value.number) + 15;
+            })
+            .text(function (d, i) {
+                return LABELS[i];
+            })
+            .attr("opacity", 0);
+
+    }
+
+    init0();
+    init1();
+    init2();
 
     var gs = graphScroll()
         .container(d3.select('#container1'))
@@ -39,322 +305,40 @@ function graph1() {
 
             console.log("section1 " + i);
             if (i == 0) {
-                data = data_main.growth;
 
-                svg.selectAll("*")
-                    .remove();
+                d3.selectAll(".graph2, .graph1, .axis1")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
 
-                //line chart
-                VALUE = "pop_total";
-                var x = d3.scale.linear()
-                    .range([0, width])
-                    .domain(d3.extent(data, function (d) {
-                        return d.year;
-                    }));
-
-                var y = d3.scale.linear()
-                    .range([height, 0])
-                    .domain([0, d3.max(data, function (d) {
-                        return d[VALUE];
-                    })]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .ticks(6)
-                    .tickFormat(function (d) {
-                        return d;
-                    })
-                    .orient("bottom");
-
-                var gx = svg.append("g")
-                    .attr("class", "x axis-show")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .ticks(6)
-                    .orient("left");
-
-                var gy = svg.append("g")
-                    .attr("class", "y axis-show")
-                    .call(yAxis);
-
-                svg.append("text")
-                    .attr("class", "axistitle")
-                    .attr("text-anchor", "middle")
-                    .attr("x", 0)
-                    .attr("y", -5)
-                    .text("Federal prison population");
-
-                var line = d3.svg.line()
-                    //.interpolate("cardinal")
-                    .x(function (d) {
-                        return x(d.year);
-                    })
-                    .y(function (d) {
-                        return y(d[VALUE]);
-                    });
-
-                svg.append("path")
-                    .datum(data)
-                    .attr("class", "chartline standing")
-                    .attr("d", line);
-
-                /*var dots = svg.selectAll(".dot")
-                    .data(data)
-                    .enter()
-                    .append("g")
-                    .attr("class", "dot");
-
-                dots.append("circle")
-                    .attr("r", 3)
-                    .attr("cx", function (d) {
-                        return x(d.year);
-                    })
-                    .attr("cy", function (d) {
-                        return y(d[VALUE]);
-                    });*/
-
+                d3.select(".graph0, .axis0")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
 
             } else if (i == 1) {
-                data = (data_main.sentences).filter(function (d) {
-                    return d.offense != "total";
-                });
 
-                svg.selectAll("*")
-                    .remove();
+                d3.selectAll(".graph0, .graph2, .axis0")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
 
-                VALUE = "standing";
-                var ORDER = ["drug", "weapon", "immigration", "sex", "other"]
-
-                //line chart
-
-                var y = d3.scale.linear()
-                    /*.domain([0, d3.max(data, function (d) {
-                        return d.standing;
-                    })])*/
-                    .range([height, 0], .1);
-
-                var x = d3.scale.linear()
-                    .domain(d3.extent(data, function (d) {
-                        return d.year;
-                    }))
-                    .range([0, width]);
-
-                var nest = d3.nest()
-                    .key(function (d) {
-                        return d.offense;
-                    })
-                    .sortKeys(function (a, b) {
-                        return ORDER.indexOf(a) - ORDER.indexOf(b);
-                    })
-
-                y.domain([0, d3.max(data, function (d) {
-                    return d.y0 + d.y;
-                })]);
-
-
-                var stack = d3.layout.stack()
-                    .offset("zero")
-                    .values(function (d) {
-                        return d.values;
-                    })
-                    .x(function (d) {
-                        return d.year;
-                    })
-                    .y(function (d) {
-                        return d[VALUE];
-                    });
-
-                var layers = stack(nest.entries(data));
-
-                var area = d3.svg.area()
-                    .interpolate("cardinal")
-                    .x(function (d) {
-                        return x(d.year);
-                    })
-                    .y0(function (d) {
-                        return y(d.y0);
-                    })
-                    .y1(function (d) {
-                        return y(d.y0 + d.y);
-                    });
-
-                var line = d3.svg.line()
-                    .interpolate("cardinal")
-                    .x(function (d) {
-                        return x(d.year);
-                    })
-                    .y(function (d) {
-                        return y(d.y + d.y0);
-                    });
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom")
-                    .tickFormat(function (d) {
-                        return d;
-                    })
-                    .ticks(10);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left")
-                    .ticks(8);
-
-                var segments = svg.selectAll(".segment")
-                    .data(layers)
-                    .enter().append("g")
-                    .attr("class", "segment");
-
-                segments.append("path")
-                    .attr("class", function (d) {
-                        return d.key + " layer";
-                    })
-                    .attr("d", function (d) {
-                        return area(d.values);
-                    });
-
-                segments.append("path")
-                    .attr("class", function (d) {
-                        return d.key + " chartline";
-                    })
-                    .attr("d", function (d) {
-                        return line(d.values);
-                    });
-
-                segments.append("text")
-                    .datum(function (d) {
-                        return {
-                            name: d.key,
-                            value: d.values[d.values.length - 1]
-                        };
-                    })
-                    .attr("class", "pointlabel")
-                    .attr("text-anchor", "end")
-                    .attr("x", function (d) {
-                        return x(d.value.year) - 10;
-                    })
-                    .attr("y", function (d) {
-                        return y(d.value.y0 + d.value.y*0.5);
-                        //WHY IS THIS THROWING AN ERROR
-                        //return 200;
-                    })
-                    .text(function (d) {
-                        return d.name;
-                    });
-
-                var gy = svg.append("g")
-                    .attr("class", "y axis-show")
-                    .call(yAxis);
-
-                var gx = svg.append("g")
-                    .attr("class", "x axis-show")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
-
-                console.log(layers);
+                d3.selectAll(".graph1, .axis1")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
 
             } else if (i == 2) {
-                data = (data_main.sentences).filter(function (d) {
-                    return d.offense == "total";
-                });
 
-                svg.selectAll("*")
-                    .remove();
+                d3.selectAll(".graph0, .graph1")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
 
-                //line chart
-                var LINEVARS = ["standing", "admissions"];
-                var LABELS = ["Standing population", "Admissions"];
-
-                var y = d3.scale.linear()
-                    .domain([0, d3.max(data, function (d) {
-                        return d.standing;
-                    })])
-                    .range([height, 0], .1);
-
-                var x = d3.scale.linear()
-                    .domain(d3.extent(data, function (d) {
-                        return d.year;
-                    }))
-                    .range([0, width]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom")
-                    .tickFormat(function (d) {
-                        return d;
-                    })
-                    .ticks(10);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left")
-                    .ticks(8);
-
-                var gy = svg.append("g")
-                    .attr("class", "y axis-show")
-                    .call(yAxis);
-
-                var gx = svg.append("g")
-                    .attr("class", "x axis-show")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
-
-                var line = d3.svg.line()
-                    .x(function (d) {
-                        return x(d.year);
-                    })
-                    .y(function (d) {
-                        return y(d.number);
-                    });
-
-                var types = LINEVARS.map(function (name) {
-                    return {
-                        name: name,
-                        values: data.map(function (d) {
-                            return {
-                                year: d.year,
-                                number: +d[name]
-                            };
-                        })
-                    };
-                });
-
-                var lines = svg.selectAll(".chartline")
-                    .data(types)
-                    .enter().append("g")
-                    .attr("class", "chartline");
-
-                lines.append("path")
-                    .attr("class", function (d) {
-                        return d.name;
-                    })
-                    .attr("d", function (d) {
-                        return line(d.values);
-                    });
-
-                //direct line labels
-                lines.append("text")
-                    .datum(function (d) {
-                        return {
-                            name: d.name,
-                            value: d.values[d.values.length - 1]
-                        };
-                    })
-                    .attr("class", "pointlabel")
-                    .attr("text-anchor", "end")
-                    .attr("x", function (d) {
-                        return x(d.value.year);
-                    })
-                    .attr("y", function (d) {
-                        return y(d.value.number) + 15;
-                    })
-                    .text(function (d, i) {
-                        return LABELS[i];
-                    });
-
+                d3.selectAll(".graph2")
+                    .transition()
+                    .duration(1)
+                    .attr("opacity", 1)
 
             } else if (i == 3) {
                 svg.selectAll("*")
