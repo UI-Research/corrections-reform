@@ -44,11 +44,11 @@ function graph1() {
         .orient("left");
 
     var gy = svg.append("g")
-        .attr("class", "y axis-show")
+        .attr("class", "y axis-show linesaxis")
         .call(yAxis);
 
     svg.append("text")
-        .attr("class", "axistitle")
+        .attr("class", "axistitle linesaxis")
         .attr("text-anchor", "middle")
         .attr("x", 0)
         .attr("y", -5)
@@ -283,8 +283,135 @@ function graph1() {
             .call(xAxis);
     }
 
+    //graph 3 - circle grid 
+    function init3() {
+        var circleradius = 10;
+
+        //data from 0-99, ydig is 1s position, xdig is 10s position
+        var cellsdt = d3.range(100).map(function (d) {
+            return {
+                d: +d,
+                ydig: +(d.toString().slice(-1)),
+                xdig: +(d3.format("02d")(d)).slice(0, 1),
+                group: d < 59 ? "applied" : (d >= 59 & d < 80 ? "notapplied" : "notapplicable")
+            }
+        });
+
+        var cells = svg.selectAll(".cell")
+            .data(cellsdt)
+            .enter()
+            .append("g")
+            .attr("class", "cell");
+
+        cells.append("rect")
+            .attr("class", function (d) {
+                return d.group + " circle";
+            })
+            .attr("x", function (d) {
+                return d.xdig * (width / 10);
+            })
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("y", function (d) {
+                return d.ydig * (height / 10);
+            })
+            .attr("rx", 2 * circleradius)
+            .attr("ry", 2 * circleradius)
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "graphtitle graph3")
+            .attr("text-anchor", "middle")
+            .attr("x", width * 0.3)
+            .attr("y", height + 10)
+            .text("59% were sentenced with mandatory minimums")
+            .attr("opacity", 0);
+    }
+
+    //time served bars
+    function init4() {
+        data = data_main.mandmin_drug;
+        var LABELS = ["Applied", "Not applied", "Not applicable"];
+
+        var x = d3.scale.linear()
+            .range([0, width])
+            .domain([0, 1]);
+
+        var y = d3.scale.linear()
+            .range([height, 0])
+            .domain([0, d3.max(data, function (d) {
+                return d.years;
+            })]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .ticks(0)
+            .outerTickSize(0)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .ticks(6)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis-show graph4")
+            .call(yAxis);
+
+        svg.append("text")
+            .attr("class", "graphtitle graph4")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", -10)
+            .text("Average expected time served")
+            .attr("opacity", 0);
+
+        var bars = svg.selectAll(".rect")
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("class", "rect");
+
+        var gx = svg.append("g")
+            .attr("class", "x axis-show graph4")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        bars.append("rect")
+            .attr('class', function (d) {
+                return d.mm_status + " graph4";
+            })
+            .attr("x", function (d) {
+                return x(d.share_cum - d.share);
+            })
+            .attr("width", function (d) {
+                return x(d.share);
+            })
+            .attr("height", function (d) {
+                return y(0) - y(d.years);
+            })
+            .attr("y", function (d) {
+                return y(d.years);
+            })
+            .attr("opacity", 0);
+
+        bars.append("text")
+            .attr("class", "axis graph4")
+            .attr("text-anchor", "middle")
+            .attr("x", function (d) {
+                return x(d.share_cum - 0.5 * d.share);
+            })
+            .attr("y", height + 12)
+            .text(function (d, i) {
+                return LABELS[i];
+            })
+            .attr("opacity", 0);
+    }
+
     init0();
     init1();
+    init3();
+    init4();
 
     var gs = graphScroll()
         .container(d3.select('#container1'))
@@ -295,7 +422,7 @@ function graph1() {
             console.log("section1 " + i);
             if (i == 0) {
 
-                d3.selectAll(".graph2, .graph1, .axis1")
+                d3.selectAll(".graph2, .graph1, .axis1, .graph4, .circle")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -307,7 +434,7 @@ function graph1() {
 
             } else if (i == 1) {
 
-                d3.selectAll(".graph0, .graph2, .axis0")
+                d3.selectAll(".graph0, .graph2, .axis0, .graph4, .circle, .axis0")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -319,205 +446,51 @@ function graph1() {
 
             } else if (i == 2) {
 
-                d3.selectAll(".graph0, .graph1")
+                d3.selectAll(".graph0, .graph1, .graph3, .graph4, .circle, .axis0")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph2")
+                d3.selectAll(".graph2, .linesaxis, .axis1")
                     .transition()
-                    .duration(1)
+                    .duration(500)
                     .attr("opacity", 1)
 
             } else if (i == 3) {
-                svg.selectAll("*")
-                    .remove();
 
-                data = data_main.mandmin_drug;
-                
-                var circleradius = 10;
+                d3.selectAll(".graph0, .graph1, .graph2, .axis-show, .linesaxis, .graph4")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
 
-                //data from 0-99, ydig is 1s position, xdig is 10s position
-                var cellsdt = d3.range(100).map(function (d) {
-                    return {
-                        d: +d,
-                        ydig: +(d.toString().slice(-1)),
-                        xdig: +(d3.format("02d")(d)).slice(0, 1),
-                        group: d<59 ? "applied" : (d>= 59 & d<80 ? "notapplied" : "notapplicable")
-                    }
-                });
-                console.log(cellsdt);
-
-                var cells = svg.selectAll(".cell")
-                    .data(cellsdt)
-                    .enter()
-                    .append("g")
-                    .attr("class", "cell");
-
-                cells.append("rect")
-                    .attr("class", function (d) {
-                        return d.group;
-                    })
-                    .attr("x", function (d) {
-                        return d.xdig * (width / 10);
-                    })
-                    .attr("width", 20)
-                    .attr("height", 20)
-                    .attr("y", function (d) {
-                        return d.ydig * (height / 10);
-                    })
-                    .attr("rx", 2 * circleradius)
-                    .attr("ry", 2 * circleradius);
-
-                /*svg.append("text")
-                    .attr("class", "graphtitle")
-                    .attr("text-anchor", "middle")
-                    .attr("x", width / 2)
-                    .attr("y", -10)
-                    .text("This will be a real grid of circles");
-
-                var x = d3.scale.linear()
-                    .range([0, width])
-                    .domain([0, 1]);
-
-                var y = d3.scale.linear()
-                    .range([height, 0])
-                    .domain([0, d3.max(data, function (d) {
-                        return d.years;
-                    })]);
-
-                var bars = svg.selectAll(".bar")
-                    .data(data)
-                    .enter()
-                    .append("g")
-                    .attr("class", "bar");
-
-                bars.append("rect")
-                    .attr('class', function (d) {
-                        return d.mm_status;
-                    })
-                    .attr("x", function (d) {
-                        return x(d.share_cum - d.share);
-                    })
-                    .attr("width", function (d) {
-                        return x(d.share);
-                    })
-                    .attr("height", y(0) - 0)
-                    .attr("y", 0);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .tickSize(height)
-                    .tickFormat("")
-                    .orient("bottom")
-                    .ticks(10);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .tickSize(width)
-                    .tickFormat("")
-                    .orient("right");
-
-                var gx = svg.append("g")
-                    .attr("class", "x axis")
-                    .call(xAxis);
-
-                var gy = svg.append("g")
-                    .attr("class", "y axis")
-                    .call(yAxis);
-
-                gx.selectAll("g").filter(function (d) {
-                        return d;
-                    })
-                    .classed("minor", true);
-
-                gy.selectAll("g").filter(function (d) {
-                        return d;
-                    })
-                    .classed("minor", true);*/
+                d3.selectAll(".graph3, .circle")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
 
             } else if (i == 4) {
-                svg.selectAll("*")
-                    .remove();
 
-                data = data_main.mandmin_drug;
-                var LABELS = ["Applied", "Not applied", "Not applicable"];
+                d3.selectAll(".graph0, .graph1, .graph2, .axis-show, .linesaxis, .graph3")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
 
-                var x = d3.scale.linear()
-                    .range([0, width])
-                    .domain([0, 1]);
+                d3.selectAll(".circle")
+                    .transition()
+                    .duration(1000)
+                    .attr("rx", 0)
+                    .attr("ry", 0)
+                    .attr("width", width / 10)
+                    .attr("height", height / 10)
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 0);
 
-                var y = d3.scale.linear()
-                    .range([height, 0])
-                    .domain([0, d3.max(data, function (d) {
-                        return d.years;
-                    })]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .ticks(0)
-                    .outerTickSize(0)
-                    .orient("bottom");
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .ticks(6)
-                    .orient("left");
-
-                var gy = svg.append("g")
-                    .attr("class", "y axis-show")
-                    .call(yAxis);
-
-                svg.append("text")
-                    .attr("class", "graphtitle")
-                    .attr("text-anchor", "middle")
-                    .attr("x", width / 2)
-                    .attr("y", -10)
-                    .text("Average expected time served");
-
-                var bars = svg.selectAll(".rect")
-                    .data(data)
-                    .enter()
-                    .append("g")
-                    .attr("class", "rect");
-
-                var gx = svg.append("g")
-                    .attr("class", "x axis-show")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
-
-                bars.append("rect")
-                    .attr('class', function (d) {
-                        return d.mm_status;
-                    })
-                    .attr("x", function (d) {
-                        return x(d.share_cum - d.share);
-                    })
-                    .attr("width", function (d) {
-                        return x(d.share);
-                    })
-                    .attr("height", function (d) {
-                        return y(0) - y(d.years);
-                    })
-                    .attr("y", function (d) {
-                        return y(d.years);
-                    });
-
-                bars.append("text")
-                    .attr("class", "axis")
-                    .attr("text-anchor", "middle")
-                    .attr("x", function (d) {
-                        return x(d.share_cum - 0.5 * d.share);
-                    })
-                    .attr("y", height + 12)
-                    .text(function (d, i) {
-                        return LABELS[i];
-                    });
-
-            } else {
-                svg.selectAll("*")
-                    .remove();
-
+                d3.selectAll(".graph4")
+                    .transition()
+                    .delay(1000)
+                    .duration(500)
+                    .attr("opacity", 1)
             }
         });
 }
