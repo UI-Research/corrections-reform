@@ -8,6 +8,7 @@ var map_data_url = "data/judicialdistricts.json",
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
 var ORDER = ["drug", "weapon", "immigration", "sex", "other"];
+var drug2014 = 95305;
 
 var margin = {
     top: 60,
@@ -333,8 +334,42 @@ function graph1() {
                     .remove();
 
                 data = data_main.mandmin_drug;
+                
+                var circleradius = 10;
 
-                svg.append("text")
+                //data from 0-99, ydig is 1s position, xdig is 10s position
+                var cellsdt = d3.range(100).map(function (d) {
+                    return {
+                        d: +d,
+                        ydig: +(d.toString().slice(-1)),
+                        xdig: +(d3.format("02d")(d)).slice(0, 1),
+                        group: d<59 ? "applied" : (d>= 59 & d<80 ? "notapplied" : "notapplicable")
+                    }
+                });
+                console.log(cellsdt);
+
+                var cells = svg.selectAll(".cell")
+                    .data(cellsdt)
+                    .enter()
+                    .append("g")
+                    .attr("class", "cell");
+
+                cells.append("rect")
+                    .attr("class", function (d) {
+                        return d.group;
+                    })
+                    .attr("x", function (d) {
+                        return d.xdig * (width / 10);
+                    })
+                    .attr("width", 20)
+                    .attr("height", 20)
+                    .attr("y", function (d) {
+                        return d.ydig * (height / 10);
+                    })
+                    .attr("rx", 2 * circleradius)
+                    .attr("ry", 2 * circleradius);
+
+                /*svg.append("text")
                     .attr("class", "graphtitle")
                     .attr("text-anchor", "middle")
                     .attr("x", width / 2)
@@ -399,13 +434,14 @@ function graph1() {
                 gy.selectAll("g").filter(function (d) {
                         return d;
                     })
-                    .classed("minor", true);
+                    .classed("minor", true);*/
 
             } else if (i == 4) {
                 svg.selectAll("*")
                     .remove();
 
                 data = data_main.mandmin_drug;
+                var LABELS = ["Applied", "Not applied", "Not applicable"];
 
                 var x = d3.scale.linear()
                     .range([0, width])
@@ -419,14 +455,9 @@ function graph1() {
 
                 var xAxis = d3.svg.axis()
                     .scale(x)
-                    .ticks(6)
-                    .tickFormat(d3.format("%"))
+                    .ticks(0)
+                    .outerTickSize(0)
                     .orient("bottom");
-
-                var gx = svg.append("g")
-                    .attr("class", "x axis-show")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
 
                 var yAxis = d3.svg.axis()
                     .scale(y)
@@ -444,11 +475,16 @@ function graph1() {
                     .attr("y", -10)
                     .text("Average expected time served");
 
-                var bars = svg.selectAll(".bar")
+                var bars = svg.selectAll(".rect")
                     .data(data)
                     .enter()
                     .append("g")
-                    .attr("class", "bar");
+                    .attr("class", "rect");
+
+                var gx = svg.append("g")
+                    .attr("class", "x axis-show")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
 
                 bars.append("rect")
                     .attr('class', function (d) {
@@ -465,6 +501,17 @@ function graph1() {
                     })
                     .attr("y", function (d) {
                         return y(d.years);
+                    });
+
+                bars.append("text")
+                    .attr("class", "axis")
+                    .attr("text-anchor", "middle")
+                    .attr("x", function (d) {
+                        return x(d.share_cum - 0.5 * d.share);
+                    })
+                    .attr("y", height + 12)
+                    .text(function (d, i) {
+                        return LABELS[i];
                     });
 
             } else {
@@ -675,25 +722,25 @@ function graph2() {
                     });
 
                 /*svg.append("text")
-                    .attr("class", "graphtitle")
-                    .attr("text-anchor", "middle")
-                    .attr("x", width / 2)
-                    .attr("y", -10)
-                    .text("Average expected time served");
+                                .attr("class", "graphtitle")
+                                .attr("text-anchor", "middle")
+                                .attr("x", width / 2)
+                                .attr("y", -10)
+                                .text("Average expected time served");
                 
-                svg.append("text")
-                    .attr("class", "axistitle")
-                    .attr("text-anchor", "start")
-                    .attr("x", 0)
-                    .attr("y", height + 30)
-                    .text("Little or no criminal history");
+                            svg.append("text")
+                                .attr("class", "axistitle")
+                                .attr("text-anchor", "start")
+                                .attr("x", 0)
+                                .attr("y", height + 30)
+                                .text("Little or no criminal history");
 
-                svg.append("text")
-                    .attr("class", "axistitle")
-                    .attr("text-anchor", "end")
-                    .attr("x", width)
-                    .attr("y", height + 30)
-                    .text("Most criminal history");*/
+                            svg.append("text")
+                                .attr("class", "axistitle")
+                                .attr("text-anchor", "end")
+                                .attr("x", width)
+                                .attr("y", height + 30)
+                                .text("Most criminal history");*/
 
             } else {
                 svg.selectAll("g, text")
