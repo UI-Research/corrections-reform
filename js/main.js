@@ -9,17 +9,43 @@ var map_data_url = "data/judicialdistricts.json",
     $graphic3 = $("#graphic3");
 var ORDER = ["drug", "weapon", "immigration", "sex", "other"];
 var drug2014 = 95305;
+var MANDMINLABELS = ["Sentenced with mandatory minimum", "Granted relief at sentencing", "Not subject to mandatory minimum"];
 
 var margin = {
     top: 60,
     right: 15,
-    bottom: 45,
+    bottom: 75,
     left: 70
 };
 
 var width = $graphic1.width() - margin.left - margin.right,
     height = 450;
 console.log($graphic1.width(), width);
+
+function wrap2(text, width, startingx) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = lineHeight * 1.2
+            //dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", startingx).attr("y", y).attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan").attr("x", startingx).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+            }
+        }
+    });
+}
 
 function graph1() {
 
@@ -319,12 +345,56 @@ function graph1() {
             .attr("ry", 2 * circleradius)
             .attr("opacity", 0);
 
+        //category labels
         svg.append("text")
-            .attr("class", "graphtitle graph3")
-            .attr("text-anchor", "middle")
-            .attr("x", width * 0.3)
+            .attr("class", "catvalue graph3 applied")
+            .attr("text-anchor", "start")
+            .attr("x", 0)
+            .attr("y", height + 4)
+            .text("59%")
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "graphtitle mandminlabel")
+            .attr("text-anchor", "start")
+            .attr("x", 0)
             .attr("y", height + 10)
-            .text("59% were sentenced with mandatory minimums")
+            .text(MANDMINLABELS[0])
+            .call(wrap2, width * 0.4, 0)
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "catvalue graph3 notapplied")
+            .attr("text-anchor", "start")
+            .attr("x", width * 0.6)
+            .attr("y", height + 4)
+            .text("21%")
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "graphtitle mandminlabel")
+            .attr("text-anchor", "start")
+            .attr("x", width * 0.6)
+            .attr("y", height + 10)
+            .text(MANDMINLABELS[1])
+            .call(wrap2, width * 0.18, width * 0.6)
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "catvalue graph3 notapplicable")
+            .attr("text-anchor", "start")
+            .attr("x", width * 0.8)
+            .attr("y", height + 4)
+            .text("20%")
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "graphtitle mandminlabel")
+            .attr("text-anchor", "start")
+            .attr("x", width * 0.8)
+            .attr("y", height + 10)
+            .text(MANDMINLABELS[2])
+            .call(wrap2, width * 0.18, width * 0.8)
             .attr("opacity", 0);
     }
 
@@ -363,7 +433,7 @@ function graph1() {
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
             .attr("y", -10)
-            .text("Average expected time served")
+            .text("Average expected years served")
             .attr("opacity", 0);
 
         var bars = svg.selectAll(".rect")
@@ -395,17 +465,6 @@ function graph1() {
             })
             .attr("opacity", 0);
 
-        bars.append("text")
-            .attr("class", "axis graph4")
-            .attr("text-anchor", "middle")
-            .attr("x", function (d) {
-                return x(d.share_cum - 0.5 * d.share);
-            })
-            .attr("y", height + 12)
-            .text(function (d, i) {
-                return LABELS[i];
-            })
-            .attr("opacity", 0);
     }
 
     init0();
@@ -446,7 +505,7 @@ function graph1() {
 
             } else if (i == 2) {
 
-                d3.selectAll(".graph0, .graph1, .graph3, .graph4, .circle, .axis0")
+                d3.selectAll(".graph0, .graph1, .graph3, .graph4, .circle, .axis0, .mandminlabel")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -463,7 +522,7 @@ function graph1() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph3, .circle")
+                d3.selectAll(".graph3, .circle, .mandminlabel")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
@@ -486,7 +545,7 @@ function graph1() {
                     .duration(500)
                     .attr("opacity", 0);
 
-                d3.selectAll(".graph4")
+                d3.selectAll(".graph4, .mandminlabel")
                     .transition()
                     .delay(1000)
                     .duration(500)

@@ -348,6 +348,11 @@ span.grey {
     background-color: #d2d2d2;
 }
 
+.catvalue {
+    font-size: 22px;
+    font-weight: 700;
+}
+
 .districts {
     stroke: #000000;
     stroke-width: 1px;
