@@ -103,10 +103,11 @@ h4.subsectiontitle {
 }
 
 h1.projtitle {
-    background-color: #fdbf11;
+    background-color: rgba(0, 0, 0, 0.5);
     padding: 20px;
     font-size: 30px;
     font-weight: 700;
+    color: #ffffff;
     display: inline-block;
 }
 
