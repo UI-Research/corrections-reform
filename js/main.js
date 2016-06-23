@@ -491,7 +491,6 @@ function graph1() {
         .sections(d3.selectAll('#section1 > div'))
         .on('active', function (i) {
 
-            console.log("section1 " + i);
             if (i == 0) {
 
                 d3.selectAll(".graph2, .graph1, .axis1, .graph4, .circle")
