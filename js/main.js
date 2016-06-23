@@ -797,27 +797,29 @@ function graph2() {
             .call(xAxis);
 
         svg.append("text")
-            .attr("class", "graphtitle graphch")
+            .attr("class", "axistitle graphch")
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
-            .attr("y", -10)
+            .attr("y", height + 40)
             .text("Criminal history category")
             .attr("opacity", 0);
 
         svg.append("text")
-            .attr("class", "axistitle graphch")
-            .attr("text-anchor", "start")
+            .attr("class", "axis graphch")
+            .attr("text-anchor", "middle")
             .attr("x", 0)
-            .attr("y", height + 30)
-            .text("No/minimal criminal history")
+            .attr("y", height + 10)
+            .text("No or minimal criminal history")
+            .call(wrap2, x.rangeBand(), x.rangeBand()/2)
             .attr("opacity", 0);
 
         svg.append("text")
-            .attr("class", "axistitle graphch")
-            .attr("text-anchor", "end")
+            .attr("class", "axis graphch")
+            .attr("text-anchor", "middle")
             .attr("x", width)
-            .attr("y", height + 30)
+            .attr("y", height + 10)
             .text("Most criminal history")
+            .call(wrap2, x.rangeBand(), width - x.rangeBand()/2)
             .attr("opacity", 0);
     }
 
@@ -898,7 +900,6 @@ function graph2() {
         .graph(d3.selectAll('#graphic2'))
         .sections(d3.selectAll('#section2 > div'))
         .on('active', function (i) {
-            console.log("section2 " + i);
 
             if (i == 0) {
 
