@@ -800,7 +800,7 @@ function graph2() {
             .attr("class", "axistitle graphch")
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
-            .attr("y", height + 40)
+            .attr("y", height + 30)
             .text("Criminal history category")
             .attr("opacity", 0);
 
@@ -810,7 +810,7 @@ function graph2() {
             .attr("x", 0)
             .attr("y", height + 10)
             .text("No or minimal criminal history")
-            .call(wrap2, x.rangeBand(), x.rangeBand()/2)
+            .call(wrap2, x.rangeBand(), x.rangeBand() / 2)
             .attr("opacity", 0);
 
         svg.append("text")
@@ -819,7 +819,7 @@ function graph2() {
             .attr("x", width)
             .attr("y", height + 10)
             .text("Most criminal history")
-            .call(wrap2, x.rangeBand(), width - x.rangeBand()/2)
+            .call(wrap2, x.rangeBand(), width - x.rangeBand() / 2)
             .attr("opacity", 0);
     }
 
@@ -887,6 +887,15 @@ function graph2() {
             .attr("transform", "translate(0," + height + ")")
             .attr("class", "x axis-show graphsecurity")
             .call(xAxis);
+
+        svg.append("text")
+            .attr("class", "axistitle graphsecurity")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", height + 30)
+            .text("Security type")
+            .attr("opacity", 0);
+
 
     }
 
@@ -966,9 +975,7 @@ function graph3() {
     var LABELS = ["No policy changes", "All recommended interventions"];
 
     var y = d3.scale.linear()
-        .domain([0, d3.max(data, function (d) {
-            return d.pop_baseline;
-        })])
+        .domain([0, 220000])
         .range([height, 0], .1)
 
     var x = d3.scale.linear()
@@ -993,6 +1000,13 @@ function graph3() {
     var gy = svg.append("g")
         .attr("class", "y axis-show")
         .call(yAxis);
+
+    svg.append("text")
+        .attr("class", "axistitle")
+        .attr("text-anchor", "middle")
+        .attr("x", 0)
+        .attr("y", -5)
+        .text("Federal prison population");
 
     var gx = svg.append("g")
         .attr("class", "x axis-show")
