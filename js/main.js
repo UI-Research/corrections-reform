@@ -419,14 +419,12 @@ function graph1() {
             .outerTickSize(0)
             .orient("bottom");
 
-        /*var yAxis = d3.svg.axis()
-            .scale(y)
-            .ticks(6)
-            .orient("left");
-
-        var gy = svg.append("g")
-            .attr("class", "y axis-show graph4")
-            .call(yAxis);*/
+        svg.append("text")
+            .attr("class", "axistitle linesaxis")
+            .attr("text-anchor", "middle")
+            .attr("x", 0)
+            .attr("y", -5)
+            .text("Federal prison population");
 
         svg.append("text")
             .attr("class", "graphtitle graph4")
@@ -571,14 +569,6 @@ function graph1() {
 
 function graph2() {
 
-    //map setup
-    var projection = d3.geo.albersUsa()
-        .scale(width * 1.2)
-        .translate([width / 2, height / 2]);
-
-    var path = d3.geo.path()
-        .projection(projection);
-
     $graphic2.empty();
 
     var svg = d3.select("#graphic2").append("svg")
@@ -586,6 +576,323 @@ function graph2() {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    function initMap() {
+        //map setup
+        var projection = d3.geo.albersUsa()
+            .scale(width * 1.2)
+            .translate([width / 2, height / 2]);
+
+        var path = d3.geo.path()
+            .projection(projection);
+
+        //map of judicial districts
+        svg.append("g")
+            .attr("class", "districts graphmap")
+            .selectAll("path")
+            .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
+            .enter().append("path")
+            .attr("d", path)
+            .attr("districtcode", function (d) {
+                return d.properties.code;
+            });
+    }
+
+    function initRace() {
+        data = data_main.race;
+
+        var ORDER = ["black", "hispanic", "white", "other"]
+
+        var y = d3.scale.linear()
+            .domain([0, 220000])
+            .range([height, 0], .1);
+
+        var x = d3.scale.linear()
+            .domain(d3.extent(data, function (d) {
+                return d.year;
+            }))
+            .range([0, width]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .tickFormat(function (d) {
+                return d;
+            })
+            .ticks(10);
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .ticks(6)
+            .orient("left");
+
+        svg.append("text")
+            .attr("class", "axistitle graphrace")
+            .attr("text-anchor", "middle")
+            .attr("x", 0)
+            .attr("y", -5)
+            .text("Federal prison population");
+
+        var nest = d3.nest()
+            .key(function (d) {
+                return d.race;
+            })
+            .sortKeys(function (a, b) {
+                return ORDER.indexOf(a) - ORDER.indexOf(b);
+            })
+
+        var stack = d3.layout.stack()
+            .offset("zero")
+            .values(function (d) {
+                return d.values;
+            })
+            .x(function (d) {
+                return d.year;
+            })
+            .y(function (d) {
+                return d.pop_total;
+            });
+
+        var layers = stack(nest.entries(data));
+
+        var area = d3.svg.area()
+            .interpolate("cardinal")
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y0(function (d) {
+                return y(d.y0);
+            })
+            .y1(function (d) {
+                return y(d.y0 + d.y);
+            });
+
+        var line1 = d3.svg.line()
+            .interpolate("cardinal")
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y(function (d) {
+                return y(d.y + d.y0);
+            });
+
+        var racegroups = svg.selectAll(".racegroup")
+            .data(layers)
+            .enter().append("g")
+            .attr("class", "racegroup");
+
+        racegroups.append("path")
+            .attr("class", function (d) {
+                return d.key + " layer graphrace";
+            })
+            .attr("d", function (d) {
+                return area(d.values);
+            })
+            .attr("opacity", 0);
+
+        racegroups.append("path")
+            .attr("class", function (d) {
+                return d.key + " chartline graphrace";
+            })
+            .attr("d", function (d) {
+                return line1(d.values);
+            })
+            .attr("opacity", 0);
+
+        racegroups.append("text")
+            .datum(function (d) {
+                return {
+                    name: d.key,
+                    value: d.values[d.values.length - 1]
+                };
+            })
+            .attr("class", "pointlabel graphrace")
+            .attr("text-anchor", "end")
+            .attr("x", function (d) {
+                return x(d.value.year) - 10;
+            })
+            .attr("y", function (d) {
+                return y(d.value.y0 + d.value.y * 0.5);
+            })
+            .text(function (d) {
+                return d.name;
+            })
+            .attr("opacity", 0);
+
+
+        var gy = svg.append("g")
+            .attr("class", "y axis-show graphrace")
+            .call(yAxis);
+
+        var gx = svg.append("g")
+            .attr("class", "x axis-show graphrace")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+    }
+
+    function initCh() {
+        //bar chart of criminal histories
+        data = data_main.histories.filter(function (d) {
+            return d.offense == "drug";
+        });
+        VALUE = "number";
+
+        var y = d3.scale.linear()
+            .range([height, 0])
+            .domain([0, d3.max(data, function (d) {
+                return d[VALUE];
+            })]);
+
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1)
+            .domain(data.map(function (d) {
+                return d.category;
+            }));
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .tickSize(0)
+            .tickFormat(function (d, i) {
+                //return MONEY_MOBILE[i];
+                return d;
+            })
+            .orient("bottom");
+
+        var bars = svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("class", "bar");
+
+        bars.append("rect")
+            .attr("class", "graphch")
+            .attr("x", function (d) {
+                return x(d.category);
+            })
+            .attr("width", x.rangeBand())
+            .attr("y", function (d) {
+                return y(d[VALUE]);
+            })
+            .attr("height", function (d) {
+                return height - y(d[VALUE]);
+            })
+            .attr("opacity", 0);
+
+        bars.append("text")
+            .attr("class", "pointlabel graphch")
+            .attr("y", function (d) {
+                return y(d[VALUE]) - 8;
+            })
+            .attr("x", function (d) {
+                return x(d.category) + x.rangeBand() / 2;
+            })
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+                return d3.format(",.0f")(d[VALUE]);
+            })
+            .attr("opacity", 0);
+
+        var gx = svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .attr("class", "x axis-show graphch")
+            .call(xAxis);
+
+        svg.append("text")
+            .attr("class", "graphtitle graphch")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", -10)
+            .text("Criminal history category")
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "axistitle graphch")
+            .attr("text-anchor", "start")
+            .attr("x", 0)
+            .attr("y", height + 30)
+            .text("No/minimal criminal history")
+            .attr("opacity", 0);
+
+        svg.append("text")
+            .attr("class", "axistitle graphch")
+            .attr("text-anchor", "end")
+            .attr("x", width)
+            .attr("y", height + 30)
+            .text("Most criminal history")
+            .attr("opacity", 0);
+    }
+
+    function initSecurity() {
+        //bar chart of prison type
+        data = data_main.security_drug;
+        VALUE = "number";
+
+        var y = d3.scale.linear()
+            .range([height, 0])
+            .domain([0, d3.max(data, function (d) {
+                return d[VALUE];
+            })]);
+
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1)
+            .domain(data.map(function (d) {
+                return d.security;
+            }));
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .tickSize(0)
+            .tickFormat(function (d, i) {
+                //return MONEY_MOBILE[i];
+                return d;
+            })
+            .orient("bottom");
+
+        var securitybars = svg.selectAll(".securitybar")
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("class", "securitybar");
+
+        securitybars.append("rect")
+            .attr("class", "graphsecurity bar")
+            .attr("x", function (d) {
+                return x(d.security);
+            })
+            .attr("width", x.rangeBand())
+            .attr("y", function (d) {
+                return y(d[VALUE]);
+            })
+            .attr("height", function (d) {
+                return height - y(d[VALUE]);
+            })
+            .attr("opacity", 0);
+
+        securitybars.append("text")
+            .attr("class", "pointlabel graphsecurity")
+            .attr("y", function (d) {
+                return y(d[VALUE]) - 8;
+            })
+            .attr("x", function (d) {
+                return x(d.security) + x.rangeBand() / 2;
+            })
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+                return d3.format(",.0f")(d[VALUE]);
+            })
+            .attr("opacity", 0);
+
+        var gx = svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .attr("class", "x axis-show graphsecurity")
+            .call(xAxis);
+
+    }
+
+    initMap();
+    initRace();
+    initCh();
+    initSecurity();
 
     var gs2 = graphScroll()
         .container(d3.select('#container2'))
@@ -595,209 +902,51 @@ function graph2() {
             console.log("section2 " + i);
 
             if (i == 0) {
-                //map of judicial districts
-                svg.append("g")
-                    .attr("class", "districts")
-                    .selectAll("path")
-                    .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
-                    .enter().append("path")
-                    .attr("d", path)
-                    .attr("districtcode", function (d) {
-                        return d.properties.code;
-                    });
+
+                d3.selectAll(".graphrace, .graphch, .graphsecurity")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
+
+                d3.selectAll(".graphmap")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 1)
+
+            } else if (i == 1) {
+
+                d3.selectAll(".graphmap, .graphch, .graphsecurity")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
+
+                d3.selectAll(".graphrace")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
+
             } else if (i == 2) {
-                svg.selectAll("*")
-                    .remove();
+                d3.selectAll(".graphmap, .graphrace, .graphsecurity")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
 
-                //bar chart of criminal histories
-                data = data_main.histories.filter(function (d) {
-                    return d.offense == "drug";
-                });
-                VALUE = "number";
+                d3.selectAll(".graphch")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
 
-                var y = d3.scale.linear()
-                    .range([height, 0])
-                    .domain([0, d3.max(data, function (d) {
-                        return d[VALUE];
-                    })]);
-
-                var x = d3.scale.ordinal()
-                    .rangeRoundBands([0, width], .1)
-                    .domain(data.map(function (d) {
-                        return d.category;
-                    }));
-
-                var bars = svg.selectAll(".bar")
-                    .data(data)
-                    .enter()
-                    .append("g")
-                    .attr("class", "bar");
-
-                bars.append("rect")
-                    .attr("x", function (d) {
-                        return x(d.category);
-                    })
-                    .attr("width", x.rangeBand())
-                    .attr("y", function (d) {
-                        return y(d[VALUE]);
-                    })
-                    .attr("height", function (d) {
-                        return height - y(d[VALUE]);
-                    })
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .tickSize(0)
-                    .tickFormat(function (d, i) {
-                        //return MONEY_MOBILE[i];
-                        return d;
-                    })
-                    .orient("bottom");
-
-                var gx = svg.append("g")
-                    .attr("transform", "translate(0," + height + ")")
-                    .attr("class", "x axis-show")
-                    .call(xAxis);
-
-                var barlabels = svg.selectAll(".point-label")
-                    .data(data)
-                    .enter()
-                    .append("g")
-                    .attr("class", "pointlabel");
-
-                barlabels.append("text")
-                    .attr("y", function (d) {
-                        return y(d[VALUE]) - 8;
-                    })
-                    .attr("x", function (d) {
-                        return x(d.category) + x.rangeBand() / 2;
-                    })
-                    .attr("text-anchor", "middle")
-                    .text(function (d) {
-                        return d3.format(",.0f")(d[VALUE]);
-                    });
-
-                svg.append("text")
-                    .attr("class", "graphtitle")
-                    .attr("text-anchor", "middle")
-                    .attr("x", width / 2)
-                    .attr("y", -10)
-                    .text("Criminal history category");
-
-                svg.append("text")
-                    .attr("class", "axistitle")
-                    .attr("text-anchor", "start")
-                    .attr("x", 0)
-                    .attr("y", height + 30)
-                    .text("No/minimal criminal history");
-
-                svg.append("text")
-                    .attr("class", "axistitle")
-                    .attr("text-anchor", "end")
-                    .attr("x", width)
-                    .attr("y", height + 30)
-                    .text("Most criminal history");
 
             } else if (i == 3) {
-                svg.selectAll("*")
-                    .remove();
+                d3.selectAll(".graphmap, .graphrace, .graphch")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
 
-                //bar chart of criminal histories
-                data = data_main.security_drug;
-                VALUE = "number";
-
-                var y = d3.scale.linear()
-                    .range([height, 0])
-                    .domain([0, d3.max(data, function (d) {
-                        return d[VALUE];
-                    })]);
-
-                var x = d3.scale.ordinal()
-                    .rangeRoundBands([0, width], .1)
-                    .domain(data.map(function (d) {
-                        return d.security;
-                    }));
-
-                var bars = svg.selectAll(".bar")
-                    .data(data)
-                    .enter()
-                    .append("g")
-                    .attr("class", "bar");
-
-                bars.append("rect")
-                    .attr("x", function (d) {
-                        return x(d.security);
-                    })
-                    .attr("width", x.rangeBand())
-                    .attr("y", function (d) {
-                        return y(d[VALUE]);
-                    })
-                    .attr("height", function (d) {
-                        return height - y(d[VALUE]);
-                    })
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .tickSize(0)
-                    .tickFormat(function (d, i) {
-                        //return MONEY_MOBILE[i];
-                        return d;
-                    })
-                    .orient("bottom");
-
-                var gx = svg.append("g")
-                    .attr("transform", "translate(0," + height + ")")
-                    .attr("class", "x axis-show")
-                    .call(xAxis);
-
-                var barlabels = svg.selectAll(".point-label")
-                    .data(data)
-                    .enter()
-                    .append("g")
-                    .attr("class", "pointlabel");
-
-                barlabels.append("text")
-                    .attr("y", function (d) {
-                        return y(d[VALUE]) - 8;
-                    })
-                    .attr("x", function (d) {
-                        return x(d.security) + x.rangeBand() / 2;
-                    })
-                    .attr("text-anchor", "middle")
-                    .text(function (d) {
-                        return d3.format(",.0f")(d[VALUE]);
-                    });
-
-                /*svg.append("text")
-                                .attr("class", "graphtitle")
-                                .attr("text-anchor", "middle")
-                                .attr("x", width / 2)
-                                .attr("y", -10)
-                                .text("Average expected time served");
-                
-                            svg.append("text")
-                                .attr("class", "axistitle")
-                                .attr("text-anchor", "start")
-                                .attr("x", 0)
-                                .attr("y", height + 30)
-                                .text("Little or no criminal history");
-
-                            svg.append("text")
-                                .attr("class", "axistitle")
-                                .attr("text-anchor", "end")
-                                .attr("x", width)
-                                .attr("y", height + 30)
-                                .text("Most criminal history");*/
-
-            } else {
-                svg.selectAll("g, text")
-                    .remove();
-
-                svg.append("text")
-                    .attr("x", width / 2)
-                    .attr("y", height / 2)
-                    .attr("fill", "#000000")
-                    .html("section2 " + i);
+                d3.selectAll(".graphsecurity")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
             }
         });
 }

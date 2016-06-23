@@ -268,19 +268,22 @@ svg {
     opacity: 0.75;
 }*/
 
-.drug.layer {
+.drug.layer,
+.black {
     fill: #1696d2;
 }
 
-.immigration.layer {
+.immigration.layer,
+.hispanic {
     fill: #fdbf11;
 }
 
-.sex.layer {
+.sex.layer{
     fill: #000000;
 }
 
-.weapon.layer {
+.weapon.layer,
+.white {
     fill: #ec008b;
 }
 

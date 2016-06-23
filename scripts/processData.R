@@ -96,13 +96,13 @@ timeserved <- timeserved %>% mutate(years_expected = years_served + years_remain
 # Section 2
 ########################################################################################################
 # Race and ethnicity
-race <- readWorkbook(xldt, sheet="Slide 3", rows=c(3:8), colNames = T)
+race <- readWorkbook(xldt, sheet="Slide 3", rows=c(13:17), colNames = T)
 race <- race %>% gather(year, pop_total, -X1) %>%
   rename(race = X1)
-race <- race %>% spread(race, pop_total) %>%
-  rename(race_asian = `Asian American`, race_black = Black, race_hispanic = Hispanic, race_aian = `Native American`, race_white = White)
 race$year <- as.numeric(race$year)
-#write.csv(race, "data/raceeth.csv", row.names=F)
+race$race <- tolower(race$race)
+
+#write.csv(race, "data/csv/raceeth.csv", row.names=F)
 
 # Criminal histories
 histories <- readWorkbook(xldt, sheet="Slide 7", rows=c(3, 5:10), colNames = T, skipEmptyRows = T)
@@ -147,6 +147,7 @@ prisonbydistrict <- as.data.frame(table(georaw$dist, georaw$arsfacl)) %>% rename
 
 growthj <- toJSON(growth)
 sentencesj <- toJSON(sentences)
+racej <- toJSON(race)
 historiesj <- toJSON(histories)
 securityj <- toJSON(security)
 impactj <- toJSON(jointimpact)
@@ -156,5 +157,5 @@ mandminj <- '[{"mm_status": "applied", "share": 0.59, "years": 10.193720, "share
 {"mm_status": "notapplied", "share":  0.2137228, "years": 5.696282, "share_cum": 0.8037228}, 
 {"mm_status": "notapplicable", "share": 0.1962772, "years": 5.696282, "share_cum": 1}]'
 
-dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, ', "histories": ', historiesj, ', "security_drug": ', securityj, ', "jointimpact": ', impactj, "}", sep="")
+dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, ', "race": ', racej, ', "histories": ', historiesj, ', "security_drug": ', securityj, ', "jointimpact": ', impactj, "}", sep="")
 write(dtjson, "data/data.json")
