@@ -60,7 +60,7 @@ sentences <- left_join(admissions, standing, by=c("year", "offense"))
 
 sentences <- sentences %>% filter(offense %in% c("Drug", "Weapon", "Immigration", "Sex", "Other", "Total"))
 sentences$offense <- tolower(sentences$offense)
-write.csv(sentences, "data/sentences.csv", row.names=F)
+#write.csv(sentences, "data/sentences.csv", row.names=F)
 rm(admissions, standingpop)
 
 # Mandatory minimums by offense
@@ -152,9 +152,9 @@ securityj <- toJSON(security)
 impactj <- toJSON(jointimpact)
 
 # data for mandatory minimum section
-mandminj <- '[{"mm_status": "applied", "share": 0.59, "years": 11.157141, "share_cum": 0.59}, 
-{"mm_status": "notapplied", "share":  0.2137228, "years": 5.541562, "share_cum": 0.8037228}, 
-{"mm_status": "notapplicable", "share": 0.1962772, "years": 5.541562, "share_cum": 1}]'
+mandminj <- '[{"mm_status": "applied", "share": 0.59, "years": 10.193720, "share_cum": 0.59}, 
+{"mm_status": "notapplied", "share":  0.2137228, "years": 5.696282, "share_cum": 0.8037228}, 
+{"mm_status": "notapplicable", "share": 0.1962772, "years": 5.696282, "share_cum": 1}]'
 
 dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, ', "histories": ', historiesj, ', "security_drug": ', securityj, ', "jointimpact": ', impactj, "}", sep="")
 write(dtjson, "data/data.json")

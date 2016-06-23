@@ -419,20 +419,20 @@ function graph1() {
             .outerTickSize(0)
             .orient("bottom");
 
-        var yAxis = d3.svg.axis()
+        /*var yAxis = d3.svg.axis()
             .scale(y)
             .ticks(6)
             .orient("left");
 
         var gy = svg.append("g")
             .attr("class", "y axis-show graph4")
-            .call(yAxis);
+            .call(yAxis);*/
 
         svg.append("text")
             .attr("class", "graphtitle graph4")
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
-            .attr("y", -10)
+            .attr("y", -30)
             .text("Average expected years served")
             .attr("opacity", 0);
 
@@ -446,6 +446,7 @@ function graph1() {
             .attr("class", "x axis-show graph4")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
+
 
         bars.append("rect")
             .attr('class', function (d) {
@@ -463,6 +464,20 @@ function graph1() {
             .attr("y", function (d) {
                 return y(d.years);
             })
+            .attr("opacity", 0);
+
+        bars.append("text")
+            .attr('class', "pointlabel graph4")
+            .attr("x", function (d) {
+                return x(d.share_cum - 0.5 * d.share);
+            })
+            .attr("y", function (d) {
+                return y(d.years) - 10;
+            })
+            .text(function (d) {
+                return d3.format(".1f")(d.years) + " years";
+            })
+            .attr("text-anchor", "middle")
             .attr("opacity", 0);
 
     }
@@ -667,14 +682,14 @@ function graph2() {
                     .attr("text-anchor", "middle")
                     .attr("x", width / 2)
                     .attr("y", -10)
-                    .text("Average expected time served");
+                    .text("Criminal history category");
 
                 svg.append("text")
                     .attr("class", "axistitle")
                     .attr("text-anchor", "start")
                     .attr("x", 0)
                     .attr("y", height + 30)
-                    .text("No criminal history");
+                    .text("No/minimal criminal history");
 
                 svg.append("text")
                     .attr("class", "axistitle")
