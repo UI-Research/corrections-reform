@@ -312,34 +312,41 @@ svg {
 }*/
 
 .drug.layer,
-.black {
-    fill: #1696d2;
+.black.layer {
+    /*fill: #1696d2;*/
+    fill: #73bfe2;
 }
 
 .immigration.layer,
-.hispanic {
-    fill: #fdbf11;
+.hispanic.layer {
+    /*fill: #fdbf11;*/
+    fill: #fdd870;
 }
 
 .sex.layer {
-    fill: #000000;
+    /*fill: #000000;*/
+    fill: #332d2f;
 }
 
 .weapon.layer,
-.white {
-    fill: #ec008b;
+.white.layer {
+    /*fill: #ec008b;*/
+    fill: #e46aa7;
 }
 
 .other.layer {
-    fill: #d2d2d2;
+    /*fill: #d2d2d2;*/
+    fill: #e3e3e3;
 }
 
-.drug.chartline {
+.drug.chartline,
+.black.chartline {
     stroke: #1696d2;
     stroke-width: 2px;
 }
 
-.immigration.chartline {
+.immigration.chartline,
+.hispanic.chartline {
     stroke: #fdbf11;
     stroke-width: 2px;
 }
@@ -349,7 +356,8 @@ svg {
     stroke-width: 2px;
 }
 
-.weapon.chartline {
+.weapon.chartline,
+.white.chartline {
     stroke: #ec008b;
     stroke-width: 2px;
 }

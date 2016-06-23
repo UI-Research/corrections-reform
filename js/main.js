@@ -112,7 +112,7 @@ function graph1() {
             .call(xAxis);
 
         var line0 = d3.svg.line()
-            //.interpolate("cardinal")
+            .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -183,7 +183,7 @@ function graph1() {
         })));
 
         var area = d3.svg.area()
-            //.interpolate("cardinal")
+            .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -195,7 +195,7 @@ function graph1() {
             });
 
         var line1 = d3.svg.line()
-            //.interpolate("cardinal")
+            .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -247,6 +247,7 @@ function graph1() {
             .attr("opacity", 0);
 
         var line2 = d3.svg.line()
+            .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -656,7 +657,7 @@ function graph2() {
         var layers = stack(nest.entries(data));
 
         var area = d3.svg.area()
-            //.interpolate("cardinal")
+            .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -668,7 +669,7 @@ function graph2() {
             });
 
         var line1 = d3.svg.line()
-            //.interpolate("cardinal")
+            .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -1015,6 +1016,7 @@ function graph3() {
         .call(xAxis);
 
     var line = d3.svg.line()
+        .interpolate("cardinal")
         .x(function (d) {
             return x(d.year);
         })
