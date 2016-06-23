@@ -111,7 +111,7 @@ function graph1() {
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
-        var line = d3.svg.line()
+        var line0 = d3.svg.line()
             //.interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
@@ -122,8 +122,9 @@ function graph1() {
 
         svg.append("path")
             .datum(data)
-            .attr("class", "chartline standing graph0")
-            .attr("d", line);
+            .attr("class", "chartline graph0 standing")
+            .attr("d", line0)
+            .attr("opacity", 1);
     }
 
     //stacked area chart -> two lines chart
@@ -182,7 +183,7 @@ function graph1() {
         })));
 
         var area = d3.svg.area()
-            .interpolate("cardinal")
+            //.interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -194,7 +195,7 @@ function graph1() {
             });
 
         var line1 = d3.svg.line()
-            .interpolate("cardinal")
+            //.interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -493,19 +494,19 @@ function graph1() {
 
             if (i == 0) {
 
-                d3.selectAll(".graph2, .graph1, .axis1, .graph4, .circle")
+                d3.selectAll(".graph2, .graph1, .axis1, .graph4, .circle, .mandminlabel")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.select(".graph0, .axis0, .lineaxis")
+                d3.selectAll(".graph0, .axis0, .lineaxis")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
 
             } else if (i == 1) {
 
-                d3.selectAll(".graph0, .graph2, .axis0, .graph4, .circle, .axis0")
+                d3.selectAll(".graph0, .graph2, .axis0, .graph4, .circle, .axis0, .mandminlabel")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -655,7 +656,7 @@ function graph2() {
         var layers = stack(nest.entries(data));
 
         var area = d3.svg.area()
-            .interpolate("cardinal")
+            //.interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -667,7 +668,7 @@ function graph2() {
             });
 
         var line1 = d3.svg.line()
-            .interpolate("cardinal")
+            //.interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
             })
@@ -1070,6 +1071,12 @@ function graph3() {
         .text(function (d, i) {
             return LABELS[i];
         });
+
+    var gs3 = graphScroll()
+        .container(d3.select('#container3'))
+        .graph(d3.selectAll('#graphic3'))
+        .sections(d3.selectAll('#section3 > div'))
+        .on('active', function (i) {});
 }
 
 

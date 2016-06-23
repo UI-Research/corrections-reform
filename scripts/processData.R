@@ -32,6 +32,13 @@ drivers$year <- as.numeric(drivers$year)
 #write.csv(drivers, "data/drivers.csv", row.names=F)
 
 #Admissions vs standing population over time
+## Total and missing (group with other) are from separate CSV
+totmiss <- read.csv("data/original/missing_total.csv", skip=1)
+totmiss <- totmiss[,c(1,3,5)]
+colnames(totmiss) <- c("year", "admissions", "standing")
+totmiss$year <- str_replace(totmiss$year, "FY ", "")
+totmiss$offense <- "missing"
+
 admissions <- readWorkbook(xldt, sheet="Slide 6", rows=c(34:43), colNames = T, skipEmptyRows = T)
 admissions <- admissions %>% gather(year, admissions, -Admissions) %>%
   rename(offense = Admissions)
@@ -44,6 +51,8 @@ standingpop$year <- str_replace(standingpop$year, "FY.", "")
 
 sentences <- left_join(standingpop, admissions, by=c("year", "offense"))
 sentences$year <- as.numeric(sentences$year)
+sentences <- rbind(sentences, totmiss)
+
 sentences_total <- sentences %>% group_by (year) %>%
   summarize(standing = sum(standing), admissions = sum(admissions)) %>%
   mutate(offense = "Total")
@@ -60,7 +69,7 @@ sentences <- left_join(admissions, standing, by=c("year", "offense"))
 
 sentences <- sentences %>% filter(offense %in% c("Drug", "Weapon", "Immigration", "Sex", "Other", "Total"))
 sentences$offense <- tolower(sentences$offense)
-#write.csv(sentences, "data/sentences.csv", row.names=F)
+#write.csv(sentences, "data/csv/sentences.csv", row.names=F)
 rm(admissions, standingpop)
 
 # Mandatory minimums by offense
