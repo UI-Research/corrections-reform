@@ -10,6 +10,7 @@ var map_data_url = "data/judicialdistricts.json",
 var ORDER = ["drug", "weapon", "immigration", "sex", "other"];
 var drug2014 = 95305;
 var MANDMINLABELS = ["Sentenced with mandatory minimum", "Granted relief at sentencing", "Not subject to mandatory minimum"];
+var circleradius = 10;
 
 var margin = {
     top: 60,
@@ -68,10 +69,6 @@ function graph1() {
         .scale(y)
         .ticks(6)
         .orient("left");
-
-    var gy = svg.append("g")
-        .attr("class", "y axis-show linesaxis")
-        .call(yAxis);
 
     svg.append("text")
         .attr("class", "axistitle linesaxis")
@@ -313,7 +310,6 @@ function graph1() {
 
     //graph 3 - circle grid 
     function init3() {
-        var circleradius = 10;
 
         //data from 0-99, ydig is 1s position, xdig is 10s position
         var cellsdt = d3.range(100).map(function (d) {
@@ -341,7 +337,7 @@ function graph1() {
             .attr("width", 20)
             .attr("height", 20)
             .attr("y", function (d) {
-                return d.ydig * (height / 10);
+                return d.ydig * (height / 10) - 20;
             })
             .attr("rx", 2 * circleradius)
             .attr("ry", 2 * circleradius)
@@ -349,7 +345,7 @@ function graph1() {
 
         //category labels
         svg.append("text")
-            .attr("class", "catvalue graph3 applied")
+            .attr("class", "catvalue mandminlabel applied")
             .attr("text-anchor", "start")
             .attr("x", 0)
             .attr("y", height + 4)
@@ -366,7 +362,7 @@ function graph1() {
             .attr("opacity", 0);
 
         svg.append("text")
-            .attr("class", "catvalue graph3 notapplied")
+            .attr("class", "catvalue mandminlabel notapplied")
             .attr("text-anchor", "start")
             .attr("x", width * 0.6)
             .attr("y", height + 4)
@@ -383,7 +379,7 @@ function graph1() {
             .attr("opacity", 0);
 
         svg.append("text")
-            .attr("class", "catvalue graph3 notapplicable")
+            .attr("class", "catvalue mandminlabel notapplicable")
             .attr("text-anchor", "start")
             .attr("x", width * 0.8)
             .attr("y", height + 4)
@@ -410,7 +406,7 @@ function graph1() {
             .domain([0, 1]);
 
         var y = d3.scale.linear()
-            .range([height, 0])
+            .range([height - 20, 0])
             .domain([0, d3.max(data, function (d) {
                 return d.years;
             })]);
@@ -444,7 +440,7 @@ function graph1() {
 
         var gx = svg.append("g")
             .attr("class", "x axis-show graph4")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", "translate(0," + (height - 20) + ")")
             .call(xAxis);
 
 
@@ -486,6 +482,11 @@ function graph1() {
     init1();
     init3();
     init4();
+
+    //draw y axis on top of everything (for area chart)
+    var gy = svg.append("g")
+        .attr("class", "y axis-show linesaxis")
+        .call(yAxis);
 
     var gs = graphScroll()
         .container(d3.select('#container1'))
@@ -536,10 +537,21 @@ function graph1() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph3, .circle, .mandminlabel")
+                d3.selectAll(".graph3, .mandminlabel")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
+
+                d3.selectAll(".circle")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
+                    .transition()
+                    .duration(1000)
+                    .attr("rx", 2 * circleradius)
+                    .attr("ry", 2 * circleradius)
+                    .attr("width", 20)
+                    .attr("height", 20);
 
             } else if (i == 4) {
 
