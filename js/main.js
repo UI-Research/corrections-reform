@@ -7,7 +7,6 @@ var map_data_url = "data/judicialdistricts.json",
     $graphic1 = $("#graphic1"),
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
-var ORDER = ["drug", "weapon", "immigration", "sex", "other"];
 var drug2014 = 95305;
 var MANDMINLABELS = ["Sentenced with mandatory minimum", "Granted relief at sentencing", "Not subject to mandatory minimum"];
 var circleradius = 10;
@@ -130,7 +129,7 @@ function graph1() {
 
         //chart 2
         VALUE = "standing";
-        var ORDER = ["drug", "weapon", "immigration", "sex", "other"]
+        var ORDER = ["other", "drug", "weapon", "immigration", "sex"]
 
         //chart 1
         var LINEVARS = ["standing", "admissions"];
@@ -614,7 +613,7 @@ function graph2() {
     function initRace() {
         data = data_main.race;
 
-        var ORDER = ["black", "hispanic", "white", "other"]
+        var ORDER = ["other", "white", "black", "hispanic"]
 
         var y = d3.scale.linear()
             .domain([0, 220000])
