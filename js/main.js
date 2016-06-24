@@ -511,7 +511,7 @@ function graph1() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph0, .axis0, .lineaxis")
+                d3.selectAll(".graph0, .axis0, .linesaxis")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
@@ -523,7 +523,7 @@ function graph1() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph1, .axis1")
+                d3.selectAll(".graph1, .axis1, .linesaxis")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
