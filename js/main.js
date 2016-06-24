@@ -128,11 +128,11 @@ function graph1() {
     function init1() {
         data = data_main.sentences;
 
-        //chart 1
+        //chart 2
         VALUE = "standing";
         var ORDER = ["drug", "weapon", "immigration", "sex", "other"]
 
-        //chart 2
+        //chart 1
         var LINEVARS = ["standing", "admissions"];
         var LABELS = ["Standing population", "Admissions"];
 
@@ -191,7 +191,7 @@ function graph1() {
                 return y(d.y0 + d.y);
             });
 
-        var line1 = d3.svg.line()
+        var line2 = d3.svg.line()
             .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
@@ -207,7 +207,7 @@ function graph1() {
 
         segments.append("path")
             .attr("class", function (d) {
-                return d.key + " layer graph1";
+                return d.key + " layer graph2";
             })
             .attr("d", function (d) {
                 return area(d.values);
@@ -216,10 +216,10 @@ function graph1() {
 
         segments.append("path")
             .attr("class", function (d) {
-                return d.key + " chartline graph1";
+                return d.key + " chartline graph2";
             })
             .attr("d", function (d) {
-                return line1(d.values);
+                return line2(d.values);
             })
             .attr("opacity", 0);
 
@@ -230,7 +230,7 @@ function graph1() {
                     value: d.values[d.values.length - 1]
                 };
             })
-            .attr("class", "pointlabel graph1")
+            .attr("class", "pointlabel graph2")
             .attr("text-anchor", "end")
             .attr("x", function (d) {
                 return x(d.value.year) - 10;
@@ -243,7 +243,7 @@ function graph1() {
             })
             .attr("opacity", 0);
 
-        var line2 = d3.svg.line()
+        var line1 = d3.svg.line()
             .interpolate("cardinal")
             .x(function (d) {
                 return x(d.year);
@@ -274,10 +274,10 @@ function graph1() {
 
         lines.append("path")
             .attr("class", function (d) {
-                return d.name + " graph2 chartline";
+                return d.name + " graph1 chartline";
             })
             .attr("d", function (d) {
-                return line2(d.values);
+                return line1(d.values);
             })
             .attr("opacity", 0);
 
@@ -289,13 +289,13 @@ function graph1() {
                     value: d.values[d.values.length - 1]
                 };
             })
-            .attr("class", "pointlabel graph2")
+            .attr("class", "pointlabel graph1")
             .attr("text-anchor", "end")
             .attr("x", function (d) {
                 return x(d.value.year);
             })
             .attr("y", function (d) {
-                return y(d.value.number) + 15;
+                return y(d.value.number) - 20;
             })
             .text(function (d, i) {
                 return LABELS[i];
@@ -593,7 +593,7 @@ function graph2() {
     function initMap() {
         //map setup
         var projection = d3.geo.albersUsa()
-            .scale(width * 1.2)
+            .scale(width * 1.4)
             .translate([width / 2, height / 2]);
 
         var path = d3.geo.path()
@@ -1080,7 +1080,7 @@ function graph3() {
             return x(d.value.year);
         })
         .attr("y", function (d) {
-            return y(d.value.number) + 15;
+            return y(d.value.number) - 15;
         })
         .text(function (d, i) {
             return LABELS[i];
