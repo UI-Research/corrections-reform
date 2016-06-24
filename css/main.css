@@ -267,8 +267,7 @@ svg {
 }
 
 .axis .minor line {
-    stroke: #ffffff;
-    stroke-width: 4px;
+    stroke: #efefef;
 }
 
 .axistitle {
@@ -290,21 +289,23 @@ svg {
     stroke-width: 1px;
 }
 
-.pop_baseline,
 .admissions {
     stroke: #fdbf11;
 }
 
-.pop_jointimpact,
 .standing,
 .blueline {
     stroke: #1696d2;
 }
 
-.pop_baseline,
 .pop_jointimpact {
-    opacity: 0.5;
-    stroke-width: 2px;
+    stroke-width: 1px;
+    stroke: #000;
+}
+
+.pop_baseline {
+    stroke-width: 4px;
+    stroke: #1696d2;
 }
 
 
@@ -319,24 +320,23 @@ svg {
 }
 
 .immigration.layer,
-.hispanic.layer {
+.white.layer {
     /*fill: #fdbf11;*/
     fill: #fdd870;
 }
 
-.sex.layer {
-    /*fill: #000000;*/
-    fill: #332d2f;
-}
-
-.weapon.layer,
-.white.layer {
+.weapon.layer {
     /*fill: #ec008b;*/
     fill: #e46aa7;
 }
 
 .other.layer {
-    /*fill: #d2d2d2;*/
+    fill: #5c5859;
+    /*fill: #e3e3e3;*/
+}
+
+.hispanic.layer,
+.sex.layer {
     fill: #e3e3e3;
 }
 
@@ -347,25 +347,25 @@ svg {
 }
 
 .immigration.chartline,
-.hispanic.chartline {
+.white.chartline {
     stroke: #fdbf11;
     stroke-width: 2px;
 }
 
-.sex.chartline {
-    stroke: #000000;
-    stroke-width: 2px;
-}
-
-.weapon.chartline,
-.white.chartline {
+.weapon.chartline {
     stroke: #ec008b;
     stroke-width: 2px;
 }
 
 .other.chartline {
-    stroke: #d2d2d2;
+    stroke: #5c5859;
     stroke-width: 2px;
+}
+
+.hispanic.chartline,
+.sex.chartline{
+    stroke: #d2d2d2;
+    stroke-width: 2px;    
 }
 
 .dot {
@@ -374,16 +374,16 @@ svg {
     stroke-width: 1px;
 }
 
-.applied {
+.notapplied {
     fill: #1696d2;
 }
 
-.notapplied {
+.applied {
     fill: #fdbf11;
 }
 
 .notapplicable {
-    fill: #d2d2d2;
+    fill: #5c5859;
 }
 
 span.blue {
@@ -400,6 +400,11 @@ span.yellow {
 }
 
 span.grey {
+    background-color: #5c5859;
+    color: #ffffff;
+}
+
+span.lightgrey {
     background-color: #d2d2d2;
 }
 

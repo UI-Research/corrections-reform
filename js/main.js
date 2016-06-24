@@ -10,7 +10,7 @@ var map_data_url = "data/judicialdistricts.json",
 var drug2014 = 95305;
 var MANDMINLABELS = ["Sentenced with mandatory minimum", "Granted relief at sentencing", "Not subject to mandatory minimum"];
 var circleradius = 10;
-var COLORS = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
+var blue5 = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
 var BREAKS = [1000, 1500, 2000, 3000];
 var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
 
@@ -67,17 +67,30 @@ function graph1() {
         .range([height, 0])
         .domain([0, 220000]);
 
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .ticks(6)
-        .orient("left");
-
     svg.append("text")
         .attr("class", "axistitle linesaxis")
         .attr("text-anchor", "middle")
         .attr("x", 0)
         .attr("y", -5)
         .text("Federal prison population");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(-width)
+        .ticks(5)
+        .orient("left");
+
+    var gy = svg.append("g")
+        .attr("class", "y axis linesaxis")
+        .call(yAxis);
+
+    gy.selectAll("text")
+        .attr("dx", -8);
+
+    gy.selectAll("g").filter(function (d) {
+            return d;
+        })
+        .classed("minor", true);
 
     //initial graph
     function init0() {
@@ -485,11 +498,6 @@ function graph1() {
     init3();
     init4();
 
-    //draw y axis on top of everything (for area chart)
-    var gy = svg.append("g")
-        .attr("class", "y axis-show linesaxis")
-        .call(yAxis);
-
     var gs = graphScroll()
         .container(d3.select('#container1'))
         .graph(d3.selectAll('#graphic1'))
@@ -601,7 +609,7 @@ function graph2() {
 
         var color = d3.scale.linear()
             .domain(BREAKS)
-            .range(COLORS);
+            .range(blue5);
 
         var path = d3.geo.path()
             .projection(projection);
@@ -642,7 +650,7 @@ function graph2() {
             });
 
         legend.append("rect")
-            .data(COLORS)
+            .data(blue5)
             .attr("class", "graphmap")
             .attr("x", function (d, i) {
                 return (i * ls_w) + lp_w;
@@ -651,7 +659,7 @@ function graph2() {
             .attr("width", ls_w)
             .attr("height", ls_h)
             .style("fill", function (d, i) {
-                return COLORS[i];
+                return blue5[i];
             })
 
         svg.append("text")
@@ -687,9 +695,21 @@ function graph2() {
 
         var yAxis = d3.svg.axis()
             .scale(y)
-            .ticks(6)
+            .tickSize(-width)
+            .ticks(5)
             .orient("left");
 
+        var gy = svg.append("g")
+            .attr("class", "y axis graphrace")
+            .call(yAxis);
+
+        gy.selectAll("text")
+            .attr("dx", -8);
+
+        gy.selectAll("g").filter(function (d) {
+                return d;
+            })
+            .classed("minor", true);
         svg.append("text")
             .attr("class", "axistitle graphrace")
             .attr("text-anchor", "middle")
@@ -782,11 +802,6 @@ function graph2() {
                 return d.name;
             })
             .attr("opacity", 0);
-
-
-        var gy = svg.append("g")
-            .attr("class", "y axis-show graphrace")
-            .call(yAxis);
 
         var gx = svg.append("g")
             .attr("class", "x axis-show graphrace")
@@ -1059,12 +1074,21 @@ function graph3() {
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left")
-        .ticks(6);
+        .tickSize(-width)
+        .ticks(5)
+        .orient("left");
 
     var gy = svg.append("g")
-        .attr("class", "y axis-show")
+        .attr("class", "y axis")
         .call(yAxis);
+
+    gy.selectAll("text")
+        .attr("dx", -8);
+
+    gy.selectAll("g").filter(function (d) {
+            return d;
+        })
+        .classed("minor", true);
 
     svg.append("text")
         .attr("class", "axistitle")
