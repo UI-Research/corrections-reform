@@ -141,16 +141,6 @@ jointimpact$year <- as.numeric(jointimpact$year)
 #write.csv(jointimpact, "data/jointimpact.csv", row.names=F)
 
 ########################################################################################################
-# Geographic data
-# District where sentenced -> eventual prison
-########################################################################################################
-georaw <- read.csv("data/original/dist_zip_faclcsv.csv", colClasses="character")
-
-prisonbydistrict <- as.data.frame(table(georaw$dist, georaw$arsfacl)) %>% rename(dist = Var1, arsfacl = Var2) %>%
-  filter(Freq != 0)
-
-
-########################################################################################################
 # JSON for viz instead of a bunch of CSVs
 ########################################################################################################
 

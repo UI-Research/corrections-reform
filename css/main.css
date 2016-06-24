@@ -409,9 +409,9 @@ span.grey {
 }
 
 .districts {
-    stroke: #000000;
+    stroke: #ffffff;
     stroke-width: 1px;
-    fill: #1696d2;
+    /*fill: #1696d2;*/
 }
 
 .bar {

@@ -1,0 +1,93 @@
+"districtcode","sentences","name","id"
+"AK",542,"Alaska",92
+"ALM",674,"Alabama Middle",2
+"ALN",1512,"Alabama Northern",1
+"ALS",1276,"Alabama Southern",3
+"ARE",1080,"Arkansas Eastern",4
+"ARW",818,"Arkansas Western",5
+"AZ",8795,"Arizona",6
+"CAC",4054,"California Central",9
+"CAE",2643,"California Eastern",8
+"CAN",1738,"California Northern",7
+"CAS",5846,"California Southern",10
+"CO",1168,"Colorado",11
+"CT",1135,"Connecticut",12
+"DC",1058,"District of Columbia",13
+"DE",271,"Delaware",14
+"FLM",6099,"Florida Middle",16
+"FLN",1818,"Florida Northern",15
+"FLS",6957,"Florida Southern",17
+"GAM",1040,"Georgia Middle",19
+"GAN",2634,"Georgia Northern",18
+"GAS",1585,"Georgia Southern",20
+"HI",794,"Hawaii",21
+"IAN",1832,"Iowa Northern",22
+"IAS",1829,"Iowa Southern",23
+"ID",739,"Idaho",24
+"ILC",1813,"Illinois Central",26
+"ILN",3252,"Illinois Northern",25
+"ILS",1697,"Illinois Southern",27
+"INN",1225,"Indiana Northern",28
+"INS",1633,"Indiana Southern",29
+"KS",2167,"Kansas",30
+"KYE",1798,"Kentucky Eastern",31
+"KYW",999,"Kentucky Western",32
+"LAE",1176,"Louisiana Eastern",34
+"LAM",446,"Louisiana Middle",35
+"LAW",1141,"Louisiana Western",33
+"MA",1337,"Massachusetts",36
+"MD",3192,"Maryland",37
+"ME",600,"Maine",38
+"MIE",2449,"Michigan Eastern",39
+"MIW",1571,"Michigan Western",40
+"MN",1562,"Minnesota",41
+"MOE",2738,"Missouri Eastern",42
+"MOW",2705,"Missouri Western",43
+"MSN",569,"Mississippi Northern",44
+"MSS",953,"Mississippi Southern",45
+"MT",1317,"Montana",46
+"NCE",3606,"North Carolina Eastern",47
+"NCM",2298,"North Carolina Middle",48
+"NCW",2546,"North Carolina Western",49
+"ND",829,"North Dakota",50
+"NE",1782,"Nebraska",51
+"NH",412,"New Hampshire",52
+"NJ",1868,"New Jersey",53
+"NM",2172,"New Mexico",54
+"NV",1448,"Nevada",55
+"NYE",1856,"New York Eastern",57
+"NYN",1069,"New York Northern",56
+"NYS",3728,"New York Southern",58
+"NYW",1173,"New York Western",59
+"OHN",2363,"Ohio Northern",60
+"OHS",1733,"Ohio Southern",61
+"OKE",405,"Oklahoma Eastern",63
+"OKN",726,"Oklahoma Northern",62
+"OKW",1130,"Oklahoma Western",64
+"OR",1424,"Oregon",65
+"PAE",2909,"Pennsylvania Eastern",66
+"PAM",1246,"Pennsylvania Middle",67
+"PAW",1235,"Pennsylvania Western",68
+"PR",4013,"Puerto Rico",69
+"RI",469,"Rhode Island",70
+"SC",3816,"South Carolina",71
+"SD",971,"South Dakota",72
+"TNE",3437,"Tennessee Eastern",73
+"TNM",1038,"Tennessee Middle",74
+"TNW",2206,"Tennessee Western",75
+"TXE",3311,"Texas Eastern",77
+"TXN",4765,"Texas Northern",76
+"TXS",12909,"Texas Southern",78
+"TXW",10673,"Texas Western",79
+"UT",1478,"Utah",80
+"VAE",4712,"Virginia Eastern",81
+"VAW",1987,"Virginia Western",82
+"VI",147,"Virgin Islands",83
+"VT",371,"Vermont",84
+"WAE",897,"Washington Eastern",85
+"WAW",1500,"Washington Western",86
+"WIE",1287,"Wisconsin Eastern",87
+"WIW",667,"Wisconsin Western",88
+"WVN",991,"West Virginia Northern",89
+"WVS",864,"West Virginia Southern",90
+"WY",902,"Wyoming",91

@@ -18,5 +18,8 @@ ogr2ogr -where 'STATE!="AK"' shp/NoAlaska.shp shp/JudicialDistricts/JudicialDist
 ogr2ogr shp/JudicialDistricts_Final/JudicialDistricts_Final.shp shp/NoAlaska.shp
 ogr2ogr -update -append shp/JudicialDistricts_Final/JudicialDistricts_Final.shp shp/AlaskaMerged.shp -nln JudicialDistricts_Final
 
+# Added id property to shp and made csv with # of sentences by district in scripts/geoData.R
+
 # Save topojson
-topojson -o data/judicialdistricts.json --id-property +DISTRICT_I  -p name=DISTRICT_N -p code=DISTRICT_A -- shp/JudicialDistricts_Final/JudicialDistricts_Final.shp
+# Add external property: number of sentences by juduical district
+topojson -o data/judicialdistricts.json -e data/districtsentences.csv --id-property +id -p name=DISTRICT_N -p code=DISTRICT_A -p sentences=+sentences -- shp/JudicialDistricts_Final/JudicialDistricts_Final.shp

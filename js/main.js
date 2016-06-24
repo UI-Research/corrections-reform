@@ -590,10 +590,18 @@ function graph2() {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     function initMap() {
+
+        var COLORS = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
+        var BREAKS = [1000, 1500, 2000, 3000];
+        var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
         //map setup
         var projection = d3.geo.albersUsa()
             .scale(width * 1.4)
             .translate([width / 2, height / 2]);
+
+        var color = d3.scale.linear()
+            .domain(BREAKS)
+            .range(COLORS);
 
         var path = d3.geo.path()
             .projection(projection);
@@ -607,7 +615,51 @@ function graph2() {
             .attr("d", path)
             .attr("districtcode", function (d) {
                 return d.properties.code;
+            })
+            .attr("fill", function (d) {
+                return color(d.properties.sentences);
             });
+
+        var lp_w = width / 2,
+            ls_w = 40,
+            ls_h = 20;
+
+        var legend = svg.selectAll("g.legend")
+            .data(LEGENDBREAKS)
+            .enter().append("g")
+            .attr("class", "legend");
+
+        legend.append("text")
+            .data(LEGENDBREAKS)
+            .attr("class", "pointlabel graphmap")
+            .attr("x", function (d, i) {
+                return (i * ls_w) + lp_w - 2;
+            })
+            .attr("y", 50)
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+                return d3.format(",")(d);
+            });
+
+        legend.append("rect")
+            .data(COLORS)
+            .attr("class", "graphmap")
+            .attr("x", function (d, i) {
+                return (i * ls_w) + lp_w;
+            })
+            .attr("y", 15)
+            .attr("width", ls_w)
+            .attr("height", ls_h)
+            .style("fill", function (d, i) {
+                return COLORS[i];
+            })
+
+        svg.append("text")
+            .attr("class", "axistitle graphmap")
+            .attr("text-anchor", "start")
+            .attr("x", lp_w)
+            .attr("y", 10)
+            .text("Number of sentences");
     }
 
     function initRace() {
