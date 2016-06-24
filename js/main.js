@@ -10,6 +10,9 @@ var map_data_url = "data/judicialdistricts.json",
 var drug2014 = 95305;
 var MANDMINLABELS = ["Sentenced with mandatory minimum", "Granted relief at sentencing", "Not subject to mandatory minimum"];
 var circleradius = 10;
+var COLORS = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
+var BREAKS = [1000, 1500, 2000, 3000];
+var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
 
 var margin = {
     top: 60,
@@ -591,9 +594,6 @@ function graph2() {
 
     function initMap() {
 
-        var COLORS = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
-        var BREAKS = [1000, 1500, 2000, 3000];
-        var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
         //map setup
         var projection = d3.geo.albersUsa()
             .scale(width * 1.4)
