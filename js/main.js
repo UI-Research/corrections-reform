@@ -25,8 +25,11 @@ var width = $graphic1.width() - margin.left - margin.right,
     height = 450;
 console.log($graphic1.width(), width);
 
+
+var dispatch = d3.dispatch("resizeSecurityBars", "resizeChBars");
+
 //capitalize first letter for labels
-String.prototype.capitalize = function() {
+String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
@@ -910,6 +913,76 @@ function graph2() {
             .text("Most criminal history")
             .call(wrap2, x.rangeBand(), width - x.rangeBand() / 2)
             .attr("opacity", 0);
+
+        dispatch.on("resizeChBars", function () {
+
+            var graphOn = d3.selectAll("rect.graphch").attr("height");
+            console.log(graphOn);
+            //approaching from the top
+            if (graphOn == height) {
+                d3.selectAll(".graphmap, .graphrace, .graphsecurity")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
+
+                d3.selectAll(".graphch")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
+
+            } else {
+                //approaching from the bottom
+
+                d3.selectAll(".graphmap, .graphrace")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
+
+                //make the previous bars into one rectangle half height
+                d3.selectAll("rect.graphsecurity")
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 1)
+                    .transition()
+                    .duration(1000)
+                    .attr("width", width / 4)
+                    .attr("y", height / 2)
+                    .attr("height", height / 2)
+                    .transition()
+                    .duration(500)
+                    .attr("opacity", 0);
+
+                //then emerge the new bars from that
+                d3.selectAll("rect.graphch")
+                    .transition()
+                    .delay(1000)
+                    .duration(500)
+                    .attr("opacity", 1)
+                    .transition()
+                    .duration(1000)
+                    .attr("width", x.rangeBand())
+                    .attr("y", function (d) {
+                        return y(d[VALUE]);
+                    })
+                    .attr("height", function (d) {
+                        return height - y(d[VALUE]);
+                    });
+
+                //disappear old labels
+                d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity")
+                    .transition()
+                    .delay(1500)
+                    .duration(1)
+                    .attr("opacity", 0)
+
+                //make new labels visible
+                d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axisgraphch")
+                    .transition()
+                    .delay(1500)
+                    .duration(500)
+                    .attr("opacity", 1)
+            }
+        })
     }
 
     function initSecurity() {
@@ -949,13 +1022,16 @@ function graph2() {
             .attr("x", function (d) {
                 return x(d.security);
             })
-            .attr("width", x.rangeBand())
+            /*.attr("width", x.rangeBand())
             .attr("y", function (d) {
                 return y(d[VALUE]);
             })
             .attr("height", function (d) {
                 return height - y(d[VALUE]);
-            })
+            })*/
+            .attr("width", width / 5)
+            .attr("y", height / 2)
+            .attr("height", height / 2)
             .attr("opacity", 0);
 
         securitybars.append("text")
@@ -985,7 +1061,56 @@ function graph2() {
             .text("Security type")
             .attr("opacity", 0);
 
+        dispatch.on("resizeSecurityBars", function () {
+            d3.selectAll(".graphmap, .graphrace")
+                .transition()
+                .duration(0)
+                .attr("opacity", 0)
 
+            //make the previous bars into one rectangle half height
+            d3.selectAll("rect.graphch")
+                .transition()
+                .duration(500)
+                .attr("opacity", 1)
+                .transition()
+                .duration(1000)
+                .attr("width", width / 6)
+                .attr("y", height / 2)
+                .attr("height", height / 2)
+                .transition()
+                .duration(500)
+                .attr("opacity", 0);
+
+            //then emerge the new bars from that
+            d3.selectAll("rect.graphsecurity")
+                .transition()
+                .delay(1000)
+                .duration(500)
+                .attr("opacity", 1)
+                .transition()
+                .duration(1000)
+                .attr("width", x.rangeBand())
+                .attr("y", function (d) {
+                    return y(d.number);
+                })
+                .attr("height", function (d) {
+                    return height - y(d.number);
+                });
+
+            //disappear old labels
+            d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axis.graphch")
+                .transition()
+                .delay(1500)
+                .duration(1)
+                .attr("opacity", 0)
+
+            //make new labels visible
+            d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity")
+                .transition()
+                .delay(1500)
+                .duration(500)
+                .attr("opacity", 1)
+        })
     }
 
     initMap();
@@ -1024,27 +1149,14 @@ function graph2() {
                     .attr("opacity", 1)
 
             } else if (i == 2) {
-                d3.selectAll(".graphmap, .graphrace, .graphsecurity")
-                    .transition()
-                    .duration(0)
-                    .attr("opacity", 0)
 
-                d3.selectAll(".graphch")
-                    .transition()
-                    .duration(500)
-                    .attr("opacity", 1)
+                dispatch.resizeChBars();
 
 
             } else if (i == 3) {
-                d3.selectAll(".graphmap, .graphrace, .graphch")
-                    .transition()
-                    .duration(0)
-                    .attr("opacity", 0)
 
-                d3.selectAll(".graphsecurity")
-                    .transition()
-                    .duration(500)
-                    .attr("opacity", 1)
+                dispatch.resizeSecurityBars();
+
             }
         });
 }
