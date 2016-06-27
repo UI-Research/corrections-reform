@@ -26,7 +26,7 @@ var width = $graphic1.width() - margin.left - margin.right,
 console.log($graphic1.width(), width);
 
 
-var dispatch = d3.dispatch("resizeSecurityBars", "resizeChBars");
+var dispatch = d3.dispatch("intoSecurityBars", "intoChBars");
 
 //capitalize first letter for labels
 String.prototype.capitalize = function () {
@@ -914,7 +914,7 @@ function graph2() {
             .call(wrap2, x.rangeBand(), width - x.rangeBand() / 2)
             .attr("opacity", 0);
 
-        dispatch.on("resizeChBars", function () {
+        dispatch.on("intoChBars", function () {
 
             var graphOn = d3.selectAll("rect.graphch").attr("height");
             console.log(graphOn);
@@ -971,14 +971,14 @@ function graph2() {
                 //disappear old labels
                 d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity")
                     .transition()
-                    .delay(1500)
-                    .duration(1)
+                    .delay(500)
+                    .duration(500)
                     .attr("opacity", 0)
 
                 //make new labels visible
                 d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axisgraphch")
                     .transition()
-                    .delay(1500)
+                    .delay(2000)
                     .duration(500)
                     .attr("opacity", 1)
             }
@@ -1061,7 +1061,7 @@ function graph2() {
             .text("Security type")
             .attr("opacity", 0);
 
-        dispatch.on("resizeSecurityBars", function () {
+        dispatch.on("intoSecurityBars", function () {
             d3.selectAll(".graphmap, .graphrace")
                 .transition()
                 .duration(0)
@@ -1100,14 +1100,14 @@ function graph2() {
             //disappear old labels
             d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axis.graphch")
                 .transition()
-                .delay(1500)
-                .duration(1)
+                .delay(500)
+                .duration(500)
                 .attr("opacity", 0)
 
             //make new labels visible
             d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity")
                 .transition()
-                .delay(1500)
+                .delay(2000)
                 .duration(500)
                 .attr("opacity", 1)
         })
@@ -1150,12 +1150,12 @@ function graph2() {
 
             } else if (i == 2) {
 
-                dispatch.resizeChBars();
+                dispatch.intoChBars();
 
 
             } else if (i == 3) {
 
-                dispatch.resizeSecurityBars();
+                dispatch.intoSecurityBars();
 
             }
         });
