@@ -69,8 +69,9 @@ sentences <- left_join(admissions, standing, by=c("year", "offense"))
 
 sentences <- sentences %>% filter(offense %in% c("Drug", "Weapon", "Immigration", "Sex", "Other", "Total"))
 sentences$offense <- tolower(sentences$offense)
+sentences$year <- as.numeric(sentences$year)
 #write.csv(sentences, "data/csv/sentences.csv", row.names=F)
-rm(admissions, standingpop)
+rm(admissions, standingpop, sentences_total, standing)
 
 # Mandatory minimums by offense
 mandmins <- readWorkbook(xldt, sheet="Slide 8", rows=c(5:14), cols=c(3,4,6), colNames = F, skipEmptyRows = T)
