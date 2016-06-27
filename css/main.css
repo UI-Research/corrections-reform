@@ -143,7 +143,7 @@ h4.subsectiontitle {
 
 #openimg {
     margin-top: 50px;
-    background-image: url("../img/introcropped.jpg");
+    background-image: url("../img/header.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     height: 350px;
@@ -507,7 +507,7 @@ span.lightgrey {
 
 @media (max-width: 600px) {
     #openimg {
-        background-image: url("../img/mobileIntroImage.jpg");
+        /*background-image: url("../img/mobileIntroImage.jpg");*/
         height: 250px;
     }
     #titleparent {
