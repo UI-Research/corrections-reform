@@ -371,6 +371,10 @@ svg {
     opacity: 0.75;
 }*/
 
+.other.pointlabel{
+    fill: #e2e2e2;
+}
+
 .drug.layer,
 .black.layer {
     /*fill: #1696d2;*/

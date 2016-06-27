@@ -25,6 +25,11 @@ var width = $graphic1.width() - margin.left - margin.right,
     height = 450;
 console.log($graphic1.width(), width);
 
+//capitalize first letter for labels
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 function wrap2(text, width, startingx) {
     text.each(function () {
         var text = d3.select(this),
@@ -245,7 +250,9 @@ function graph1() {
                     value: d.values[d.values.length - 1]
                 };
             })
-            .attr("class", "pointlabel graph2")
+            .attr("class", function (d) {
+                return d.name + " pointlabel graph2";
+            })
             .attr("text-anchor", "end")
             .attr("x", function (d) {
                 return x(d.value.year) - 10;
@@ -254,7 +261,7 @@ function graph1() {
                 return y(d.value.y0 + d.value.y * 0.5);
             })
             .text(function (d) {
-                return d.name;
+                return (d.name).capitalize();
             })
             .attr("opacity", 0);
 
@@ -790,16 +797,18 @@ function graph2() {
                     value: d.values[d.values.length - 1]
                 };
             })
-            .attr("class", "pointlabel graphrace")
+            .attr("class", function (d) {
+                return d.name + " pointlabel graphrace";
+            })
             .attr("text-anchor", "end")
             .attr("x", function (d) {
                 return x(d.value.year) - 10;
             })
             .attr("y", function (d) {
-                return y(d.value.y0 + d.value.y * 0.5);
+                return y(d.value.y0 + d.value.y * 0.5) + 2;
             })
             .text(function (d) {
-                return d.name;
+                return (d.name).capitalize();
             })
             .attr("opacity", 0);
 
