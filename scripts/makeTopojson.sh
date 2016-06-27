@@ -23,3 +23,7 @@ ogr2ogr -update -append shp/JudicialDistricts_Final/JudicialDistricts_Final.shp 
 # Save topojson
 # Add external property: number of sentences by juduical district
 topojson -o data/judicialdistricts.json -e data/districtsentences.csv --id-property +id -p name=DISTRICT_N -p code=DISTRICT_A -p sentences=+sentences -- shp/JudicialDistricts_Final/JudicialDistricts_Final.shp
+
+
+######### Facility complex point data
+csv2geojson --lat latitude --lon longitude data/complexzips.csv > data/complexzips.geojson

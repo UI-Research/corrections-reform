@@ -38,12 +38,34 @@ summary(districtsentences$sentences)
 # Geographic data
 # District where sentenced -> eventual prison
 ########################################################################################################
+# Format facility geographies
+facilities <- read.csv("data/facilities.csv", stringsAsFactors = F)
+facilities$facilityzip <- sprintf("%05s", facilities$facilityzip)
+facilities <- facilities %>% rename(name = Facility.name, address = Address, zip = facilityzip, latitude = Lat, longitude = Long) %>% 
+	select(-complex) %>% 
+	arrange(zip)
+write.csv(facilities, "data/facilities.csv", row.names=F)
+
+# We'll collapse by zip code for mapping
+zips <- facilities %>% group_by(zip) %>%
+	summarize(latitude = mean(latitude), longitude = mean(longitude))
+
 georaw <- read.csv("data/original/dist_zip_faclcsv.csv", colClasses="character")
-georaw <- left_join(georaw, shpdata, by=c("dist" = "districtcode"))
+sentencesbyzip <- georaw %>% group_by(facilityzip) %>% 
+	summarize(sentences = n()) %>%
+	rename(zip = facilityzip)
 
-prisonbydistrict <- as.data.frame(table(georaw$dist, georaw$arsfacl)) %>% 
-  rename(dist = Var1, arsfacl = Var2) %>%
-  filter(Freq != 0)
+# Join number of sentences to zip code
+zips <- left_join(zips, sentencesbyzip, by="zip")
+write.csv(zips, "data/complexzips.csv", row.names=F)
+#georaw <- left_join(georaw, shpdata, by=c("dist" = "districtcode"))
 
+# Number of people sentenced to each zip code by judicial district
+# Exclude if n <= 15
 zipbydistrict <- georaw %>% group_by(dist, facilityzip) %>% 
-  summarize(num = n())
+  summarize(sentences = n()) %>%
+	rename(districtcode = dist, zip = facilityzip) %>%
+	filter(sentences >= 15)
+
+zipbydistrict <- left_join(zipbydistrict, zips, by = "zip")
+write.csv(zipbydistrict, "data/zipsbydistrict.csv", row.names=F)
