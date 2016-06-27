@@ -5,6 +5,7 @@ body {
     font-weight: 400;
     font-size: 16pt;
     color: #333;
+    overflow-x: hidden;
 }
 
 h1,
@@ -80,7 +81,9 @@ h4.subsectiontitle {
     font-weight: 400;
 }
 
+
 /* buttons */
+
 .dropdown-button {
     font-size: 14px;
     font-family: Lato, sans-serif;
@@ -139,6 +142,7 @@ h4.subsectiontitle {
     border: 1px solid #1696d2;
 }
 
+
 /* opening image and title*/
 
 #openimg {
@@ -152,18 +156,21 @@ h4.subsectiontitle {
 
 #titleparent {
     height: 350px;
-    display: table;
+    /*display: table;*/
 }
 
 #titleholder {
-    display: table-cell;
+    /*display: table-cell;
     vertical-align: middle;
+    padding-top: 10px;*/
+    /*position: relative;
+    top: 70%;*/
 }
 
 h1.projtitle {
     background-color: rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    font-size: 30px;
+    padding: 10px 30px;
+    font-size: 42px;
     font-weight: 700;
     color: #ffffff;
     display: inline-block;
@@ -181,7 +188,7 @@ h1.projtitle {
     float: left;
     height: 75px;
     margin-right: 10px;
-    margin-top: 8px;
+    /*margin-top: 8px;*/
     position: relative;
     text-align: center;
     width: 75px;
@@ -371,7 +378,7 @@ svg {
     opacity: 0.75;
 }*/
 
-.other.pointlabel{
+.other.pointlabel {
     fill: #e2e2e2;
 }
 
@@ -425,9 +432,9 @@ svg {
 }
 
 .hispanic.chartline,
-.sex.chartline{
+.sex.chartline {
     stroke: #d2d2d2;
-    stroke-width: 2px;    
+    stroke-width: 2px;
 }
 
 .dot {
@@ -488,10 +495,28 @@ span.lightgrey {
 
 /*mobile adjustments*/
 
-@media (min-width: 1600px) {
+@media (min-width: 1200px) {
     #openimg {
         height: 350px;
         width: 100%;
+    }
+    #titleholder {
+        position: relative;
+        top: 70%;
+    }
+}
+
+@media (max-width: 1199px) {
+    #openimg {
+        height: 350px;
+        width: 100%;
+    }
+    #titleholder {
+        position: relative;
+        top: 55%;
+    }
+    h1.projtitle {
+        font-size: 30px;
     }
 }
 
@@ -502,6 +527,7 @@ span.lightgrey {
     }
     #titleparent {
         height: 300px;
+        top: 10px;
     }
 }
 
@@ -512,5 +538,8 @@ span.lightgrey {
     }
     #titleparent {
         height: 250px;
+    }
+    h1.projtitle {
+        padding: 10px;
     }
 }
