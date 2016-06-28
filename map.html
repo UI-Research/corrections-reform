@@ -56,12 +56,12 @@
         var blue5 = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
         var BREAKS = [1000, 1500, 2000, 3000];
 
-        var width = 960,
-            height = 500;
+        var width = 1000,
+            height = 600;
 
-        var projection = d3.geo.albers()
+        var projection = d3.geo.albersUsa()
             .translate([width / 2, height / 2])
-            .scale(1080);
+            .scale(width * 1.2);
 
         var color = d3.scale.linear()
             .domain(BREAKS)
@@ -88,6 +88,27 @@
                 d3.csv("data/complexzips.csv", function (complexes) {
                     d3.csv("data/zipsbydistrict.csv", function (zbd) {
 
+                        //no Virgin Islands, Guam, Puerto Rico districts or prisons
+                        dt = dt.filter(function (d) {
+                            return d.districtcode != "VI" & d.districtcode != "GU" & d.districtcode != "PR";
+                        });
+
+                        complexes = complexes.filter(function (d) {
+                            return d.zip != "00965";
+                        });
+
+                        zbd = zbd.filter(function (d) {
+                            return d.districtcode != "VI" & d.districtcode != "GU" & d.districtcode != "PR" & d.zip != "00965" & d.zip != "";
+                        });
+
+                        //make an array for the district centroid coordinates and zip complex coordinates
+                        zbd.forEach(function (d) {
+                            d.sentences = +d.sentences;
+                            var position = projection(d);
+                            d.complex = projection([+d.zip_long, +d.zip_lat]);
+                            d.district = projection([+d.centroid_long, +d.centroid_lat]);
+                        })
+
                         //nest by district
                         var zdt = d3.nest()
                             .key(function (d) {
@@ -95,11 +116,6 @@
                             })
                             .sortKeys(d3.ascending)
                             .entries(zbd);
-
-                        //no Virgin Islands
-                        dt = dt.filter(function (d) {
-                            return d.districtcode != "VI" & d.districtcode != "GU" & d.districtcode != "PR";
-                        })
 
                         dt.forEach(function (d) {
                             d.sentences = +d.sentences;
@@ -113,6 +129,8 @@
                             })[0];
                         })
 
+                                                console.log(dt);
+                        
                         complexes.forEach(function (d) {
                             d.sentences = +d.sentences;
                             d[0] = +d.longitude;
@@ -121,14 +139,6 @@
                             d.complexx = position[0];
                             d.complexy = position[1];
                         });
-
-                        //make an array for the district centroid coordinates and zip complex coordinates
-                        zbd.forEach(function (d) {
-                            d.sentences = +d.sentences;
-                            var position = projection(d);
-                            d.complex = projection([+d.zip_long, +d.zip_lat]);
-                            d.district = projection([+d.centroid_long, +d.centroid_lat]);
-                        })
 
                         //judicial districts boundaries
                         svg.append("g")
@@ -145,14 +155,22 @@
                                 return color(d.properties.sentences);
                             })
                             .on("mouseover", function (d) {
+                            if (d.properties.code != "AK") {
                                 d3.selectAll(".hovered")
                                     .classed("hovered", false);
                                 d3.selectAll("." + d3.select(this).attr("code"))
                                     .classed("hovered", true);
                                 d3.select(this).classed("hovered", true);
                                 d3.select(this).moveToFront();
+                            } else {
+                                //Alaska is being a special browser crashing snowflake with this.classed
+                                d3.select(this).attr("stroke", "#fdbf11")
+                                d3.selectAll(".AK")
+                                    .classed("hovered", true);
+                            }
                             })
                             .on("mouseout", function (d) {
+                                d3.select(this).attr("stroke", "#ffffff")
                                 d3.selectAll(".hovered")
                                     .classed("hovered", false);
                             })
