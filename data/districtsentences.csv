@@ -1,93 +1,93 @@
-"districtcode","sentences","name","id"
-"AK",542,"Alaska",92
-"ALM",674,"Alabama Middle",2
-"ALN",1512,"Alabama Northern",1
-"ALS",1276,"Alabama Southern",3
-"ARE",1080,"Arkansas Eastern",4
-"ARW",818,"Arkansas Western",5
-"AZ",8795,"Arizona",6
-"CAC",4054,"California Central",9
-"CAE",2643,"California Eastern",8
-"CAN",1738,"California Northern",7
-"CAS",5846,"California Southern",10
-"CO",1168,"Colorado",11
-"CT",1135,"Connecticut",12
-"DC",1058,"District of Columbia",13
-"DE",271,"Delaware",14
-"FLM",6099,"Florida Middle",16
-"FLN",1818,"Florida Northern",15
-"FLS",6957,"Florida Southern",17
-"GAM",1040,"Georgia Middle",19
-"GAN",2634,"Georgia Northern",18
-"GAS",1585,"Georgia Southern",20
-"HI",794,"Hawaii",21
-"IAN",1832,"Iowa Northern",22
-"IAS",1829,"Iowa Southern",23
-"ID",739,"Idaho",24
-"ILC",1813,"Illinois Central",26
-"ILN",3252,"Illinois Northern",25
-"ILS",1697,"Illinois Southern",27
-"INN",1225,"Indiana Northern",28
-"INS",1633,"Indiana Southern",29
-"KS",2167,"Kansas",30
-"KYE",1798,"Kentucky Eastern",31
-"KYW",999,"Kentucky Western",32
-"LAE",1176,"Louisiana Eastern",34
-"LAM",446,"Louisiana Middle",35
-"LAW",1141,"Louisiana Western",33
-"MA",1337,"Massachusetts",36
-"MD",3192,"Maryland",37
-"ME",600,"Maine",38
-"MIE",2449,"Michigan Eastern",39
-"MIW",1571,"Michigan Western",40
-"MN",1562,"Minnesota",41
-"MOE",2738,"Missouri Eastern",42
-"MOW",2705,"Missouri Western",43
-"MSN",569,"Mississippi Northern",44
-"MSS",953,"Mississippi Southern",45
-"MT",1317,"Montana",46
-"NCE",3606,"North Carolina Eastern",47
-"NCM",2298,"North Carolina Middle",48
-"NCW",2546,"North Carolina Western",49
-"ND",829,"North Dakota",50
-"NE",1782,"Nebraska",51
-"NH",412,"New Hampshire",52
-"NJ",1868,"New Jersey",53
-"NM",2172,"New Mexico",54
-"NV",1448,"Nevada",55
-"NYE",1856,"New York Eastern",57
-"NYN",1069,"New York Northern",56
-"NYS",3728,"New York Southern",58
-"NYW",1173,"New York Western",59
-"OHN",2363,"Ohio Northern",60
-"OHS",1733,"Ohio Southern",61
-"OKE",405,"Oklahoma Eastern",63
-"OKN",726,"Oklahoma Northern",62
-"OKW",1130,"Oklahoma Western",64
-"OR",1424,"Oregon",65
-"PAE",2909,"Pennsylvania Eastern",66
-"PAM",1246,"Pennsylvania Middle",67
-"PAW",1235,"Pennsylvania Western",68
-"PR",4013,"Puerto Rico",69
-"RI",469,"Rhode Island",70
-"SC",3816,"South Carolina",71
-"SD",971,"South Dakota",72
-"TNE",3437,"Tennessee Eastern",73
-"TNM",1038,"Tennessee Middle",74
-"TNW",2206,"Tennessee Western",75
-"TXE",3311,"Texas Eastern",77
-"TXN",4765,"Texas Northern",76
-"TXS",12909,"Texas Southern",78
-"TXW",10673,"Texas Western",79
-"UT",1478,"Utah",80
-"VAE",4712,"Virginia Eastern",81
-"VAW",1987,"Virginia Western",82
-"VI",147,"Virgin Islands",83
-"VT",371,"Vermont",84
-"WAE",897,"Washington Eastern",85
-"WAW",1500,"Washington Western",86
-"WIE",1287,"Wisconsin Eastern",87
-"WIW",667,"Wisconsin Western",88
-"WVN",991,"West Virginia Northern",89
-"WVS",864,"West Virginia Southern",90
-"WY",902,"Wyoming",91
+"districtcode","sentences","name","id","latitude","longitude"
+"AK",542,"Alaska",92,64.46242126,-152.803166
+"ALM",674,"Alabama Middle",2,32.10971976,-85.9443174
+"ALN",1512,"Alabama Northern",1,33.90632763,-86.9572268
+"ALS",1276,"Alabama Southern",3,31.63604296,-87.6434802
+"ARE",1080,"Arkansas Eastern",4,35.07092531,-91.6258264
+"ARW",818,"Arkansas Western",5,34.69407447,-93.411058
+"AZ",8795,"Arizona",6,34.2937874,-111.664084
+"CAC",4054,"California Central",9,34.58612989,-117.13134
+"CAE",2643,"California Eastern",8,38.47033523,-120.301315
+"CAN",1738,"California Northern",7,38.58899962,-122.621249
+"CAS",5846,"California Southern",10,33.03752253,-116.028419
+"CO",1168,"Colorado",11,38.99904751,-105.547805
+"CT",1135,"Connecticut",12,41.62222725,-72.7271345
+"DC",1058,"District of Columbia",13,38.91056659,-77.0143615
+"DE",271,"Delaware",14,39.0072987,-75.5048096
+"FLM",6099,"Florida Middle",16,28.39709545,-81.7768995
+"FLN",1818,"Florida Northern",15,30.27323945,-84.738262
+"FLS",6957,"Florida Southern",17,26.52713405,-80.6865518
+"GAM",1040,"Georgia Middle",19,32.18404628,-83.8117618
+"GAN",2634,"Georgia Northern",18,34.10634669,-84.4864093
+"GAS",1585,"Georgia Southern",20,32.14714142,-82.1856446
+"HI",794,"Hawaii",21,20.2541665,-156.345244
+"IAN",1832,"Iowa Northern",22,42.68493723,-93.5670973
+"IAS",1829,"Iowa Southern",23,41.31307319,-93.4163242
+"ID",739,"Idaho",24,44.38955376,-114.659413
+"ILC",1813,"Illinois Central",26,40.30334694,-89.4752044
+"ILN",3252,"Illinois Northern",25,41.89261155,-88.8703506
+"ILS",1697,"Illinois Southern",27,38.38281856,-88.9324648
+"INN",1225,"Indiana Northern",28,41.04552389,-86.1687931
+"INS",1633,"Indiana Southern",29,39.21537187,-86.3405519
+"KS",2167,"Kansas",30,38.48524366,-98.3806604
+"KYE",1798,"Kentucky Eastern",31,37.77546548,-83.8682838
+"KYW",999,"Kentucky Western",32,37.26681075,-86.775221
+"LAE",1176,"Louisiana Eastern",34,29.93685545,-90.2555352
+"LAM",446,"Louisiana Middle",35,30.57081569,-91.1312775
+"LAW",1141,"Louisiana Western",33,31.43340571,-92.5745609
+"MA",1337,"Massachusetts",36,42.2562234,-71.8089194
+"MD",3192,"Maryland",37,39.05699832,-76.8052297
+"ME",600,"Maine",38,45.38186081,-69.2318339
+"MIE",2449,"Michigan Eastern",39,43.62286917,-83.8648279
+"MIW",1571,"Michigan Western",40,44.77220184,-86.3558237
+"MN",1562,"Minnesota",41,46.31821185,-94.3083307
+"MOE",2738,"Missouri Eastern",42,38.31131989,-91.1490445
+"MOW",2705,"Missouri Western",43,38.40741425,-93.4220663
+"MSN",569,"Mississippi Northern",44,33.9875334,-89.5627276
+"MSS",953,"Mississippi Southern",45,31.83505977,-89.7406608
+"MT",1317,"Montana",46,47.03448257,-109.645565
+"NCE",3606,"North Carolina Eastern",47,35.40915243,-77.7091206
+"NCM",2298,"North Carolina Middle",48,35.79956243,-79.8087872
+"NCW",2546,"North Carolina Western",49,35.57638665,-81.9826843
+"ND",829,"North Dakota",50,47.44639055,-100.469744
+"NE",1782,"Nebraska",51,41.52746999,-99.809689
+"NH",412,"New Hampshire",52,43.68768855,-71.5785131
+"NJ",1868,"New Jersey",53,40.19119974,-74.670797
+"NM",2172,"New Mexico",54,34.4215228,-106.107864
+"NV",1448,"Nevada",55,39.35699466,-116.655513
+"NYE",1856,"New York Eastern",57,40.81807296,-73.1641394
+"NYN",1069,"New York Northern",56,43.33262809,-74.8387074
+"NYS",3728,"New York Southern",58,41.51665194,-74.1742579
+"NYW",1173,"New York Western",59,42.60997862,-77.9941579
+"OHN",2363,"Ohio Northern",60,41.06887209,-82.6440729
+"OHS",1733,"Ohio Southern",61,39.66901398,-82.9065742
+"OKE",405,"Oklahoma Eastern",63,34.82072288,-95.7233374
+"OKN",726,"Oklahoma Northern",62,36.46908063,-95.8280044
+"OKW",1130,"Oklahoma Western",64,35.79336714,-98.851869
+"OR",1424,"Oregon",65,43.93534842,-120.549657
+"PAE",2909,"Pennsylvania Eastern",66,40.24791377,-75.6826101
+"PAM",1246,"Pennsylvania Middle",67,41.00650755,-76.8463822
+"PAW",1235,"Pennsylvania Western",68,40.88098127,-79.3810005
+"PR",4013,"Puerto Rico",69,18.22226648,-66.4683908
+"RI",469,"Rhode Island",70,41.6750496,-71.5552073
+"SC",3816,"South Carolina",71,33.91652406,-80.9003238
+"SD",971,"South Dakota",72,44.43567946,-100.230587
+"TNE",3437,"Tennessee Eastern",73,35.80922676,-84.3605772
+"TNM",1038,"Tennessee Middle",74,36.00165814,-86.6122758
+"TNW",2206,"Tennessee Western",75,35.69568561,-88.8988135
+"TXE",3311,"Texas Eastern",77,32.11139969,-95.0835099
+"TXN",4765,"Texas Northern",76,33.41874166,-100.393379
+"TXS",12909,"Texas Southern",78,28.47977341,-97.3040986
+"TXW",10673,"Texas Western",79,30.54615146,-100.779334
+"UT",1478,"Utah",80,39.32479383,-111.678365
+"VAE",4712,"Virginia Eastern",81,37.52983256,-77.2921342
+"VAW",1987,"Virginia Western",82,37.50832232,-79.8137063
+"VI",147,"Virgin Islands",83,17.9679367,-64.8011162
+"VT",371,"Vermont",84,44.0740144,-72.6637031
+"WAE",897,"Washington Eastern",85,47.37646834,-119.192266
+"WAW",1500,"Washington Western",86,47.39230191,-122.554854
+"WIE",1287,"Wisconsin Eastern",87,44.35707633,-88.4503853
+"WIW",667,"Wisconsin Western",88,44.75792749,-90.677716
+"WVN",991,"West Virginia Northern",89,39.1021721,-79.8971364
+"WVS",864,"West Virginia Southern",90,38.12548132,-81.4174651
+"WY",902,"Wyoming",91,43.00029147,-107.550962
