@@ -28,6 +28,12 @@ console.log($graphic1.width(), width);
 
 var dispatch = d3.dispatch("intoSecurityBars", "intoChBars");
 
+d3.selection.prototype.moveToFront = function () {
+    return this.each(function () {
+        this.parentNode.appendChild(this);
+    });
+};
+
 //capitalize first letter for labels
 String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -624,19 +630,155 @@ function graph2() {
         var path = d3.geo.path()
             .projection(projection);
 
-        //map of judicial districts
+        var dt = data_main.districtsentences;
+        var complexes = data_main.complexzips;
+        var zbd = data_main.zipsbydistrict;
+
+        //no Virgin Islands, Guam, Puerto Rico districts or prisons
+        dt = dt.filter(function (d) {
+            return d.districtcode != "VI" & d.districtcode != "GU" & d.districtcode != "PR";
+        });
+
+        complexes = complexes.filter(function (d) {
+            return d.zip != "00965";
+        });
+
+        zbd = zbd.filter(function (d) {
+            return d.districtcode != "VI" & d.districtcode != "GU" & d.districtcode != "PR" & d.zip != "00965" & d.zip != "";
+        });
+
+        //make an array for the district centroid coordinates and zip complex coordinates
+        zbd.forEach(function (d) {
+            d.sentences = +d.sentences;
+            var position = projection(d);
+            d.complex = projection([+d.zip_long, +d.zip_lat]);
+            d.district = projection([+d.centroid_long, +d.centroid_lat]);
+        })
+
+        //nest by district
+        var zdt = d3.nest()
+            .key(function (d) {
+                return d.districtcode;
+            })
+            .sortKeys(d3.ascending)
+            .entries(zbd);
+
+        dt.forEach(function (d) {
+            d.sentences = +d.sentences;
+            d[0] = +d.longitude;
+            d[1] = +d.latitude;
+            var position = projection(d);
+            d.centroidx = position[0];
+            d.centroidy = position[1];
+            d.lines = zdt.filter(function (district) {
+                return district.key == d.districtcode;
+            })[0];
+        })
+
+        console.log(dt);
+
+        complexes.forEach(function (d) {
+            d.sentences = +d.sentences;
+            d[0] = +d.longitude;
+            d[1] = +d.latitude;
+            var position = projection(d);
+            d.complexx = position[0];
+            d.complexy = position[1];
+        });
+
+        //judicial districts boundaries
         svg.append("g")
             .attr("class", "districts graphmap")
             .selectAll("path")
             .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
             .enter().append("path")
             .attr("d", path)
-            .attr("districtcode", function (d) {
+            .attr("class", "district")
+            .attr("code", function (d) {
                 return d.properties.code;
             })
             .attr("fill", function (d) {
                 return color(d.properties.sentences);
+            })
+            .on("mouseover", function (d) {
+                if (d.properties.code != "AK") {
+                    d3.selectAll(".hovered")
+                        .classed("hovered", false);
+                    d3.selectAll("." + d3.select(this).attr("code"))
+                        .classed("hovered", true);
+                    d3.select(this).classed("hovered", true);
+                    d3.select(this).moveToFront();
+                } else {
+                    //Alaska is being a special browser crashing snowflake with this.classed
+                    d3.select(this).attr("stroke", "#fdbf11")
+                    d3.selectAll(".AK")
+                        .classed("hovered", true);
+                }
+            })
+            .on("mouseout", function (d) {
+                d3.select(this).attr("stroke", "#ffffff")
+                d3.selectAll(".hovered")
+                    .classed("hovered", false);
+            })
+
+        //prison complexes
+        var complex = svg.append("g")
+            .attr("class", "complexes graphmap")
+            .selectAll("g")
+            .data(complexes.sort(function (a, b) {
+                return b.sentences - a.sentences;
+            }))
+            .enter().append("g")
+            .attr("class", "complex");
+
+        complex.append("circle")
+            .attr("cx", function (d) {
+                return d.complexx;
+            })
+            .attr("cy", function (d) {
+                return d.complexy;
+            })
+            .attr("r", function (d, i) {
+                return Math.sqrt(d.sentences) / 10;
             });
+
+        //district centroids - don't draw, but that's where the lines emanate from
+        var centroid = svg.append("g")
+            .attr("class", "centroids graphmap")
+            .selectAll("g")
+            .data(dt)
+            .enter().append("g")
+            .attr("class", function (d) {
+                return d.districtcode + " centroid";
+            })
+            .attr("temp", function (d) {
+                return d.lines.key;
+            })
+
+        centroid.append("g")
+            .attr("class", function (d) {
+                return d.districtcode + " sentence-arcs graphmap";
+            })
+            .selectAll("path")
+            .data(function (d) {
+                return d.lines.values;
+            })
+            .enter().append("line")
+            .attr("zip", function (d) {
+                return d.zip;
+            })
+            .attr("x1", function (d) {
+                return d.district[0];
+            })
+            .attr("y1", function (d) {
+                return d.district[1];
+            })
+            .attr("x2", function (d) {
+                return d.complex[0];
+            })
+            .attr("y2", function (d) {
+                return d.complex[1];
+            })
 
         var lp_w = width / 2,
             ls_w = 40,

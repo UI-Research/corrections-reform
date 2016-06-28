@@ -306,6 +306,51 @@ svg {
 }
 
 
+/* map */
+
+.districts {
+    stroke: #ffffff;
+    stroke-width: 1px;
+    pointer-events: cursor;
+}
+
+.districts.hovered {
+    stroke: #000000;
+}
+
+.district.hovered {
+    stroke: #fdbf11;
+    stroke-width: 2px;
+}
+
+.sentence-arcs {
+    display: none;
+    fill: none;
+    stroke: #ec008b;
+    stroke-width: 1px;
+    pointer-events: none;
+}
+
+.sentence-arcs.hovered {
+    display: inline;
+}
+
+.centroids circle {
+    fill: #d69fd2;
+    stroke: #000;
+    pointer-events: none;
+}
+
+.complexes circle {
+    fill: #ffffff;
+    stroke: #000;
+    pointer-events: none;
+}
+
+.graphrace, .graphch, .graphsecurity {
+    pointer-events: none;
+}
+
 /*graph elements*/
 
 .axis,
@@ -480,12 +525,6 @@ span.lightgrey {
 .catvalue {
     font-size: 22px;
     font-weight: 700;
-}
-
-.districts {
-    stroke: #ffffff;
-    stroke-width: 1px;
-    /*fill: #1696d2;*/
 }
 
 .bar {
