@@ -69,8 +69,8 @@ sentencesbyzip <- georaw %>% group_by(facilityzip) %>%
 	rename(zip = facilityzip)
 
 # Join number of sentences to zip code
-#zips <- left_join(zips, sentencesbyzip, by="zip")
-#write.csv(zips, "data/complexzips.csv", row.names=F)
+zips <- left_join(zips, sentencesbyzip, by="zip")
+write.csv(zips, "data/complexzips.csv", row.names=F)
 #georaw <- left_join(georaw, shpdata, by=c("dist" = "districtcode"))
 
 # Number of people sentenced to each zip code by judicial district

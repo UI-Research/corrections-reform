@@ -157,5 +157,18 @@ mandminj <- '[{"mm_status": "applied", "share": 0.59, "years": 10.193720, "share
 {"mm_status": "notapplied", "share":  0.2137228, "years": 5.696282, "share_cum": 0.8037228}, 
 {"mm_status": "notapplicable", "share": 0.1962772, "years": 5.696282, "share_cum": 1}]'
 
+
 dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, ', "race": ', racej, ', "histories": ', historiesj, ', "security_drug": ', securityj, ', "jointimpact": ', impactj, "}", sep="")
 write(dtjson, "data/data.json")
+
+# Add in geographic data - from geoData.R
+zipsbydistrict <- read.csv("data/zipsbydistrict.csv", stringsAsFactors = F, colClasses = c("zip" = "character"))
+complexzips <- read.csv("data/complexzips.csv", stringsAsFactors = F, colClasses = c("zip" = "character"))
+districtsentences <- read.csv("data/districtsentences.csv", stringsAsFactors = F)
+
+dtjson <- fromJSON("data/data.json", flatten = F)
+dtjson$zipsbydistrict <- zipsbydistrict
+dtjson$complexzips <- complexzips
+dtjson$districtsentences <- districtsentences
+dtjson2 <- toJSON(dtjson)
+write(dtjson2, "data/data.json")
