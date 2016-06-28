@@ -57,6 +57,10 @@ p.large {
     font-size: 20px;
 }
 
+p.bold {
+    font-weight: 700;
+}
+
 hr {
     width: 100%;
     border: 0 !important;
@@ -130,6 +134,10 @@ h4.subsectiontitle {
     margin-right: 0px;
     white-space: normal !important;
     border-radius: 0px;
+}
+
+.btn5 {
+    width: 20%;
 }
 
 .urban-button:hover,
