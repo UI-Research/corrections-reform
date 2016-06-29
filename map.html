@@ -10,19 +10,16 @@
         pointer-events: cursor;
     }
     
-    .districts.hovered {
-        stroke: #000000;
-    }
-    
     .district.hovered {
-        stroke: #fdbf11;
-        stroke-width: 2px;
+        /*stroke: #fdbf11;
+        stroke-width: 2px;*/
+       fill: #fdbf11;
     }
     
     .sentence-arcs {
         display: none;
         fill: none;
-        stroke: #ec008b;
+        stroke: #fdbf11;
         stroke-width: 1px;
         pointer-events: none;
     }
@@ -56,8 +53,8 @@
         var blue5 = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
         var BREAKS = [1000, 1500, 2000, 3000];
 
-        var width = 1000,
-            height = 600;
+        var width = 500,
+            height = 300;
 
         var projection = d3.geo.albersUsa()
             .translate([width / 2, height / 2])

@@ -322,19 +322,16 @@ svg {
     pointer-events: cursor;
 }
 
-.districts.hovered {
-    stroke: #000000;
-}
-
 .district.hovered {
-    stroke: #fdbf11;
-    stroke-width: 2px;
+    /*stroke: #fdbf11;
+        stroke-width: 2px;*/
+    fill: #fdbf11;
 }
 
 .sentence-arcs {
     display: none;
     fill: none;
-    stroke: #ec008b;
+    stroke: #fdbf11;
     stroke-width: 1px;
     pointer-events: none;
 }
@@ -355,9 +352,12 @@ svg {
     pointer-events: none;
 }
 
-.graphrace, .graphch, .graphsecurity {
+.graphrace,
+.graphch,
+.graphsecurity {
     pointer-events: none;
 }
+
 
 /*graph elements*/
 
