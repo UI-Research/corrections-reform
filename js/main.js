@@ -26,7 +26,7 @@ var width = $graphic1.width() - margin.left - margin.right,
 console.log($graphic1.width(), width);
 
 
-var dispatch = d3.dispatch("intoSecurityBars", "intoChBars");
+var dispatch = d3.dispatch("intoSecurityBars", "intoChBars", "changeChBars");
 
 d3.selection.prototype.moveToFront = function () {
     return this.each(function () {
@@ -63,6 +63,12 @@ function wrap2(text, width, startingx) {
         }
     });
 }
+
+$('input:radio[name="radio-ch"]').change(function () {
+    //console.log($(this).val());
+    dispatch.changeChBars($(this).val());
+
+});
 
 function graph1() {
 
@@ -668,8 +674,6 @@ function graph2() {
             })[0];
         })
 
-        console.log(dt);
-
         complexes.forEach(function (d) {
             d.sentences = +d.sentences;
             d[0] = +d.longitude;
@@ -992,13 +996,15 @@ function graph2() {
             .orient("bottom");
 
         var bars = svg.selectAll(".bar")
-            .data(data)
+            .data(data, function (d) {
+                return d.category;
+            })
             .enter()
             .append("g")
             .attr("class", "bar");
 
         bars.append("rect")
-            .attr("class", "graphch")
+            .attr("class", "graphch bar")
             .attr("x", function (d) {
                 return x(d.category);
             })
@@ -1056,10 +1062,48 @@ function graph2() {
             .call(wrap2, x.rangeBand(), width - x.rangeBand() / 2)
             .attr("opacity", 0);
 
+        dispatch.on("changeChBars", function (type) {
+            //reset bars to a different offense type, based on radio button value
+            data = data_main.histories.filter(function (d) {
+                return d.offense == type;
+            });
+
+            y = d3.scale.linear()
+                .range([height, 0])
+                .domain([0, d3.max(data, function (d) {
+                    return d[VALUE];
+                })]);
+
+            bars.selectAll("rect")
+                .data(data, function (d) {
+                    return d.category;
+                })
+                .transition()
+                .duration(500)
+                .attr("y", function (d) {
+                    return y(d[VALUE]);
+                })
+                .attr("height", function (d) {
+                    return height - y(d[VALUE]);
+                });
+
+            bars.selectAll("text")
+                .data(data, function (d) {
+                    return d.category;
+                })
+                            .transition()
+                .duration(500)
+                .attr("y", function (d) {
+                    return y(d[VALUE]) - 8;
+                })
+                .text(function (d) {
+                    return d3.format(",.0f")(d[VALUE]);
+                })
+        });
+
         dispatch.on("intoChBars", function () {
 
             var graphOn = d3.selectAll("rect.graphch").attr("height");
-            console.log(graphOn);
             //approaching from the top
             if (graphOn == height) {
                 d3.selectAll(".graphmap, .graphrace, .graphsecurity")
