@@ -326,8 +326,6 @@ circle.hovered{
     fill: #fdbf11 !important;
 }
 .district.hovered {
-    stroke: #fdbf11;
-        /*stroke-width: 2px;*/
     fill: #fdbf11;
 }
 
@@ -351,7 +349,7 @@ circle.hovered{
 
 .complexes circle {
     fill: #ffffff;
-    /*stroke: #000;*/
+    stroke: #00152A;
     pointer-events: none;
 }
 
