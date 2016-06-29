@@ -710,13 +710,15 @@ function graph2() {
                     d3.select(this).moveToFront();
                 } else {
                     //Alaska is being a special browser crashing snowflake with this.classed
-                    d3.select(this).attr("stroke", "#fdbf11")
+                    d3.select(this).attr("fill", "#fdbf11")
                     d3.selectAll(".AK")
                         .classed("hovered", true);
                 }
             })
             .on("mouseout", function (d) {
-                d3.select(this).attr("stroke", "#ffffff")
+                d3.select(this).attr("fill", function (d) {
+                    return color(d.properties.sentences);
+                });
                 d3.selectAll(".hovered")
                     .classed("hovered", false);
             })
@@ -741,7 +743,7 @@ function graph2() {
             .attr("r", function (d, i) {
                 return Math.sqrt(d.sentences) / 10;
             })
-            .attr("class", function(d){
+            .attr("class", function (d) {
                 return "zip_" + d.zip
             });
 
