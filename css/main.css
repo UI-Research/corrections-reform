@@ -322,9 +322,12 @@ svg {
     pointer-events: cursor;
 }
 
+circle.hovered{
+    fill: #fdbf11 !important;
+}
 .district.hovered {
-    /*stroke: #fdbf11;
-        stroke-width: 2px;*/
+    stroke: #fdbf11;
+        /*stroke-width: 2px;*/
     fill: #fdbf11;
 }
 
@@ -341,14 +344,14 @@ svg {
 }
 
 .centroids circle {
-    fill: #d69fd2;
+    /*fill: #d69fd2;*/
     stroke: #000;
     pointer-events: none;
 }
 
 .complexes circle {
     fill: #ffffff;
-    stroke: #000;
+    /*stroke: #000;*/
     pointer-events: none;
 }
 

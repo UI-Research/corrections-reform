@@ -740,6 +740,9 @@ function graph2() {
             })
             .attr("r", function (d, i) {
                 return Math.sqrt(d.sentences) / 10;
+            })
+            .attr("class", function(d){
+                return "zip_" + d.zip
             });
 
         //district centroids - don't draw, but that's where the lines emanate from
@@ -765,6 +768,8 @@ function graph2() {
             })
             .enter().append("line")
             .attr("zip", function (d) {
+                d3.select("circle.zip_" + d.zip)
+                    .classed(d.districtcode, true)
                 return d.zip;
             })
             .attr("x1", function (d) {
