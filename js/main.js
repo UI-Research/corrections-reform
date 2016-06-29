@@ -449,13 +449,6 @@ function graph1() {
             .orient("bottom");
 
         svg.append("text")
-            .attr("class", "axistitle linesaxis")
-            .attr("text-anchor", "middle")
-            .attr("x", 0)
-            .attr("y", -5)
-            .text("Federal prison population");
-
-        svg.append("text")
             .attr("class", "graphtitle graph4")
             .attr("text-anchor", "middle")
             .attr("x", width / 2)
@@ -707,7 +700,7 @@ function graph2() {
                     d3.selectAll("." + d3.select(this).attr("code"))
                         .classed("hovered", true);
                     d3.select(this).classed("hovered", true);
-                    d3.select(this).moveToFront();
+                    //d3.select(this).moveToFront();
                 } else {
                     //Alaska is being a special browser crashing snowflake with this.classed
                     d3.select(this).attr("fill", "#fdbf11")
