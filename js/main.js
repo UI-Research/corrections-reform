@@ -449,9 +449,9 @@ function graph1() {
             .orient("bottom");
 
         svg.append("text")
-            .attr("class", "graphtitle graph4")
-            .attr("text-anchor", "middle")
-            .attr("x", width / 2)
+            .attr("class", "axistitle graph4")
+            .attr("text-anchor", "start")
+            .attr("x", 0)
             .attr("y", -30)
             .text("Average expected years served")
             .attr("opacity", 0);
