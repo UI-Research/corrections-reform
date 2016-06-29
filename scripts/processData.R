@@ -117,13 +117,17 @@ race$race <- tolower(race$race)
 # Criminal histories
 histories <- readWorkbook(xldt, sheet="Slide 7", rows=c(3, 5:10), colNames = T, skipEmptyRows = T)
 colnames(histories)
-histories <- histories %>% select(X1, All.offenses, Violent, Property, Drugs, Public.Order, Weapon, Immigration, Sex) %>%
+histories <- histories %>% select(X1, All.offenses, Drugs, Weapon, Immigration, Sex) %>%
   rename(category = X1, Total = All.offenses)
-histories <- histories %>% gather(offense, number, -category) 
+histories <- histories %>% gather(offense, number, -category) %>% 
+	group_by(offense) %>%
+	mutate(groupsum = sum(number)) %>%
+	mutate(percent = number/groupsum) %>%
+	select(-groupsum)
 histories$offense <- tolower(histories$offense)
-histories <- histories %>% mutate(offense = ifelse(offense=="public.order", "public order",
-                                                   ifelse(offense=="drugs", "drug", 
-                                                          offense)))
+histories <- as.data.frame(histories)
+histories <- histories %>% mutate(offense = ifelse(offense=="drugs", "drug", 
+                                                          offense))
 #write.csv(histories, "data/criminalhistories.csv", row.names=F)
 
 # Prison security for those convicted of drug offenses
@@ -144,31 +148,36 @@ jointimpact$year <- as.numeric(jointimpact$year)
 ########################################################################################################
 # JSON for viz instead of a bunch of CSVs
 ########################################################################################################
-
-growthj <- toJSON(growth)
-sentencesj <- toJSON(sentences)
-racej <- toJSON(race)
-historiesj <- toJSON(histories)
-securityj <- toJSON(security)
-impactj <- toJSON(jointimpact)
-
 # data for mandatory minimum section
-mandminj <- '[{"mm_status": "applied", "share": 0.59, "years": 10.193720, "share_cum": 0.59}, 
-{"mm_status": "notapplied", "share":  0.2137228, "years": 5.696282, "share_cum": 0.8037228}, 
-{"mm_status": "notapplicable", "share": 0.1962772, "years": 5.696282, "share_cum": 1}]'
+# No MM: 22%
+# Granted Relief: 19%
+# MM Applied: 59%
+# And average expected time served:
+# No MM: 6.2257
+# Granted Relief: 6.0745
+# MM Applied: 11.4357
 
+mm_status <- c("applied", "notapplied", "notapplicable")
+share <- c(0.59, 0.19, 0.22)
+years <- c(11.4357, 6.0745, 6.2257)
+share_cum <- c(0.59, 0.78, 1)
+mandmin <- data.frame(mm_status, share, years, share_cum)
+	
+dtjson <- NULL
+dtjson$growth <- growth
+dtjson$sentences <- sentences
+dtjson$mandmin_drug <- mandmin
+dtjson$race <- race
+dtjson$histories <- histories
+dtjson$security_drug <- security
+dtjson$jointimpact <- jointimpact
 
-dtjson <- paste('{"growth": ', growthj, ', "sentences": ', sentencesj,  ', "mandmin_drug": ', mandminj, ', "race": ', racej, ', "histories": ', historiesj, ', "security_drug": ', securityj, ', "jointimpact": ', impactj, "}", sep="")
-write(dtjson, "data/data.json")
-
-# Add in geographic data - from geoData.R
 zipsbydistrict <- read.csv("data/zipsbydistrict.csv", stringsAsFactors = F, colClasses = c("zip" = "character"))
 complexzips <- read.csv("data/complexzips.csv", stringsAsFactors = F, colClasses = c("zip" = "character"))
 districtsentences <- read.csv("data/districtsentences.csv", stringsAsFactors = F)
-
-dtjson <- fromJSON("data/data.json", flatten = F)
 dtjson$zipsbydistrict <- zipsbydistrict
 dtjson$complexzips <- complexzips
 dtjson$districtsentences <- districtsentences
-dtjson2 <- toJSON(dtjson)
-write(dtjson2, "data/data.json")
+
+json <- toJSON(dtjson)
+write(json, "data/data.json")

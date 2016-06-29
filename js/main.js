@@ -354,7 +354,7 @@ function graph1() {
                 d: +d,
                 ydig: +(d.toString().slice(-1)),
                 xdig: +(d3.format("02d")(d)).slice(0, 1),
-                group: d < 59 ? "applied" : (d >= 59 & d < 80 ? "notapplied" : "notapplicable")
+                group: d < 59 ? "applied" : (d >= 59 & d < 78 ? "notapplied" : "notapplicable")
             }
         });
 
@@ -403,7 +403,7 @@ function graph1() {
             .attr("text-anchor", "start")
             .attr("x", width * 0.6)
             .attr("y", height + 4)
-            .text("21%")
+            .text("19%")
             .attr("opacity", 0);
 
         svg.append("text")
@@ -420,7 +420,7 @@ function graph1() {
             .attr("text-anchor", "start")
             .attr("x", width * 0.8)
             .attr("y", height + 4)
-            .text("20%")
+            .text("22%")
             .attr("opacity", 0);
 
         svg.append("text")
@@ -972,13 +972,36 @@ function graph2() {
         data = data_main.histories.filter(function (d) {
             return d.offense == "drug";
         });
-        VALUE = "number";
+        //VALUE = "number";
+        //VALUE = "percent";
 
         var y = d3.scale.linear()
             .range([height, 0])
-            .domain([0, d3.max(data, function (d) {
+            /*.domain([0, d3.max(data, function (d) {
                 return d[VALUE];
-            })]);
+            })]);*/
+            .domain([0, 0.75]);
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(-width)
+            .ticks(5)
+            .tickFormat(function (d) {
+                return d3.format("%")(d);
+            })
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis graphch")
+            .call(yAxis);
+
+        gy.selectAll("text")
+            .attr("dx", -8);
+
+        gy.selectAll("g").filter(function (d) {
+                return d;
+            })
+            .classed("minor", true);
 
         var x = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1)
@@ -990,10 +1013,11 @@ function graph2() {
             .scale(x)
             .tickSize(0)
             .tickFormat(function (d, i) {
-                //return MONEY_MOBILE[i];
                 return d;
             })
             .orient("bottom");
+
+        console.log(y(0.5))
 
         var bars = svg.selectAll(".bar")
             .data(data, function (d) {
@@ -1001,7 +1025,7 @@ function graph2() {
             })
             .enter()
             .append("g")
-            .attr("class", "bar");
+            //.attr("class", "bar");
 
         bars.append("rect")
             .attr("class", "graphch bar")
@@ -1010,24 +1034,27 @@ function graph2() {
             })
             .attr("width", x.rangeBand())
             .attr("y", function (d) {
-                return y(d[VALUE]);
+                //return y(d[VALUE]);
+                return y(d.percent);
             })
             .attr("height", function (d) {
-                return height - y(d[VALUE]);
+                //return height - y(d[VALUE]);
+                return height - y(d.percent);
             })
             .attr("opacity", 0);
 
         bars.append("text")
             .attr("class", "pointlabel graphch")
             .attr("y", function (d) {
-                return y(d[VALUE]) - 8;
+                //return y(d[VALUE]) - 8;
+                return y(d.percent) - 8;
             })
             .attr("x", function (d) {
                 return x(d.category) + x.rangeBand() / 2;
             })
             .attr("text-anchor", "middle")
             .text(function (d) {
-                return d3.format(",.0f")(d[VALUE]);
+                return d3.format(",.0f")(d.number);
             })
             .attr("opacity", 0);
 
@@ -1070,9 +1097,10 @@ function graph2() {
 
             y = d3.scale.linear()
                 .range([height, 0])
-                .domain([0, d3.max(data, function (d) {
+                /*.domain([0, d3.max(data, function (d) {
                     return d[VALUE];
-                })]);
+                })]);*/
+                .domain([0, 0.75]);
 
             bars.selectAll("rect")
                 .data(data, function (d) {
@@ -1081,23 +1109,26 @@ function graph2() {
                 .transition()
                 .duration(500)
                 .attr("y", function (d) {
-                    return y(d[VALUE]);
+                    //return y(d[VALUE]);
+                    return y(d.percent);
                 })
                 .attr("height", function (d) {
-                    return height - y(d[VALUE]);
+                    //return height - y(d[VALUE]);
+                    return height - y(d.percent);
                 });
 
             bars.selectAll("text")
                 .data(data, function (d) {
                     return d.category;
                 })
-                            .transition()
+                .transition()
                 .duration(500)
                 .attr("y", function (d) {
-                    return y(d[VALUE]) - 8;
+                    //return y(d[VALUE]) - 8;
+                    return y(d.percent) - 8;
                 })
                 .text(function (d) {
-                    return d3.format(",.0f")(d[VALUE]);
+                    return d3.format(",.0f")(d.number);
                 })
         });
 
@@ -1148,10 +1179,12 @@ function graph2() {
                     .duration(1000)
                     .attr("width", x.rangeBand())
                     .attr("y", function (d) {
-                        return y(d[VALUE]);
+                        //return y(d[VALUE]);
+                        return y(d.percent);
                     })
                     .attr("height", function (d) {
-                        return height - y(d[VALUE]);
+                        //return height - y(d[VALUE]);
+                        return height - y(d.percent);
                     });
 
                 //disappear old labels
@@ -1277,9 +1310,11 @@ function graph2() {
                 .duration(1000)
                 .attr("width", x.rangeBand())
                 .attr("y", function (d) {
+                    //return y(d.number);
                     return y(d.number);
                 })
                 .attr("height", function (d) {
+                    //return height - y(d.number);
                     return height - y(d.number);
                 });
 
