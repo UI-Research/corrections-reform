@@ -53,6 +53,10 @@ li {
     color: #333;
 }
 
+p {
+    margin-bottom: 1.2em;
+}
+
 p.large {
     font-size: 20px;
     line-height: 26px;
@@ -512,25 +516,27 @@ circle.hovered{
 }
 
 span.blue {
-    background-color: #1696d2;
-    color: #ffffff;
+    background-color: rgba(22, 150, 210, 0.2);
 }
 
 span.lightblue {
-    background-color: #cfe8f3;
+    background-color: rgba(207, 232, 243, 0.2);
 }
 
 span.yellow {
-    background-color: #fdbf11;
+    background-color: rgba(253, 191, 17, 0.2);
 }
 
 span.grey {
-    background-color: #5c5859;
-    color: #ffffff;
+    background-color: rgba(92, 88, 89, 0.2);
 }
 
 span.lightgrey {
-    background-color: #d2d2d2;
+    background-color: rgba(210, 210, 210, 0.3);
+}
+
+span.pink {
+    background-color: rgba(236, 0, 139, 0.2);
 }
 
 .catvalue {

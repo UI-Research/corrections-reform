@@ -783,6 +783,9 @@ function graph2() {
             .attr("y2", function (d) {
                 return d.complex[1];
             })
+        
+        //we want one region to be selected by default for users to see
+        d3.selectAll(".KS, [code='KS']").classed("hovered", true);
 
         var lp_w = width / 2,
             ls_w = 40,
