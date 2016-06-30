@@ -26,7 +26,7 @@ var width = $graphic1.width() - margin.left - margin.right,
 console.log($graphic1.width(), width);
 
 
-var dispatch = d3.dispatch("changeGrowthLines", "intoSecurityBars", "intoChBars", "changeChBars");
+var dispatch = d3.dispatch("changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
 d3.selection.prototype.moveToFront = function () {
     return this.each(function () {
@@ -64,15 +64,23 @@ function wrap2(text, width, startingx) {
     });
 }
 
+// use radio buttons to change offense type on a few graphs
+// line chart of population vs admissions over time
+$('input:radio[name="radio-growth"]').change(function () {
+    //console.log($(this).val());
+    dispatch.changeGrowthLines($(this).val());
+
+});
+//bar chart of criminal history
 $('input:radio[name="radio-ch"]').change(function () {
     //console.log($(this).val());
     dispatch.changeChBars($(this).val());
 
 });
-
-$('input:radio[name="radio-growth"]').change(function () {
+//bar chart of prison security
+$('input:radio[name="radio-security"]').change(function () {
     //console.log($(this).val());
-    dispatch.changeGrowthLines($(this).val());
+    dispatch.changeSecurityBars($(this).val());
 
 });
 
@@ -1358,7 +1366,9 @@ function graph2() {
             .orient("bottom");
 
         var securitybars = svg.selectAll(".securitybar")
-            .data(data)
+            .data(data, function (d) {
+                return d.security;
+            })
             .enter()
             .append("g")
             .attr("class", "securitybar");
@@ -1406,6 +1416,49 @@ function graph2() {
             .attr("y", height + 30)
             .text("Security type")
             .attr("opacity", 0);
+
+        dispatch.on("changeSecurityBars", function (type) {
+            //reset bars to a different offense type, based on radio button value
+            data = data_main.security.filter(function (d) {
+                return d.offense == type;
+            });
+
+            y = d3.scale.linear()
+                .range([height, 0])
+                .domain([0, d3.max(data, function (d) {
+                    return d.number;
+                })]);
+            //.domain([0, 0.75]);
+
+            securitybars.selectAll("rect")
+                .data(data, function (d) {
+                    return d.security;
+                })
+                .transition()
+                .duration(500)
+                .attr("y", function (d) {
+                    return y(d.number);
+                    //return y(d.percent);
+                })
+                .attr("height", function (d) {
+                    return height - y(d.number);
+                    //return height - y(d.percent);
+                });
+
+            securitybars.selectAll("text")
+                .data(data, function (d) {
+                    return d.security;
+                })
+                .transition()
+                .duration(500)
+                .attr("y", function (d) {
+                    return y(d.number) - 8;
+                    //return y(d.percent) - 8;
+                })
+                .text(function (d) {
+                    return d3.format(",.0f")(d.number);
+                })
+        });
 
         dispatch.on("intoSecurityBars", function () {
             d3.selectAll(".graphmap, .graphrace")
