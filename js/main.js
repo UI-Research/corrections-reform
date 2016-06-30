@@ -13,6 +13,7 @@ var circleradius = 10;
 var blue5 = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
 var BREAKS = [1000, 1500, 2000, 3000];
 var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
+var GROWTHTYPE = "total";
 
 var margin = {
     top: 60,
@@ -26,7 +27,7 @@ var width = $graphic1.width() - margin.left - margin.right,
 console.log($graphic1.width(), width);
 
 
-var dispatch = d3.dispatch("changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
+var dispatch = d3.dispatch("rescaleXAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
 d3.selection.prototype.moveToFront = function () {
     return this.each(function () {
@@ -68,9 +69,14 @@ function wrap2(text, width, startingx) {
 // line chart of population vs admissions over time
 $('input:radio[name="radio-growth"]').change(function () {
     //console.log($(this).val());
+    GROWTHTYPE = $(this).val();
+    if (GROWTHTYPE != "total") {
+        d3.select(".graph0.standing.chartline")
+            .attr("opacity", 0)
+    }
     dispatch.changeGrowthLines($(this).val());
-
 });
+
 //bar chart of criminal history
 $('input:radio[name="radio-ch"]').change(function () {
     //console.log($(this).val());
@@ -79,7 +85,7 @@ $('input:radio[name="radio-ch"]').change(function () {
 });
 //bar chart of prison security
 $('input:radio[name="radio-security"]').change(function () {
-    //console.log($(this).val());
+    console.log($(this).val());
     dispatch.changeSecurityBars($(this).val());
 
 });
@@ -126,6 +132,36 @@ function graph1() {
         })
         .classed("minor", true);
 
+    // years axis used in first three charts
+    // it zooms in on the second & third one to a different domain
+    var x = d3.scale.linear()
+        .range([0, width])
+        .domain([1980, 2016]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .ticks(8)
+        .tickFormat(function (d) {
+            return d;
+        })
+        .orient("bottom");
+
+    var gx = svg.append("g")
+        .attr("class", "x axis-show axisyears")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    //change the X axis years domain
+    dispatch.on("rescaleXAxis", function (startyear, stopyear) {
+        x.domain([startyear, stopyear]);
+
+        d3.select(".axisyears")
+            .transition()
+            .duration(1000)
+            .ease("cubic-in-out")
+            .call(xAxis);
+    });
+
     //initial graph
     function init0() {
         var LINEVARS = ["standing", "pop_total"];
@@ -145,19 +181,6 @@ function graph1() {
         var y = d3.scale.linear()
             .range([height, 0])
             .domain([0, 220000])
-
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .ticks(6)
-            .tickFormat(function (d) {
-                return d;
-            })
-            .orient("bottom");
-
-        var gx = svg.append("g")
-            .attr("class", "x axis-show axis0")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
 
         //footnote
         svg.append("text")
@@ -231,6 +254,18 @@ function graph1() {
             })
             .attr("opacity", 1);
 
+        dispatch.on("rescaleStandingLine", function (startyear, stopyear) {
+            x.domain([startyear, stopyear]);
+
+            d3.select(".graph0.standing.chartline")
+                .attr("opacity", 1)
+                .transition()
+                .duration(1000)
+                .attr("d", function (d) {
+                    return line1(d.values);
+                });
+        });
+
     }
 
     function init1() {
@@ -252,7 +287,7 @@ function graph1() {
             }))
             .range([0, width]);
 
-        var xAxis = d3.svg.axis()
+        /*var xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom")
             .tickFormat(function (d) {
@@ -263,7 +298,7 @@ function graph1() {
         var gx = svg.append("g")
             .attr("class", "x axis-show axis1")
             .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
+            .call(xAxis);*/
 
         var line1 = d3.svg.line()
             .interpolate("cardinal")
@@ -374,13 +409,13 @@ function graph1() {
             }))
             .range([0, width]);
 
-        var xAxis = d3.svg.axis()
+        /*var xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom")
             .tickFormat(function (d) {
                 return d;
             })
-            .ticks(10);
+            .ticks(10);*/
 
         var nest = d3.nest()
             .key(function (d) {
@@ -487,11 +522,18 @@ function graph1() {
             }
         });
 
-        var cells = svg.selectAll(".cell")
+        var cells = svg.append("g")
+            .attr("class", "cells")
+            .selectAll("g")
+            .data(cellsdt)
+            .enter().append("g")
+            .attr("class", "cell");
+
+        /*var cells = svg.selectAll(".cell")
             .data(cellsdt)
             .enter()
             .append("g")
-            .attr("class", "cell");
+            .attr("class", "cell");*/
 
         cells.append("rect")
             .attr("class", function (d) {
@@ -656,38 +698,49 @@ function graph1() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph0, .axis0, .linesaxis")
+                d3.selectAll(".graph0, .axisyears, .linesaxis")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
+
+                dispatch.rescaleXAxis(1980, 2016);
+                dispatch.rescaleStandingLine(1980, 2016);
 
             } else if (i == 1) {
 
-                d3.selectAll(".graph0, .graph2, .axis0, .graph4, .circle, .axis0, .mandminlabel")
+                d3.selectAll(" .graph2, graph4, .circle, .mandminlabel, .graph0:not(standing)")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph1, .axis1, .linesaxis")
+                d3.selectAll(".graph1, .axis1, .linesaxis, .axisyears")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
 
+                if (GROWTHTYPE != "total") {
+                    d3.select(".graph0.standing.chartline")
+                        .attr("opacity", 0)
+                }
+
+                dispatch.rescaleXAxis(1994, 2014);
+                dispatch.rescaleStandingLine(1994, 2014);
+
             } else if (i == 2) {
 
-                d3.selectAll(".graph0, .graph1, .graph3, .graph4, .circle, .axis0, .mandminlabel")
+                d3.selectAll(".graph0, .graph1, .graph3, .graph4, .circle, .mandminlabel")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph2, .linesaxis, .axis1")
+                d3.selectAll(".graph2, .linesaxis, .axis1, .axisyears")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
 
             } else if (i == 3) {
 
-                d3.selectAll(".graph0, .graph1, .graph2, .axis1, .axis0, .linesaxis, .graph4")
+                d3.selectAll(".graph0, .graph1, .graph2, .axis1, .axisyears, .linesaxis, .graph4")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -710,7 +763,7 @@ function graph1() {
 
             } else if (i == 4) {
 
-                d3.selectAll(".graph0, .graph1, .graph2, .axis1, .axis0, .linesaxis, .graph3")
+                d3.selectAll(".graph0, .graph1, .graph2, .axis1, .axisyears, .linesaxis, .graph3")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -1113,7 +1166,7 @@ function graph2() {
             .domain([0, d3.max(data, function (d) {
                 return d.number;
             })]);
-            //.domain([0, 0.75]);
+        //.domain([0, 0.75]);
 
         /*var yAxis = d3.svg.axis()
             .scale(y)
@@ -1152,13 +1205,13 @@ function graph2() {
 
         console.log(y(0.5))
 
-        var bars = svg.selectAll(".bar")
+        var bars = svg.selectAll(".chbar")
             .data(data, function (d) {
                 return d.category;
             })
             .enter()
             .append("g")
-            //.attr("class", "bar");
+            .attr("class", "chbar");
 
         bars.append("rect")
             .attr("class", "graphch bar")
@@ -1233,7 +1286,7 @@ function graph2() {
                 .domain([0, d3.max(data, function (d) {
                     return d.number;
                 })]);
-                //.domain([0, 0.75]);
+            //.domain([0, 0.75]);
 
             bars.selectAll("rect")
                 .data(data, function (d) {
@@ -1268,19 +1321,8 @@ function graph2() {
         dispatch.on("intoChBars", function () {
 
             var graphOn = d3.selectAll("rect.graphch").attr("height");
-            //approaching from the top
-            if (graphOn == height) {
-                d3.selectAll(".graphmap, .graphrace, .graphsecurity")
-                    .transition()
-                    .duration(0)
-                    .attr("opacity", 0)
 
-                d3.selectAll(".graphch")
-                    .transition()
-                    .duration(500)
-                    .attr("opacity", 1)
-
-            } else {
+            if (graphOn == height / 2) {
                 //approaching from the bottom
 
                 d3.selectAll(".graphmap, .graphrace")
@@ -1331,6 +1373,16 @@ function graph2() {
                 d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axisgraphch")
                     .transition()
                     .delay(2000)
+                    .duration(500)
+                    .attr("opacity", 1)
+            } else {
+                d3.selectAll(".graphmap, .graphrace, .graphsecurity")
+                    .transition()
+                    .duration(0)
+                    .attr("opacity", 0)
+
+                d3.selectAll(".graphch")
+                    .transition()
                     .duration(500)
                     .attr("opacity", 1)
             }

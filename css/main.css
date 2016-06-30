@@ -411,7 +411,7 @@ circle.hovered{
 
 .pointlabel {
     font-size: 12px;
-    fill: #000;
+    fill: #000 !important;
 }
 
 .chartline {
