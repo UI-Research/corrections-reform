@@ -1110,12 +1110,12 @@ function graph2() {
 
         var y = d3.scale.linear()
             .range([height, 0])
-            /*.domain([0, d3.max(data, function (d) {
-                return d[VALUE];
-            })]);*/
-            .domain([0, 0.75]);
+            .domain([0, d3.max(data, function (d) {
+                return d.number;
+            })]);
+            //.domain([0, 0.75]);
 
-        var yAxis = d3.svg.axis()
+        /*var yAxis = d3.svg.axis()
             .scale(y)
             .tickSize(-width)
             .ticks(5)
@@ -1134,7 +1134,7 @@ function graph2() {
         gy.selectAll("g").filter(function (d) {
                 return d;
             })
-            .classed("minor", true);
+            .classed("minor", true);*/
 
         var x = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1)
@@ -1167,20 +1167,20 @@ function graph2() {
             })
             .attr("width", x.rangeBand())
             .attr("y", function (d) {
-                //return y(d[VALUE]);
-                return y(d.percent);
+                return y(d.number);
+                //return y(d.percent);
             })
             .attr("height", function (d) {
-                //return height - y(d[VALUE]);
-                return height - y(d.percent);
+                return height - y(d.number);
+                //return height - y(d.percent);
             })
             .attr("opacity", 0);
 
         bars.append("text")
             .attr("class", "pointlabel graphch")
             .attr("y", function (d) {
-                //return y(d[VALUE]) - 8;
-                return y(d.percent) - 8;
+                return y(d.number) - 8;
+                //return y(d.percent) - 8;
             })
             .attr("x", function (d) {
                 return x(d.category) + x.rangeBand() / 2;
@@ -1230,10 +1230,10 @@ function graph2() {
 
             y = d3.scale.linear()
                 .range([height, 0])
-                /*.domain([0, d3.max(data, function (d) {
-                    return d[VALUE];
-                })]);*/
-                .domain([0, 0.75]);
+                .domain([0, d3.max(data, function (d) {
+                    return d.number;
+                })]);
+                //.domain([0, 0.75]);
 
             bars.selectAll("rect")
                 .data(data, function (d) {
@@ -1242,12 +1242,12 @@ function graph2() {
                 .transition()
                 .duration(500)
                 .attr("y", function (d) {
-                    //return y(d[VALUE]);
-                    return y(d.percent);
+                    return y(d.number);
+                    //return y(d.percent);
                 })
                 .attr("height", function (d) {
-                    //return height - y(d[VALUE]);
-                    return height - y(d.percent);
+                    return height - y(d.number);
+                    //return height - y(d.percent);
                 });
 
             bars.selectAll("text")
@@ -1257,8 +1257,8 @@ function graph2() {
                 .transition()
                 .duration(500)
                 .attr("y", function (d) {
-                    //return y(d[VALUE]) - 8;
-                    return y(d.percent) - 8;
+                    return y(d.number) - 8;
+                    //return y(d.percent) - 8;
                 })
                 .text(function (d) {
                     return d3.format(",.0f")(d.number);
@@ -1312,12 +1312,12 @@ function graph2() {
                     .duration(1000)
                     .attr("width", x.rangeBand())
                     .attr("y", function (d) {
-                        //return y(d[VALUE]);
-                        return y(d.percent);
+                        return y(d.number);
+                        //return y(d.percent);
                     })
                     .attr("height", function (d) {
-                        //return height - y(d[VALUE]);
-                        return height - y(d.percent);
+                        return height - y(d.number);
+                        //return height - y(d.percent);
                     });
 
                 //disappear old labels
