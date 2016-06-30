@@ -400,6 +400,11 @@ circle.hovered{
     font-style: italic;
 }
 
+.footnote {
+    font-size: 11px;
+    font-style: italic;
+}
+
 .graphtitle {
     font-size: 14px;
 }
@@ -423,7 +428,8 @@ circle.hovered{
     stroke: #1696d2;
 }
 
-.pop_jointimpact {
+.pop_jointimpact,
+.pop_total {
     stroke-width: 1px;
     stroke: #000;
 }

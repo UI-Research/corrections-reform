@@ -10,6 +10,8 @@ xldt <- "data/original/Data for interactive feature 5_20_2016.xlsx"
 
 ########################################################################################################
 # Growth in the federal prison pop
+# Total federal prison population, 1980-present
+# Admissions and standing population over time by offense, 1994-2014
 ########################################################################################################
 # Prison pop over time
 growth <- readWorkbook(xldt, sheet="Slide 2", startRow=3, colNames = F)
@@ -23,13 +25,6 @@ growth$pop_total <- as.numeric(as.character(growth$pop_total))
 # May 2016 in Excel converted into womp
 growth <- growth %>% mutate(year = ifelse(year==42491, 2016, year))
 #write.csv(growth, "data/growth.csv", row.names=F)
-
-# Growth drivers
-drivers <- readWorkbook(xldt, sheet="Slide 4", startRow=3, colNames = T)
-drivers <- drivers %>% gather(year, admissions, -X1) %>%
-  rename(offense = X1)
-drivers$year <- as.numeric(drivers$year)
-#write.csv(drivers, "data/drivers.csv", row.names=F)
 
 #Admissions vs standing population over time
 ## Total and missing (group with other) are from separate CSV
@@ -73,34 +68,11 @@ sentences$year <- as.numeric(sentences$year)
 #write.csv(sentences, "data/csv/sentences.csv", row.names=F)
 rm(admissions, standingpop, sentences_total, standing)
 
-# Mandatory minimums by offense
-mandmins <- readWorkbook(xldt, sheet="Slide 8", rows=c(5:14), cols=c(3,4,6), colNames = F, skipEmptyRows = T)
-colnames(mandmins) <- c("offense", "mandmin_0", "mandmin_1")
-mandmins <- mandmins %>% mutate(total = mandmin_0 + mandmin_1, mandmin_pct = mandmin_1/total)
-#write.csv(mandmins, "data/mandmins.csv", row.names=F)
-
-########################################################################################################
-# Expected years served - wonky formatted sheet
-########################################################################################################
-readTimeServed <- function(columns, offense) {
-  dt <- readWorkbook("data/original/time_served_6_3.xlsx", sheet=1, rows=c(1,3,4), cols=columns, colNames = T)
-  colnames(dt) <- c("mandmin_convict", "years_served", "years_remaining")
-  dt$offense <- offense
-  return(dt)
-}
-ts1 <- readTimeServed(c(1,2,3), "total")
-ts2 <- readTimeServed(c(1,5,6), "drug")
-ts3 <- readTimeServed(c(1,8,9), "weapon")
-# not using immigration
-# ts4 <- readTimeServed(c(1,11,12), "immigration")
-ts5 <- readTimeServed(c(1,14,15), "sex")
-
-timeserved <- bind_rows(ts1, ts2, ts3, ts5)
-timeserved$mandmin_convict[timeserved$mandmin_convict=="Convicted of Offense Carrying Mandatory Minimum"] <- 1
-timeserved$mandmin_convict[timeserved$mandmin_convict=="Not Convicted of Offense Carrying Mandatory Minimum"] <- 0
-
-timeserved <- timeserved %>% mutate(years_expected = years_served + years_remaining)
-#write.csv(timeserved, "data/expectedyears.csv", row.names=F)
+# Want to add total standing population to growth section
+temp <- sentences %>% filter(offense == "total") %>%
+  select(year, standing)
+growth <- left_join(growth, temp, by="year")
+rm(temp)
 
 ########################################################################################################
 # Section 2
@@ -130,11 +102,18 @@ histories <- histories %>% mutate(offense = ifelse(offense=="drugs", "drug",
                                                           offense))
 #write.csv(histories, "data/criminalhistories.csv", row.names=F)
 
-# Prison security for those convicted of drug offenses
-security <- readWorkbook(xldt, sheet="Slide 9", rows=c(6:9), cols=c(1,8), colNames = F, skipEmptyRows = T)
-colnames(security) <- c("security", "number")
+# Prison security for those convicted of drug offenses and total
+security <- readWorkbook(xldt, sheet="Slide 9", rows=c(6:9), cols=c(1,2, 8), colNames = F, skipEmptyRows = T)
+colnames(security) <- c("security", "total", "drug")
 # Sentence case
 security$security <- paste0(toupper(substr(security$security, 1, 1)), tolower(substring(security$security, 2)))
+# Reshape
+security <- security %>% gather(offense, number, -security) %>%
+  group_by(offense) %>%
+  mutate(groupsum = sum(number)) %>%
+  mutate(percent = number/groupsum) %>%
+  select(-groupsum)
+security <- as.data.frame(security)
 
 ########################################################################################################
 # Conclusions
@@ -169,7 +148,7 @@ dtjson$sentences <- sentences
 dtjson$mandmin_drug <- mandmin
 dtjson$race <- race
 dtjson$histories <- histories
-dtjson$security_drug <- security
+dtjson$security <- security
 dtjson$jointimpact <- jointimpact
 
 zipsbydistrict <- read.csv("data/zipsbydistrict.csv", stringsAsFactors = F, colClasses = c("zip" = "character"))
@@ -179,5 +158,44 @@ dtjson$zipsbydistrict <- zipsbydistrict
 dtjson$complexzips <- complexzips
 dtjson$districtsentences <- districtsentences
 
-json <- toJSON(dtjson)
+json <- toJSON(dtjson, na="null")
 write(json, "data/data.json")
+
+
+########################################################################################################
+# Unused code
+# Expected years served - wonky formatted sheet
+########################################################################################################
+# readTimeServed <- function(columns, offense) {
+#   dt <- readWorkbook("data/original/time_served_6_3.xlsx", sheet=1, rows=c(1,3,4), cols=columns, colNames = T)
+#   colnames(dt) <- c("mandmin_convict", "years_served", "years_remaining")
+#   dt$offense <- offense
+#   return(dt)
+# }
+# ts1 <- readTimeServed(c(1,2,3), "total")
+# ts2 <- readTimeServed(c(1,5,6), "drug")
+# ts3 <- readTimeServed(c(1,8,9), "weapon")
+# # not using immigration
+# # ts4 <- readTimeServed(c(1,11,12), "immigration")
+# ts5 <- readTimeServed(c(1,14,15), "sex")
+# 
+# timeserved <- bind_rows(ts1, ts2, ts3, ts5)
+# timeserved$mandmin_convict[timeserved$mandmin_convict=="Convicted of Offense Carrying Mandatory Minimum"] <- 1
+# timeserved$mandmin_convict[timeserved$mandmin_convict=="Not Convicted of Offense Carrying Mandatory Minimum"] <- 0
+# 
+# timeserved <- timeserved %>% mutate(years_expected = years_served + years_remaining)
+#write.csv(timeserved, "data/expectedyears.csv", row.names=F)
+
+
+# Growth drivers
+#drivers <- readWorkbook(xldt, sheet="Slide 4", startRow=3, colNames = T)
+#drivers <- drivers %>% gather(year, admissions, -X1) %>%
+#  rename(offense = X1)
+#drivers$year <- as.numeric(drivers$year)
+#write.csv(drivers, "data/drivers.csv", row.names=F)
+
+# Mandatory minimums by offense
+#mandmins <- readWorkbook(xldt, sheet="Slide 8", rows=c(5:14), cols=c(3,4,6), colNames = F, skipEmptyRows = T)
+#colnames(mandmins) <- c("offense", "mandmin_0", "mandmin_1")
+#mandmins <- mandmins %>% mutate(total = mandmin_0 + mandmin_1, mandmin_pct = mandmin_1/total)
+#write.csv(mandmins, "data/mandmins.csv", row.names=F)

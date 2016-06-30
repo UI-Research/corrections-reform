@@ -26,7 +26,7 @@ var width = $graphic1.width() - margin.left - margin.right,
 console.log($graphic1.width(), width);
 
 
-var dispatch = d3.dispatch("intoSecurityBars", "intoChBars", "changeChBars");
+var dispatch = d3.dispatch("changeGrowthLines", "intoSecurityBars", "intoChBars", "changeChBars");
 
 d3.selection.prototype.moveToFront = function () {
     return this.each(function () {
@@ -70,9 +70,15 @@ $('input:radio[name="radio-ch"]').change(function () {
 
 });
 
+$('input:radio[name="radio-growth"]').change(function () {
+    //console.log($(this).val());
+    dispatch.changeGrowthLines($(this).val());
+
+});
+
 function graph1() {
 
-    VALUE = "pop_total";
+    //VALUE = "pop_total";
 
     $graphic1.empty();
 
@@ -114,10 +120,14 @@ function graph1() {
 
     //initial graph
     function init0() {
+        var LINEVARS = ["standing", "pop_total"];
+        var LABELS = ["Federally sentenced population", "Total federal prison population"];
+        var FOOTNOTE = "The total federal prison population includes a small share of special populations, including pretrial holds and those convicted of DC code felonies. This feature focuses on the federally sentenced population, examining the years for which we have data, 1994–2014.";
+
         data = data_main.growth;
 
         //line chart
-        VALUE = "pop_total";
+
         var x = d3.scale.linear()
             .range([0, width])
             .domain(d3.extent(data, function (d) {
@@ -126,9 +136,7 @@ function graph1() {
 
         var y = d3.scale.linear()
             .range([height, 0])
-            .domain([0, d3.max(data, function (d) {
-                return d[VALUE];
-            })]);
+            .domain([0, 220000])
 
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -143,33 +151,88 @@ function graph1() {
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
-        var line0 = d3.svg.line()
+        //footnote
+        svg.append("text")
+            .attr("class", "footnote graph0")
+            .attr("text-anchor", "start")
+            .attr("x", 0)
+            .attr("y", height + 30)
+            .text(FOOTNOTE)
+            .call(wrap2, width + 40, -40)
+            .attr("opacity", 1);
+
+        var line1 = d3.svg.line()
             .interpolate("cardinal")
+            .defined(function (d) {
+                return d.number != null & d.number > 0;
+            })
             .x(function (d) {
                 return x(d.year);
             })
             .y(function (d) {
-                return y(d[VALUE]);
+                return y(d.number);
             });
 
-        svg.append("path")
-            .datum(data)
-            .attr("class", "chartline graph0 standing")
-            .attr("d", line0)
+        var types = LINEVARS.map(function (name) {
+            return {
+                name: name,
+                values: (data).map(function (d) {
+                    return {
+                        year: d.year,
+                        number: +d[name]
+                    };
+                })
+            };
+        });
+
+        var lines0 = svg.selectAll(".lines")
+            .data(types)
+            .enter().append("g")
+            .attr("class", "lines0");
+
+        lines0.append("path")
+            .attr("class", function (d) {
+                return d.name + " graph0 chartline";
+            })
+            .attr("d", function (d) {
+                return line1(d.values);
+            })
             .attr("opacity", 1);
+
+        //direct line labels
+        lines0.append("text")
+            .datum(function (d) {
+                return {
+                    name: d.name,
+                    value: d.values[d.values.length - 3]
+                };
+            })
+            .attr("class", "pointlabel graph0")
+            .attr("text-anchor", "end")
+            .attr("x", x(2016))
+            .attr("y", function (d) {
+                if (d.name == "pop_total") {
+                    return y(d.value.number) - 20;
+                } else {
+                    //return y(d.value.number) + 70;
+                    return y(150000) + 12
+                }
+            })
+            .text(function (d, i) {
+                return LABELS[i];
+            })
+            .attr("opacity", 1);
+
     }
 
-    //stacked area chart -> two lines chart
     function init1() {
-        data = data_main.sentences;
+        //line chart - standing population vs admissions over time, with a toggle for offense type
+        data = data_main.sentences.filter(function (d) {
+            return d.offense == "total";
+        });
 
-        //chart 2
-        VALUE = "standing";
-        var ORDER = ["other", "drug", "weapon", "immigration", "sex"]
-
-        //chart 1
         var LINEVARS = ["standing", "admissions"];
-        var LABELS = ["Standing population", "Admissions"];
+        var LABELS = ["Federally sentenced population", "Admissions"];
 
         var y = d3.scale.linear()
             .domain([0, 220000])
@@ -189,7 +252,128 @@ function graph1() {
             })
             .ticks(10);
 
-        //chart 1
+        var gx = svg.append("g")
+            .attr("class", "x axis-show axis1")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        var line1 = d3.svg.line()
+            .interpolate("cardinal")
+            .x(function (d) {
+                return x(d.year);
+            })
+            .y(function (d) {
+                return y(d.number);
+            });
+
+        var types = LINEVARS.map(function (name) {
+            return {
+                name: name,
+                values: data.map(function (d) {
+                    return {
+                        year: d.year,
+                        number: +d[name]
+                    };
+                })
+            };
+        });
+
+        var lines = svg.selectAll(".lines")
+            .data(types, function (d) {
+                return d.name;
+            })
+            .enter().append("g")
+            .attr("class", "lines");
+
+        lines.append("path")
+            .attr("class", function (d) {
+                return d.name + " graph1 chartline";
+            })
+            .attr("d", function (d) {
+                return line1(d.values);
+            })
+            .attr("opacity", 0);
+
+        //direct line labels
+        lines.append("text")
+            .attr("class", "pointlabel graph1")
+            .attr("text-anchor", "end")
+            .attr("x", x(2014))
+            .attr("y", function (d) {
+                return y(d.values[d.values.length - 1]["number"]) - 20;
+            })
+            .text(function (d, i) {
+                return LABELS[i];
+            })
+            .attr("opacity", 0);
+
+        dispatch.on("changeGrowthLines", function (type) {
+            //switch offense type in lines
+
+            data = data_main.sentences.filter(function (d) {
+                return d.offense == type;
+            });
+
+            types = LINEVARS.map(function (name) {
+                return {
+                    name: name,
+                    values: data.map(function (d) {
+                        return {
+                            year: d.year,
+                            number: +d[name]
+                        };
+                    })
+                };
+            });
+
+            lines.selectAll("path")
+                .data(types, function (d) {
+                    return d.name;
+                })
+                .transition()
+                .duration(500)
+                .attr("d", function (d) {
+                    return line1(d.values);
+                });
+
+            lines.selectAll("text")
+                .data(types, function (d) {
+                    return d.name;
+                })
+                .transition()
+                .duration(500)
+                .attr("y", function (d) {
+                    return y(d.values[d.values.length - 1]["number"]) - 20;
+                });
+
+        });
+    }
+
+    function init2() {
+        //stacked area chart - population by offense over time
+        data = data_main.sentences;
+
+        VALUE = "standing";
+        var ORDER = ["other", "drug", "weapon", "immigration", "sex"]
+
+        var y = d3.scale.linear()
+            .domain([0, 220000])
+            .range([height, 0], .1);
+
+        var x = d3.scale.linear()
+            .domain(d3.extent(data, function (d) {
+                return d.year;
+            }))
+            .range([0, width]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .tickFormat(function (d) {
+                return d;
+            })
+            .ticks(10);
+
         var nest = d3.nest()
             .key(function (d) {
                 return d.offense;
@@ -280,69 +464,6 @@ function graph1() {
             })
             .attr("opacity", 0);
 
-        var line1 = d3.svg.line()
-            .interpolate("cardinal")
-            .x(function (d) {
-                return x(d.year);
-            })
-            .y(function (d) {
-                return y(d.number);
-            });
-
-        //chart 2
-        var types = LINEVARS.map(function (name) {
-            return {
-                name: name,
-                values: (data.filter(function (d) {
-                    return d.offense == "total";
-                })).map(function (d) {
-                    return {
-                        year: d.year,
-                        number: +d[name]
-                    };
-                })
-            };
-        });
-
-        var lines = svg.selectAll(".lines")
-            .data(types)
-            .enter().append("g")
-            .attr("class", "lines");
-
-        lines.append("path")
-            .attr("class", function (d) {
-                return d.name + " graph1 chartline";
-            })
-            .attr("d", function (d) {
-                return line1(d.values);
-            })
-            .attr("opacity", 0);
-
-        //direct line labels
-        lines.append("text")
-            .datum(function (d) {
-                return {
-                    name: d.name,
-                    value: d.values[d.values.length - 1]
-                };
-            })
-            .attr("class", "pointlabel graph1")
-            .attr("text-anchor", "end")
-            .attr("x", function (d) {
-                return x(d.value.year);
-            })
-            .attr("y", function (d) {
-                return y(d.value.number) - 20;
-            })
-            .text(function (d, i) {
-                return LABELS[i];
-            })
-            .attr("opacity", 0);
-
-        var gx = svg.append("g")
-            .attr("class", "x axis-show axis1")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
     }
 
     //graph 3 - circle grid 
@@ -510,6 +631,7 @@ function graph1() {
 
     init0();
     init1();
+    init2();
     init3();
     init4();
 
@@ -783,7 +905,7 @@ function graph2() {
             .attr("y2", function (d) {
                 return d.complex[1];
             })
-        
+
         //we want one region to be selected by default for users to see
         d3.selectAll(".KS, [code='KS']").classed("hovered", true);
 
@@ -1209,7 +1331,9 @@ function graph2() {
 
     function initSecurity() {
         //bar chart of prison type
-        data = data_main.security_drug;
+        data = data_main.security.filter(function (d) {
+            return d.offense == "drug";
+        });
         VALUE = "number";
 
         var y = d3.scale.linear()
