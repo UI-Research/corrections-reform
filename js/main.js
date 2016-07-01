@@ -4,6 +4,7 @@ var map_data_url = "data/judicialdistricts.json",
     data,
     VALUE,
     districts,
+    $mobilegrowth = $("#mobilegrowth"),
     $graphic1 = $("#graphic1"),
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
@@ -14,18 +15,8 @@ var blue5 = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
 var BREAKS = [1000, 1500, 2000, 3000];
 var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
 var GROWTHTYPE = "total";
-
-var margin = {
-    top: 60,
-    right: 15,
-    bottom: 75,
-    left: 70
-};
-
-var width = $graphic1.width() - margin.left - margin.right,
-    height = 450;
-console.log($graphic1.width(), width);
-
+var FOOTNOTE = "The total federal prison population includes a small share of special populations, including pretrial holds and those convicted of DC code felonies.This feature focuses on the federally sentenced population, examining the years
+for which we have data, 1994– 2014.";
 
 var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
@@ -91,6 +82,16 @@ $('input:radio[name="radio-security"]').change(function () {
 });
 
 function graph1() {
+
+    var margin = {
+        top: 60,
+        right: 15,
+        bottom: 75,
+        left: 70
+    };
+
+    var width = $graphic1.width() - margin.left - margin.right,
+        height = 450;
 
     //VALUE = "pop_total";
 
@@ -166,7 +167,6 @@ function graph1() {
     function init0() {
         var LINEVARS = ["standing", "pop_total"];
         var LABELS = ["Federally sentenced population", "Total federal prison population"];
-        var FOOTNOTE = "The total federal prison population includes a small share of special populations, including pretrial holds and those convicted of DC code felonies. This feature focuses on the federally sentenced population, examining the years for which we have data, 1994–2014.";
 
         data = data_main.growth;
 
@@ -789,6 +789,16 @@ function graph1() {
 }
 
 function graph2() {
+    var margin = {
+        top: 60,
+        right: 15,
+        bottom: 75,
+        left: 70
+    };
+
+    var width = $graphic1.width() - margin.left - margin.right,
+        height = 450;
+
 
     $graphic2.empty();
 
@@ -1673,6 +1683,16 @@ function graph2() {
 }
 
 function graph3() {
+    var margin = {
+        top: 60,
+        right: 15,
+        bottom: 75,
+        left: 70
+    };
+
+    var width = $graphic1.width() - margin.left - margin.right,
+        height = 450;
+
     $graphic3.empty();
 
     var svg = d3.select("#graphic3").append("svg")
@@ -1800,21 +1820,35 @@ function graph3() {
         .on('active', function (i) {});
 }
 
+$('document').ready(function () {
+    console.log("window width is " + $(window).width());
 
-function drawgraphs() {
-    graph1();
-    graph2();
-    graph3();
-}
-$(window).load(function () {
-    if (Modernizr.svg) { // if svg is supported, draw dynamic chart
-        d3.json(main_data_url, function (json) {
-            d3.json(map_data_url, function (mapjson) {
-                data_main = json;
-                districts = mapjson;
-                drawgraphs();
-                window.onresize = drawgraphs();
-            });
-        });
+    if ($(window).width() <= 768) {
+        function drawgraphs() {
+            console.log("I'm on mobile!");
+            mobileGrowth();
+        }
+
+    } else {
+
+
+        function drawgraphs() {
+            graph1();
+            graph2();
+            graph3();
+        }
     }
+
+    $(window).load(function () {
+        if (Modernizr.svg) { // if svg is supported, draw dynamic chart
+            d3.json(main_data_url, function (json) {
+                d3.json(map_data_url, function (mapjson) {
+                    data_main = json;
+                    districts = mapjson;
+                    drawgraphs();
+                    window.onresize = drawgraphs();
+                });
+            });
+        }
+    });
 });

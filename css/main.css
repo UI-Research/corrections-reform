@@ -286,15 +286,35 @@ h4 {
 
 /*graphics setup*/
 
-.section {
-    margin-bottom: 400px;
+
+/*mobile layout for graphs*/
+
+@media only screen and (max-width: 767px) {
+    .graphic {
+        display: none;
+    }
+    .subsection {
+        opacity: 1;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        /*min-height: 600;*/
+    }
 }
 
-.subsection {
-    opacity: .25;
-    margin-top: 60px;
-    margin-bottom: 100px;
-    /*min-height: 600;*/
+@media only screen and (min-width: 768px) {
+    .mobilegraphic {
+        display: none;
+    }
+    .subsection {
+        opacity: .25;
+        margin-top: 60px;
+        margin-bottom: 100px;
+        /*min-height: 600;*/
+    }
+}
+
+.section {
+    margin-bottom: 400px;
 }
 
 .subsection.graph-scroll-active {
@@ -414,6 +434,7 @@ circle.hovered {
 .footnote {
     font-size: 11px;
     font-style: italic;
+    margin-bottom: 1em;
 }
 
 .graphtitle {
