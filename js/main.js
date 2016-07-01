@@ -27,7 +27,7 @@ var width = $graphic1.width() - margin.left - margin.right,
 console.log($graphic1.width(), width);
 
 
-var dispatch = d3.dispatch("rescaleXAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
+var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
 d3.selection.prototype.moveToFront = function () {
     return this.each(function () {
@@ -798,6 +798,67 @@ function graph2() {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    //Y axis used in race, criminal history, security charts (all but map)
+    var y = d3.scale.linear()
+        .range([height, 0])
+        .domain([0, 220000]);
+
+    svg.append("text")
+        .attr("class", "axistitle fedpop")
+        .attr("text-anchor", "middle")
+        .attr("x", 0)
+        .attr("y", -5)
+        .text("Federal prison population")
+        .attr("opacity", 0);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(-width)
+        .ticks(5)
+        .orient("left");
+
+    var gy = svg.append("g")
+        .attr("class", "y axis fedpop")
+        .call(yAxis);
+
+    gy.selectAll("text")
+        .attr("dx", -8);
+
+    gy.selectAll("g").filter(function (d) {
+            return d;
+        })
+        .classed("minor", true);
+
+    dispatch.on("rescaleYAxis", function (ymax) {
+        y.domain([0, ymax]);
+
+        yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(-width)
+            .ticks(5)
+            .tickFormat(function (d) {
+                return d3.format(",")(d);
+            })
+            .orient("left");
+
+        d3.selectAll(".axis.fedpop")
+            .transition()
+            .duration(1000)
+            .ease("cubic-in-out")
+            .call(yAxis)
+            .each('interrupt', function () {
+                console.log("yikes fedpop axis");
+            });
+
+        gy.selectAll("text")
+            .attr("dx", -8);
+
+        gy.selectAll("g").filter(function (d) {
+                return d;
+            })
+            .classed("minor", true);
+    });
+
     function initMap() {
 
         //map setup
@@ -1035,7 +1096,7 @@ function graph2() {
             })
             .ticks(10);
 
-        var yAxis = d3.svg.axis()
+        /*var yAxis = d3.svg.axis()
             .scale(y)
             .tickSize(-width)
             .ticks(5)
@@ -1051,13 +1112,14 @@ function graph2() {
         gy.selectAll("g").filter(function (d) {
                 return d;
             })
-            .classed("minor", true);
-        svg.append("text")
+            .classed("minor", true);*/
+
+        /*svg.append("text")
             .attr("class", "axistitle graphrace")
             .attr("text-anchor", "middle")
             .attr("x", 0)
             .attr("y", -5)
-            .text("Federal prison population");
+            .text("Federal prison population");*/
 
         var nest = d3.nest()
             .key(function (d) {
@@ -1165,27 +1227,6 @@ function graph2() {
                 return d.number;
             })]);
 
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            .tickSize(-width)
-            .ticks(5)
-            .tickFormat(function (d) {
-                return d3.format(",")(d);
-            })
-            .orient("left");
-
-        var gy = svg.append("g")
-            .attr("class", "y axis graphch ych")
-            .call(yAxis);
-
-        gy.selectAll("text")
-            .attr("dx", -8);
-
-        gy.selectAll("g").filter(function (d) {
-                return d;
-            })
-            .classed("minor", true);
-
         var x = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1)
             .domain(data.map(function (d) {
@@ -1224,7 +1265,7 @@ function graph2() {
             })
             .attr("opacity", 0);
 
-        bars.append("text")
+        /*bars.append("text")
             .attr("class", "pointlabel graphch")
             .attr("y", function (d) {
                 return y(d.number) - 8;
@@ -1236,7 +1277,7 @@ function graph2() {
             .text(function (d) {
                 return d3.format(",.0f")(d.number);
             })
-            .attr("opacity", 0);
+            .attr("opacity", 0);*/
 
         var gx = svg.append("g")
             .attr("transform", "translate(0," + height + ")")
@@ -1282,9 +1323,6 @@ function graph2() {
                     return d.number;
                 })]);
 
-            console.log(d3.max(data, function (d) {
-                return d.number;
-            }));
             bars.selectAll("rect")
                 .data(data, function (d) {
                     return d.category;
@@ -1301,7 +1339,7 @@ function graph2() {
                     console.log("yikes bars");
                 });
 
-            bars.selectAll("text")
+            /*bars.selectAll("text")
                 .data(data, function (d) {
                     return d.category;
                 })
@@ -1309,41 +1347,26 @@ function graph2() {
                 .duration(500)
                 .attr("y", function (d) {
                     return y(d.number) - 8;
-                    //return y(d.percent) - 8;
                 })
                 .text(function (d) {
                     return d3.format(",.0f")(d.number);
-                })
+                })*/
 
-            yAxis = d3.svg.axis()
-                .scale(y)
-                .tickSize(-width)
-                .ticks(5)
-                .tickFormat(function (d) {
-                    return d3.format(",")(d);
-                })
-                .orient("left");
-
-            d3.selectAll(".ych")
-                .transition()
-                .duration(1000)
-                .ease("cubic-in-out")
-                .call(yAxis)
-                .each('interrupt', function () {
-                    console.log("yikes ch axis");
-                });
-
-            gy.selectAll("text")
-                .attr("dx", -8);
-
-            gy.selectAll("g").filter(function (d) {
-                    return d;
-                })
-                .classed("minor", true);
+            dispatch.rescaleYAxis(d3.max(data, function (d) {
+                return d.number;
+            }));
 
         });
 
         dispatch.on("intoChBars", function () {
+            var chtype = d3.select('label[name="radio-ch"].active').attr("value");
+
+            var maxy = d3.max(data_main.histories.filter(function (d) {
+                return d.offense == chtype;
+            }), function (d) {
+                return d.number;
+            });
+            console.log(maxy);
 
             var graphOn = d3.selectAll("rect.graphch").attr("height");
 
@@ -1388,6 +1411,8 @@ function graph2() {
                         console.log("yikes intoChBars");
                     });
 
+                dispatch.rescaleYAxis(maxy);
+
                 //disappear old labels
                 d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity, .axis.graphsecurity")
                     .transition()
@@ -1407,10 +1432,12 @@ function graph2() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graphch")
+                d3.selectAll(".graphch, .fedpop")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
+
+                dispatch.rescaleYAxis(maxy);
             }
         })
     }
@@ -1433,27 +1460,6 @@ function graph2() {
             .domain(data.map(function (d) {
                 return d.security;
             }));
-
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            .tickSize(-width)
-            .ticks(5)
-            .tickFormat(function (d) {
-                return d3.format(",")(d);
-            })
-            .orient("left");
-
-        var gy = svg.append("g")
-            .attr("class", "y axis graphsecurity ysecurity")
-            .call(yAxis);
-
-        gy.selectAll("text")
-            .attr("dx", -8);
-
-        gy.selectAll("g").filter(function (d) {
-                return d;
-            })
-            .classed("minor", true);
 
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -1489,7 +1495,7 @@ function graph2() {
             .attr("height", height / 2)
             .attr("opacity", 0);
 
-        securitybars.append("text")
+        /*securitybars.append("text")
             .attr("class", "pointlabel graphsecurity")
             .attr("y", function (d) {
                 return y(d[VALUE]) - 8;
@@ -1501,7 +1507,7 @@ function graph2() {
             .text(function (d) {
                 return d3.format(",.0f")(d[VALUE]);
             })
-            .attr("opacity", 0);
+            .attr("opacity", 0);*/
 
         var gx = svg.append("g")
             .attr("transform", "translate(0," + height + ")")
@@ -1536,55 +1542,27 @@ function graph2() {
                 .duration(500)
                 .attr("y", function (d) {
                     return y(d.number);
-                    //return y(d.percent);
                 })
                 .attr("height", function (d) {
                     return height - y(d.number);
-                    //return height - y(d.percent);
                 });
 
-            securitybars.selectAll("text")
-                .data(data, function (d) {
-                    return d.security;
-                })
-                .transition()
-                .duration(500)
-                .attr("y", function (d) {
-                    return y(d.number) - 8;
-                    //return y(d.percent) - 8;
-                })
-                .text(function (d) {
-                    return d3.format(",.0f")(d.number);
-                })
+            dispatch.rescaleYAxis(d3.max(data, function (d) {
+                return d.number;
+            }));
 
-            yAxis = d3.svg.axis()
-                .scale(y)
-                .tickSize(-width)
-                .ticks(5)
-                .tickFormat(function (d) {
-                    return d3.format(",")(d);
-                })
-                .orient("left");
-
-            d3.selectAll(".ysecurity")
-                .transition()
-                .duration(1000)
-                .ease("cubic-in-out")
-                .call(yAxis)
-                .each('interrupt', function () {
-                    console.log("yikes security axis");
-                });
-
-            gy.selectAll("text")
-                .attr("dx", -8);
-
-            gy.selectAll("g").filter(function (d) {
-                    return d;
-                })
-                .classed("minor", true);
         });
 
         dispatch.on("intoSecurityBars", function () {
+            var sectype = d3.select('label[name="radio-security"].active').attr("value");
+
+            var maxy = d3.max(data_main.security.filter(function (d) {
+                return d.offense == sectype;
+            }), function (d) {
+                return d.number;
+            });
+            console.log(maxy);
+
             d3.selectAll(".graphmap, .graphrace")
                 .transition()
                 .duration(0)
@@ -1623,6 +1601,9 @@ function graph2() {
                     console.log("yikes intoSecurityBars");
                 });
 
+
+            dispatch.rescaleYAxis(maxy);
+
             //disappear old labels
             d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axis.graphch")
                 .transition()
@@ -1652,7 +1633,7 @@ function graph2() {
 
             if (i == 0) {
 
-                d3.selectAll(".graphrace, .graphch, .graphsecurity")
+                d3.selectAll(".graphrace, .graphch, .graphsecurity, .fedpop")
                     .transition()
                     .duration(0)
                     .attr("opacity", 0)
@@ -1669,10 +1650,14 @@ function graph2() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graphrace")
+                d3.selectAll(".graphrace, .fedpop")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
+
+                if (y.domain()[1] != 220000) {
+                    dispatch.rescaleYAxis(220000);
+                }
 
             } else if (i == 2) {
 
