@@ -1389,14 +1389,14 @@ function graph2() {
                     });
 
                 //disappear old labels
-                d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity")
+                d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity, .axis.graphsecurity")
                     .transition()
                     .delay(500)
                     .duration(500)
                     .attr("opacity", 0)
 
                 //make new labels visible
-                d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axisgraphch")
+                d3.selectAll(".axistitle.graphch, .axis-show.graphch, .pointlabel.graphch, .axis.graphch")
                     .transition()
                     .delay(2000)
                     .duration(500)
