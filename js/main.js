@@ -15,8 +15,7 @@ var blue5 = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
 var BREAKS = [1000, 1500, 2000, 3000];
 var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
 var GROWTHTYPE = "total";
-var FOOTNOTE = "The total federal prison population includes a small share of special populations, including pretrial holds and those convicted of DC code felonies.This feature focuses on the federally sentenced population, examining the years
-for which we have data, 1994– 2014.";
+var FOOTNOTE = "The total federal prison population includes a small share of special populations, including pretrial holds and those convicted of DC code felonies.This feature focuses on the federally sentenced population, examining the years for which we have data, 1994– 2014.";
 
 var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
