@@ -45,6 +45,16 @@ h5 {
 
 h6 {}
 
+a {
+    color: #1696d2;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #1696d2;
+    text-decoration: none;
+}
+
 p,
 ul,
 li {
@@ -328,9 +338,10 @@ svg {
     pointer-events: cursor;
 }
 
-circle.hovered{
+circle.hovered {
     fill: #fdbf11 !important;
 }
+
 .district.hovered {
     fill: #fdbf11;
 }

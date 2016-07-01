@@ -1009,7 +1009,7 @@ function graph2() {
             .attr("text-anchor", "start")
             .attr("x", lp_w)
             .attr("y", 10)
-            .text("Number of sentences");
+            .text("Number of people sentenced");
     }
 
     function initRace() {
