@@ -1158,27 +1158,24 @@ function graph2() {
         data = data_main.histories.filter(function (d) {
             return d.offense == "drug";
         });
-        //VALUE = "number";
-        //VALUE = "percent";
 
         var y = d3.scale.linear()
             .range([height, 0])
             .domain([0, d3.max(data, function (d) {
                 return d.number;
             })]);
-        //.domain([0, 0.75]);
 
-        /*var yAxis = d3.svg.axis()
+        var yAxis = d3.svg.axis()
             .scale(y)
             .tickSize(-width)
             .ticks(5)
             .tickFormat(function (d) {
-                return d3.format("%")(d);
+                return d3.format(",")(d);
             })
             .orient("left");
 
         var gy = svg.append("g")
-            .attr("class", "y axis graphch")
+            .attr("class", "y axis graphch ych")
             .call(yAxis);
 
         gy.selectAll("text")
@@ -1187,7 +1184,7 @@ function graph2() {
         gy.selectAll("g").filter(function (d) {
                 return d;
             })
-            .classed("minor", true);*/
+            .classed("minor", true);
 
         var x = d3.scale.ordinal()
             .rangeRoundBands([0, width], .1)
@@ -1221,11 +1218,9 @@ function graph2() {
             .attr("width", x.rangeBand())
             .attr("y", function (d) {
                 return y(d.number);
-                //return y(d.percent);
             })
             .attr("height", function (d) {
                 return height - y(d.number);
-                //return height - y(d.percent);
             })
             .attr("opacity", 0);
 
@@ -1233,7 +1228,6 @@ function graph2() {
             .attr("class", "pointlabel graphch")
             .attr("y", function (d) {
                 return y(d.number) - 8;
-                //return y(d.percent) - 8;
             })
             .attr("x", function (d) {
                 return x(d.category) + x.rangeBand() / 2;
@@ -1277,6 +1271,7 @@ function graph2() {
 
         dispatch.on("changeChBars", function (type) {
             //reset bars to a different offense type, based on radio button value
+            //transition axis too
             data = data_main.histories.filter(function (d) {
                 return d.offense == type;
             });
@@ -1286,8 +1281,10 @@ function graph2() {
                 .domain([0, d3.max(data, function (d) {
                     return d.number;
                 })]);
-            //.domain([0, 0.75]);
 
+            console.log(d3.max(data, function (d) {
+                return d.number;
+            }));
             bars.selectAll("rect")
                 .data(data, function (d) {
                     return d.category;
@@ -1296,11 +1293,12 @@ function graph2() {
                 .duration(500)
                 .attr("y", function (d) {
                     return y(d.number);
-                    //return y(d.percent);
                 })
                 .attr("height", function (d) {
                     return height - y(d.number);
-                    //return height - y(d.percent);
+                })
+                .each('interrupt', function () {
+                    console.log("yikes bars");
                 });
 
             bars.selectAll("text")
@@ -1316,6 +1314,33 @@ function graph2() {
                 .text(function (d) {
                     return d3.format(",.0f")(d.number);
                 })
+
+            yAxis = d3.svg.axis()
+                .scale(y)
+                .tickSize(-width)
+                .ticks(5)
+                .tickFormat(function (d) {
+                    return d3.format(",")(d);
+                })
+                .orient("left");
+
+            d3.selectAll(".ych")
+                .transition()
+                .duration(1000)
+                .ease("cubic-in-out")
+                .call(yAxis)
+                .each('interrupt', function () {
+                    console.log("yikes ch axis");
+                });
+
+            gy.selectAll("text")
+                .attr("dx", -8);
+
+            gy.selectAll("g").filter(function (d) {
+                    return d;
+                })
+                .classed("minor", true);
+
         });
 
         dispatch.on("intoChBars", function () {
@@ -1355,11 +1380,12 @@ function graph2() {
                     .attr("width", x.rangeBand())
                     .attr("y", function (d) {
                         return y(d.number);
-                        //return y(d.percent);
                     })
                     .attr("height", function (d) {
                         return height - y(d.number);
-                        //return height - y(d.percent);
+                    })
+                    .each('interrupt', function () {
+                        console.log("yikes intoChBars");
                     });
 
                 //disappear old labels
@@ -1407,6 +1433,27 @@ function graph2() {
             .domain(data.map(function (d) {
                 return d.security;
             }));
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(-width)
+            .ticks(5)
+            .tickFormat(function (d) {
+                return d3.format(",")(d);
+            })
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y axis graphsecurity ysecurity")
+            .call(yAxis);
+
+        gy.selectAll("text")
+            .attr("dx", -8);
+
+        gy.selectAll("g").filter(function (d) {
+                return d;
+            })
+            .classed("minor", true);
 
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -1480,7 +1527,6 @@ function graph2() {
                 .domain([0, d3.max(data, function (d) {
                     return d.number;
                 })]);
-            //.domain([0, 0.75]);
 
             securitybars.selectAll("rect")
                 .data(data, function (d) {
@@ -1510,6 +1556,32 @@ function graph2() {
                 .text(function (d) {
                     return d3.format(",.0f")(d.number);
                 })
+
+            yAxis = d3.svg.axis()
+                .scale(y)
+                .tickSize(-width)
+                .ticks(5)
+                .tickFormat(function (d) {
+                    return d3.format(",")(d);
+                })
+                .orient("left");
+
+            d3.selectAll(".ysecurity")
+                .transition()
+                .duration(1000)
+                .ease("cubic-in-out")
+                .call(yAxis)
+                .each('interrupt', function () {
+                    console.log("yikes security axis");
+                });
+
+            gy.selectAll("text")
+                .attr("dx", -8);
+
+            gy.selectAll("g").filter(function (d) {
+                    return d;
+                })
+                .classed("minor", true);
         });
 
         dispatch.on("intoSecurityBars", function () {
@@ -1542,12 +1614,13 @@ function graph2() {
                 .duration(1000)
                 .attr("width", x.rangeBand())
                 .attr("y", function (d) {
-                    //return y(d.number);
                     return y(d.number);
                 })
                 .attr("height", function (d) {
-                    //return height - y(d.number);
                     return height - y(d.number);
+                })
+                .each('interrupt', function () {
+                    console.log("yikes intoSecurityBars");
                 });
 
             //disappear old labels
@@ -1558,7 +1631,7 @@ function graph2() {
                 .attr("opacity", 0)
 
             //make new labels visible
-            d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity")
+            d3.selectAll(".axistitle.graphsecurity, .axis-show.graphsecurity, .pointlabel.graphsecurity, .axis.graphsecurity")
                 .transition()
                 .delay(2000)
                 .duration(500)
