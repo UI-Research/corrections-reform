@@ -299,6 +299,12 @@ h4 {
         margin-bottom: 20px;
         /*min-height: 600;*/
     }
+    .buttons {
+        display: none;
+    }
+    .section {
+        margin-bottom: 25px;
+    }
 }
 
 @media only screen and (min-width: 768px) {
@@ -311,10 +317,9 @@ h4 {
         margin-bottom: 100px;
         /*min-height: 600;*/
     }
-}
-
-.section {
-    margin-bottom: 250px;
+    .section {
+        margin-bottom: 250px;
+    }
 }
 
 .subsection.graph-scroll-active {
@@ -443,7 +448,7 @@ circle.hovered {
 
 .pointlabel {
     font-size: 12px;
-    fill: #000 !important;
+    fill: #000;
 }
 
 .chartline {
@@ -478,6 +483,7 @@ circle.hovered {
 
 .other.pointlabel {
     fill: #e2e2e2;
+    color: #e2e2e2 !important;
 }
 
 .drug.layer,
