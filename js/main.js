@@ -1831,7 +1831,7 @@ $(document).ready(function () {
         }
 
     } else {
-
+        console.log("I'm on desktop");
         function drawgraphs() {
             graph1();
             graph2();
