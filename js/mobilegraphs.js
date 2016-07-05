@@ -143,6 +143,220 @@ function mobileGrowth(div) {
 
 }
 
+function mobileDrivers(div) {
+    var $div = $(div);
+
+    var margin = {
+        top: 40,
+        right: 15,
+        bottom: 35,
+        left: 60
+    };
+
+    var width = $div.width() - margin.left - margin.right,
+        height = Math.ceil(width * 1) - margin.top - margin.bottom;
+
+    $div.empty();
+
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var y = d3.scale.linear()
+        .range([height, 0])
+        .domain([0, 220000]);
+
+    svg.append("text")
+        .attr("class", "axistitle linesaxis")
+        .attr("text-anchor", "start")
+        .attr("x", -margin.left)
+        .attr("y", -25)
+        .text("Federal prison population");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(-width)
+        .ticks(5)
+        .orient("left");
+
+    var gy = svg.append("g")
+        .attr("class", "y axis linesaxis")
+        .call(yAxis);
+
+    gy.selectAll("text")
+        .attr("dx", -8);
+
+    gy.selectAll("g").filter(function (d) {
+            return d;
+        })
+        .classed("minor", true);
+
+    data = data_main.sentences.filter(function (d) {
+        return d.offense == "total";
+    });
+
+    var LINEVARS = ["standing", "admissions"];
+    var LABELS = ["Federally sentenced population", "Admissions"];
+
+    var x = d3.scale.linear()
+        .domain(d3.extent(data, function (d) {
+            return d.year;
+        }))
+        .range([0, width]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(function (d) {
+            return formatYear(d);
+        })
+        .tickValues(mainyears);
+
+    var gx = svg.append("g")
+        .attr("class", "x axis-show axis1")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    var line1 = d3.svg.line()
+        .interpolate("cardinal")
+        .x(function (d) {
+            return x(d.year);
+        })
+        .y(function (d) {
+            return y(d.number);
+        });
+
+    var types = LINEVARS.map(function (name) {
+        return {
+            name: name,
+            values: data.map(function (d) {
+                return {
+                    year: d.year,
+                    number: +d[name]
+                };
+            })
+        };
+    });
+
+    var lines = svg.selectAll(".lines")
+        .data(types, function (d) {
+            return d.name;
+        })
+        .enter().append("g")
+        .attr("class", "lines");
+
+    lines.append("path")
+        .attr("class", function (d) {
+            return d.name + " graph1 chartline";
+        })
+        .attr("d", function (d) {
+            return line1(d.values);
+        });
+
+    //direct line labels
+    lines.append("text")
+        .attr("class", "pointlabel graph1")
+        .attr("text-anchor", "end")
+        .attr("x", x(2014))
+        /*.attr("y", function (d) {
+            return y(d.values[d.values.length - 1]["number"]) - 20;
+        })*/
+        .attr("y", function (d) {
+            if (d.name == "standing") {
+                return y(d.values[d.values.length - 1]["number"]) - 15;
+            } else {
+                return y(d.values[d.values.length - 1]["number"]) + 15;
+            }
+        })
+        .text(function (d, i) {
+            return LABELS[i];
+        });
+
+    dispatch.on("changeGrowthLines", function (type) {
+        //switch offense type in lines
+
+        data = data_main.sentences.filter(function (d) {
+            return d.offense == type;
+        });
+
+        var ymax = type == "total" ? 220000 : d3.max(data, function (d) {
+            return d.standing;
+        });
+
+        y = d3.scale.linear()
+            .range([height, 0])
+            .domain([0, ymax]);
+
+        yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(-width)
+            .ticks(5)
+            .tickFormat(function (d) {
+                return d3.format(",")(d);
+            })
+            .orient("left");
+
+        d3.selectAll(".y.axis")
+            .transition()
+            .duration(1000)
+            .ease("cubic-in-out")
+            .call(yAxis)
+            .each('interrupt', function () {
+                console.log("yikes fedpop axis");
+            });
+
+        gy.selectAll("text")
+            .attr("dx", -8);
+
+        gy.selectAll("g").filter(function (d) {
+                return d;
+            })
+            .classed("minor", true);
+
+        types = LINEVARS.map(function (name) {
+            return {
+                name: name,
+                values: data.map(function (d) {
+                    return {
+                        year: d.year,
+                        number: +d[name]
+                    };
+                })
+            };
+        });
+
+        lines.selectAll("path")
+            .data(types, function (d) {
+                return d.name;
+            })
+            .transition()
+            .duration(500)
+            .attr("d", function (d) {
+                return line1(d.values);
+            });
+
+        lines.selectAll("text")
+            .data(types, function (d) {
+                return d.name;
+            })
+            .transition()
+            .duration(500)
+            /*.attr("y", function (d) {
+                return y(d.values[d.values.length - 1]["number"]) - 20;
+            });*/
+            .attr("y", function (d) {
+                if (d.name == "standing") {
+                    return y(d.values[d.values.length - 1]["number"]) - 15;
+                } else {
+                    return y(d.values[d.values.length - 1]["number"]) + 15;
+                }
+            })
+
+    });
+}
+
 function mobileMm(div) {
     circleradius = 7;
     var $div = $(div);

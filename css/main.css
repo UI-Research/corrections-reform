@@ -313,7 +313,9 @@ h4 {
 /*mobile layout for graphs*/
 
 @media only screen and (max-width: 767px) {
-    .graphic {
+    .graphic,
+    .desktop,
+    .buttons {
         display: none;
     }
     .subsection {
@@ -321,9 +323,6 @@ h4 {
         margin-top: 20px;
         margin-bottom: 20px;
         /*min-height: 600;*/
-    }
-    .buttons {
-        display: none;
     }
     .section {
         margin-bottom: 25px;
@@ -335,7 +334,9 @@ h4 {
 }
 
 @media only screen and (min-width: 768px) {
-    .mobilegraphic {
+    .mobilegraphic,
+    .mobile,
+    .styled-select {
         display: none;
     }
     .subsection {
@@ -343,9 +344,6 @@ h4 {
         margin-top: 60px;
         margin-bottom: 100px;
         /*min-height: 600;*/
-    }
-    .styled-select {
-        display: none;
     }
     .section {
         margin-bottom: 250px;

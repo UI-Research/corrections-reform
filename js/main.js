@@ -17,7 +17,7 @@ var GROWTHTYPE = "total";
 var RACEORDER = ["other", "white", "black", "hispanic"];
 var FOOTNOTE = "The total federal prison population includes a small share of special populations, including pretrial holds and those convicted of DC code felonies.This feature focuses on the federally sentenced population, examining the years for which we have data, 1994– 2014.";
 
-var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
+var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleYAxis1", "rescaleStandingLine", "intoGrowthLines", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
 //dropdowns
 $(".styled-select").click(function () {
@@ -87,6 +87,9 @@ $('input:radio[name="radio-growth"]').change(function () {
     }
     dispatch.changeGrowthLines($(this).val());
 });
+d3.select("#select-growth").on("change", function () {
+    dispatch.changeGrowthLines(d3.select(this).property("value"));
+});
 
 //bar chart of criminal history
 $('input:radio[name="radio-ch"]').change(function () {
@@ -95,7 +98,6 @@ $('input:radio[name="radio-ch"]').change(function () {
 
 });
 d3.select("#select-ch").on("change", function () {
-    console.log(d3.select(this).property("value"));
     dispatch.changeChBars(d3.select(this).property("value"));
 });
 
@@ -140,7 +142,7 @@ function graph1() {
         .attr("class", "axistitle linesaxis")
         .attr("text-anchor", "middle")
         .attr("x", 0)
-        .attr("y", -5)
+        .attr("y", -15)
         .text("Federal prison population");
 
     var yAxis = d3.svg.axis()
@@ -189,6 +191,37 @@ function graph1() {
             .duration(1000)
             .ease("cubic-in-out")
             .call(xAxis);
+    });
+
+    dispatch.on("rescaleYAxis1", function (ymax) {
+        y.domain([0, ymax]);
+
+        yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(-width)
+            .ticks(5)
+            .tickFormat(function (d) {
+                return d3.format(",")(d);
+            })
+            .orient("left");
+
+        d3.selectAll(".axis.linesaxis")
+            .attr("opacity", 1)
+            .transition()
+            .duration(1000)
+            .ease("cubic-in-out")
+            .call(yAxis)
+            .each('interrupt', function () {
+                console.log("yikes fedpop axis");
+            });
+
+        gy.selectAll("text")
+            .attr("dx", -8);
+
+        gy.selectAll("g").filter(function (d) {
+                return d;
+            })
+            .classed("minor", true);
     });
 
     //initial graph
@@ -315,19 +348,6 @@ function graph1() {
             }))
             .range([0, width]);
 
-        /*var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom")
-            .tickFormat(function (d) {
-                return d;
-            })
-            .ticks(10);
-
-        var gx = svg.append("g")
-            .attr("class", "x axis-show axis1")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);*/
-
         var line1 = d3.svg.line()
             .interpolate("cardinal")
             .x(function (d) {
@@ -371,12 +391,44 @@ function graph1() {
             .attr("text-anchor", "end")
             .attr("x", x(2014))
             .attr("y", function (d) {
-                return y(d.values[d.values.length - 1]["number"]) - 20;
+                if (d.name == "standing") {
+                    return y(d.values[d.values.length - 1]["number"]) - 15;
+                } else {
+                    return y(d.values[d.values.length - 1]["number"]) + 15;
+                }
             })
             .text(function (d, i) {
                 return LABELS[i];
             })
             .attr("opacity", 0);
+
+        dispatch.on("intoGrowthLines", function () {
+
+            //if the type is total then we rescale the standing line, otherwise hide it and scale the y axis instead
+            if (GROWTHTYPE == "total") {
+                dispatch.rescaleStandingLine(1994, 2014);
+            } else if (GROWTHTYPE != "total") {
+                d3.selectAll(".lines0")
+                    .attr("opacity", 0)
+
+                var maxy = d3.max(data, function (d) {
+                    return d.standing;
+                });
+                //console.log(maxy);
+                dispatch.rescaleYAxis1(maxy);
+            }
+
+            d3.selectAll(" .graph2, .graph4, .circle, .mandminlabel, .graph0:not(standing)")
+                .transition()
+                .duration(0)
+                .attr("opacity", 0)
+
+            d3.selectAll(".graph1, .axis1, .linesaxis, .axisyears")
+                .transition()
+                .duration(500)
+                .attr("opacity", 1)
+
+        })
 
         dispatch.on("changeGrowthLines", function (type) {
             //switch offense type in lines
@@ -384,6 +436,16 @@ function graph1() {
             data = data_main.sentences.filter(function (d) {
                 return d.offense == type;
             });
+
+            var maxy = type == "total" ? 220000 : d3.max(data, function (d) {
+                return d.standing;
+            });
+
+            y = d3.scale.linear()
+                .range([height, 0])
+                .domain([0, maxy]);
+
+            dispatch.rescaleYAxis1(maxy);
 
             types = LINEVARS.map(function (name) {
                 return {
@@ -414,7 +476,11 @@ function graph1() {
                 .transition()
                 .duration(500)
                 .attr("y", function (d) {
-                    return y(d.values[d.values.length - 1]["number"]) - 20;
+                    if (d.name == "standing") {
+                        return y(d.values[d.values.length - 1]["number"]) - 15;
+                    } else {
+                        return y(d.values[d.values.length - 1]["number"]) + 15;
+                    }
                 });
 
         });
@@ -436,14 +502,6 @@ function graph1() {
                 return d.year;
             }))
             .range([0, width]);
-
-        /*var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom")
-            .tickFormat(function (d) {
-                return d;
-            })
-            .ticks(10);*/
 
         var nest = d3.nest()
             .key(function (d) {
@@ -725,33 +783,22 @@ function graph1() {
                     .duration(0)
                     .attr("opacity", 0)
 
-                d3.selectAll(".graph0, .axisyears, .linesaxis")
+                d3.selectAll(".graph0, .axisyears, .linesaxis, .lines0")
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
 
                 dispatch.rescaleXAxis(1980, 2016);
+                if (y.domain()[1] != 220000) {
+                    dispatch.rescaleYAxis1(220000);
+                }
                 dispatch.rescaleStandingLine(1980, 2016);
 
             } else if (i == 1) {
-
-                d3.selectAll(" .graph2, graph4, .circle, .mandminlabel, .graph0:not(standing)")
-                    .transition()
-                    .duration(0)
-                    .attr("opacity", 0)
-
-                d3.selectAll(".graph1, .axis1, .linesaxis, .axisyears")
-                    .transition()
-                    .duration(500)
-                    .attr("opacity", 1)
-
-                if (GROWTHTYPE != "total") {
-                    d3.select(".graph0.standing.chartline")
-                        .attr("opacity", 0)
+                if (x.domain()[0] != 1994) {
+                    dispatch.rescaleXAxis(1994, 2014);
                 }
-
-                dispatch.rescaleXAxis(1994, 2014);
-                dispatch.rescaleStandingLine(1994, 2014);
+                dispatch.intoGrowthLines();
 
             } else if (i == 2) {
 
@@ -764,6 +811,10 @@ function graph1() {
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
+
+                if (y.domain()[1] != 220000) {
+                    dispatch.rescaleYAxis1(220000);
+                }
 
             } else if (i == 3) {
 
@@ -844,7 +895,7 @@ function graph2() {
         .attr("class", "axistitle fedpop")
         .attr("text-anchor", "middle")
         .attr("x", 0)
-        .attr("y", -5)
+        .attr("y", -15)
         .text("Federal prison population")
         .attr("opacity", 0);
 
@@ -1598,7 +1649,6 @@ function graph2() {
             }), function (d) {
                 return d.number;
             });
-            console.log(maxy);
 
             d3.selectAll(".graphmap, .graphrace")
                 .transition()
@@ -1773,7 +1823,7 @@ function graph3() {
         .attr("class", "axistitle")
         .attr("text-anchor", "middle")
         .attr("x", 0)
-        .attr("y", -5)
+        .attr("y", -15)
         .text("Federal prison population");
 
     var gx = svg.append("g")
@@ -1857,6 +1907,7 @@ $(document).ready(function () {
             console.log("Drawing mobile graphs");
 
             mobileGrowth("#mobilegrowth");
+            mobileDrivers("#mobiledrivers");
             mobileMm("#mobilemm");
             mobileYears("#mobileyears");
 
