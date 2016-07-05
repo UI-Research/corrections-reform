@@ -19,6 +19,27 @@ var FOOTNOTE = "The total federal prison population includes a small share of sp
 
 var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
+//dropdowns
+$(".styled-select").click(function () {
+    var element = $(this).children("select")[0],
+        worked = false;
+    if (document.createEvent) { // all browsers
+        var e = document.createEvent("MouseEvents");
+        e.initMouseEvent("mousedown", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        worked = element.dispatchEvent(e);
+    } else if (element.fireEvent) { // ie
+        worked = element.fireEvent("onmousedown");
+    }
+    if (!worked) { // unknown browser / error
+        alert("It didn't worked in your browser.");
+    }
+});
+
+var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+if (isFirefox) {
+    $(".styled-select select").css("pointer-events", "visible");
+}
+
 d3.selection.prototype.moveToFront = function () {
     return this.each(function () {
         this.parentNode.appendChild(this);
@@ -55,7 +76,7 @@ function wrap2(text, width, startingx) {
     });
 }
 
-// use radio buttons to change offense type on a few graphs
+// use radio buttons on desktop, dropdowns on mobile, to change offense type on a few graphs
 // line chart of population vs admissions over time
 $('input:radio[name="radio-growth"]').change(function () {
     //console.log($(this).val());
@@ -73,12 +94,20 @@ $('input:radio[name="radio-ch"]').change(function () {
     dispatch.changeChBars($(this).val());
 
 });
+d3.select("#select-ch").on("change", function () {
+    console.log(d3.select(this).property("value"));
+    dispatch.changeChBars(d3.select(this).property("value"));
+});
+
 //bar chart of prison security
 $('input:radio[name="radio-security"]').change(function () {
-    console.log($(this).val());
     dispatch.changeSecurityBars($(this).val());
 
 });
+d3.select("#select-security").on("change", function () {
+    dispatch.changeSecurityBars(d3.select(this).property("value"));
+});
+
 
 function graph1() {
 
@@ -1826,11 +1855,15 @@ $(document).ready(function () {
 
         function drawgraphs() {
             console.log("Drawing mobile graphs");
+
             mobileGrowth("#mobilegrowth");
             mobileMm("#mobilemm");
             mobileYears("#mobileyears");
 
-            mobileRace("#mobilerace")
+            mobileRace("#mobilerace");
+            mobileCh("#mobilech");
+            mobileSecurity("#mobilesecurity");
+
             mobileConclusion("#mobileconclusion");
         }
 
