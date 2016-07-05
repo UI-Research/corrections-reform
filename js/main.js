@@ -1819,18 +1819,18 @@ function graph3() {
         .on('active', function (i) {});
 }
 
-$('document').ready(function () {
+$(document).ready(function () {
     console.log("window width is " + $(window).width());
 
     if ($(window).width() <= 768) {
         console.log("I'm on mobile!");
+
         function drawgraphs() {
             console.log("Drawing mobile graphs");
             mobileGrowth();
         }
 
     } else {
-
 
         function drawgraphs() {
             graph1();
@@ -1839,7 +1839,9 @@ $('document').ready(function () {
         }
     }
 
+
     $(window).load(function () {
+        console.log("window loaded");
         if (Modernizr.svg) { // if svg is supported, draw dynamic chart
             d3.json(main_data_url, function (json) {
                 d3.json(map_data_url, function (mapjson) {
@@ -1851,4 +1853,5 @@ $('document').ready(function () {
             });
         }
     });
+
 });
