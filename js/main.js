@@ -490,7 +490,6 @@ function graph1() {
         //stacked area chart - population by offense over time
         data = data_main.sentences;
 
-        VALUE = "standing";
         var ORDER = ["other", "drug", "weapon", "immigration", "sex"]
 
         var y = d3.scale.linear()
@@ -1908,6 +1907,7 @@ $(document).ready(function () {
 
             mobileGrowth("#mobilegrowth");
             mobileDrivers("#mobiledrivers");
+            mobileOffense("#mobileoffense");
             mobileMm("#mobilemm");
             mobileYears("#mobileyears");
 

@@ -15,7 +15,7 @@ function mobileGrowth(div) {
     };
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1) - margin.top - margin.bottom;
+        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
 
     $div.empty();
 
@@ -31,7 +31,7 @@ function mobileGrowth(div) {
         .domain([0, 220000]);
 
     svg.append("text")
-        .attr("class", "axistitle linesaxis")
+        .attr("class", "axistitle")
         .attr("text-anchor", "start")
         .attr("x", -margin.left)
         .attr("y", -5)
@@ -44,7 +44,7 @@ function mobileGrowth(div) {
         .orient("left");
 
     var gy = svg.append("g")
-        .attr("class", "y axis linesaxis")
+        .attr("class", "y axis")
         .call(yAxis);
 
     gy.selectAll("text")
@@ -154,7 +154,7 @@ function mobileDrivers(div) {
     };
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1) - margin.top - margin.bottom;
+        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
 
     $div.empty();
 
@@ -298,7 +298,7 @@ function mobileDrivers(div) {
             })
             .orient("left");
 
-        d3.selectAll(".y.axis")
+        d3.selectAll(".linesaxis")
             .transition()
             .duration(1000)
             .ease("cubic-in-out")
@@ -355,6 +355,168 @@ function mobileDrivers(div) {
             })
 
     });
+}
+
+function mobileOffense(div) {
+    var $div = $(div);
+
+    data = data_main.sentences;
+
+    var ORDER = ["other", "drug", "weapon", "immigration", "sex"];
+
+    var margin = {
+        top: 20,
+        right: 15,
+        bottom: 35,
+        left: 60
+    };
+
+
+    var width = $div.width() - margin.left - margin.right,
+        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+
+    $div.empty();
+
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var y = d3.scale.linear()
+        .domain([0, 220000])
+        .range([height, 0], .1);
+
+    var x = d3.scale.linear()
+        .domain(d3.extent(data, function (d) {
+            return d.year;
+        }))
+        .range([0, width]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(function (d) {
+            return formatYear(d);
+        })
+        .tickValues(mainyears);
+
+    var gx = svg.append("g")
+        .attr("class", "x axis-show axis1")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(-width)
+        .ticks(5)
+        .orient("left");
+
+    var gy = svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    gy.selectAll("text")
+        .attr("dx", -8);
+
+    gy.selectAll("g").filter(function (d) {
+            return d;
+        })
+        .classed("minor", true);
+
+    svg.append("text")
+        .attr("class", "axistitle")
+        .attr("text-anchor", "start")
+        .attr("x", -margin.left)
+        .attr("y", -5)
+        .text("Federal prison population");
+
+    var nest = d3.nest()
+        .key(function (d) {
+            return d.offense;
+        })
+        .sortKeys(function (a, b) {
+            return ORDER.indexOf(a) - ORDER.indexOf(b);
+        })
+
+    var stack = d3.layout.stack()
+        .offset("zero")
+        .values(function (d) {
+            return d.values;
+        })
+        .x(function (d) {
+            return d.year;
+        })
+        .y(function (d) {
+            return d.standing;
+        });
+
+    var layers = stack(nest.entries(data.filter(function (d) {
+        return d.offense != "total";
+    })));
+
+    var area = d3.svg.area()
+        .interpolate("cardinal")
+        .x(function (d) {
+            return x(d.year);
+        })
+        .y0(function (d) {
+            return y(d.y0);
+        })
+        .y1(function (d) {
+            return y(d.y0 + d.y);
+        });
+
+    var line2 = d3.svg.line()
+        .interpolate("cardinal")
+        .x(function (d) {
+            return x(d.year);
+        })
+        .y(function (d) {
+            return y(d.y + d.y0);
+        });
+
+    var segments = svg.selectAll(".segment")
+        .data(layers)
+        .enter().append("g")
+        .attr("class", "segment");
+
+    segments.append("path")
+        .attr("class", function (d) {
+            return d.key + " layer graph2";
+        })
+        .attr("d", function (d) {
+            return area(d.values);
+        });
+
+    segments.append("path")
+        .attr("class", function (d) {
+            return d.key + " chartline graph2";
+        })
+        .attr("d", function (d) {
+            return line2(d.values);
+        });
+
+    segments.append("text")
+        .datum(function (d) {
+            return {
+                name: d.key,
+                value: d.values[d.values.length - 1]
+            };
+        })
+        .attr("class", function (d) {
+            return d.name + " pointlabel graph2";
+        })
+        .attr("text-anchor", "end")
+        .attr("x", function (d) {
+            return x(d.value.year) - 10;
+        })
+        .attr("y", function (d) {
+            return y(d.value.y0 + d.value.y * 0.5);
+        })
+        .text(function (d) {
+            return (d.name).capitalize();
+        });
 }
 
 function mobileMm(div) {
@@ -612,7 +774,7 @@ function mobileRace(div) {
 
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1) - margin.top - margin.bottom;
+        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
 
     $div.empty();
 
@@ -659,7 +821,7 @@ function mobileRace(div) {
         .classed("minor", true);
 
     svg.append("text")
-        .attr("class", "axistitle linesaxis")
+        .attr("class", "axistitle")
         .attr("text-anchor", "start")
         .attr("x", -margin.left)
         .attr("y", -5)
@@ -1046,7 +1208,7 @@ function mobileConclusion(div) {
     };
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1) - margin.top - margin.bottom;
+        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
 
     $div.empty();
 
@@ -1098,7 +1260,7 @@ function mobileConclusion(div) {
         .classed("minor", true);
 
     svg.append("text")
-        .attr("class", "axistitle linesaxis")
+        .attr("class", "axistitle")
         .attr("text-anchor", "start")
         .attr("x", -margin.left)
         .attr("y", -5)
