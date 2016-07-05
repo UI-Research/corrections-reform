@@ -1833,6 +1833,7 @@ $(document).ready(function () {
     } else {
         console.log("I'm on desktop");
         function drawgraphs() {
+            console.log("Drawing desktop graphs");
             graph1();
             graph2();
             graph3();
@@ -1843,6 +1844,7 @@ $(document).ready(function () {
     $(window).load(function () {
         console.log("window loaded");
         if (Modernizr.svg) { // if svg is supported, draw dynamic chart
+            console.log("modernizr success")
             d3.json(main_data_url, function (json) {
                 d3.json(map_data_url, function (mapjson) {
                     data_main = json;
