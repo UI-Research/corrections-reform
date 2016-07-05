@@ -1823,8 +1823,9 @@ $('document').ready(function () {
     console.log("window width is " + $(window).width());
 
     if ($(window).width() <= 768) {
+        console.log("I'm on mobile!");
         function drawgraphs() {
-            console.log("I'm on mobile!");
+            console.log("Drawing mobile graphs");
             mobileGrowth();
         }
 
