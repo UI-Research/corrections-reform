@@ -1,4 +1,12 @@
-function mobileGrowth() {
+var mainyears = [1994, 1998, 2002, 2006, 2010, 2014];
+
+function formatYear(d) {
+    return "'" + d.toString().slice(-2);
+}
+
+function mobileGrowth(div) {
+    var $div = $(div);
+
     var margin = {
         top: 20,
         right: 15,
@@ -6,12 +14,12 @@ function mobileGrowth() {
         left: 60
     };
 
-    var width = $mobilegrowth.width() - margin.left - margin.right,
+    var width = $div.width() - margin.left - margin.right,
         height = Math.ceil(width * 1) - margin.top - margin.bottom;
-    
-    $mobilegrowth.empty();
 
-    var svg = d3.select("#mobilegrowth").append("svg")
+    $div.empty();
+
+    var svg = d3.select(div).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -55,9 +63,9 @@ function mobileGrowth() {
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .ticks(5)
+        .ticks(6)
         .tickFormat(function (d) {
-            return d;
+            return formatYear(d);
         })
         .orient("bottom");
 
@@ -68,7 +76,7 @@ function mobileGrowth() {
 
     var LINEVARS = ["standing", "pop_total"];
     var LABELS = ["Federally sentenced population", "Total federal prison population"];
-    
+
     data = data_main.growth;
 
     var line1 = d3.svg.line()
@@ -133,4 +141,536 @@ function mobileGrowth() {
         })
         .attr("opacity", 1);*/
 
+}
+
+function mobileMm(div) {
+    circleradius = 7;
+    var $div = $(div);
+
+    var margin = {
+        top: 20,
+        right: 15,
+        bottom: 80,
+        left: 15
+    };
+
+
+    var width = $div.width() - margin.left - margin.right,
+        height = Math.ceil(width * 1.3) - margin.top - margin.bottom;
+
+    $div.empty();
+
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    //data from 0-99, ydig is 1s position, xdig is 10s position
+    var cellsdt = d3.range(100).map(function (d) {
+        return {
+            d: +d,
+            ydig: +(d.toString().slice(-1)),
+            xdig: +(d3.format("02d")(d)).slice(0, 1),
+            group: d < 59 ? "applied" : (d >= 59 & d < 78 ? "notapplied" : "notapplicable")
+        }
+    });
+
+    var cells = svg.append("g")
+        .attr("class", "cells")
+        .selectAll("g")
+        .data(cellsdt)
+        .enter().append("g")
+        .attr("class", "cell");
+
+    cells.append("rect")
+        .attr("class", function (d) {
+            return d.group + " circle";
+        })
+        .attr("x", function (d) {
+            return d.xdig * (width / 10);
+        })
+        .attr("width", 2 * circleradius)
+        .attr("height", 2 * circleradius)
+        .attr("y", function (d) {
+            return d.ydig * (height / 10) - 20;
+        })
+        .attr("rx", 2 * circleradius)
+        .attr("ry", 2 * circleradius);
+
+    //category labels
+    svg.append("text")
+        .attr("class", "catvalue mandminlabel applied")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 4)
+        .text("59%");
+
+    svg.append("text")
+        .attr("class", "graphtitle mandminlabel")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 10)
+        .text(MANDMINLABELS[0])
+        .call(wrap2, width * 0.4, 0);
+
+    svg.append("text")
+        .attr("class", "catvalue mandminlabel notapplied")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.5)
+        .attr("y", height + 4)
+        .text("19%");
+
+    svg.append("text")
+        .attr("class", "graphtitle mandminlabel")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.6)
+        .attr("y", height + 10)
+        .text(MANDMINLABELS[1])
+        .call(wrap2, width * 0.2, width * 0.5);
+
+    svg.append("text")
+        .attr("class", "catvalue mandminlabel notapplicable")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.75)
+        .attr("y", height + 4)
+        .text("22%");
+
+    svg.append("text")
+        .attr("class", "graphtitle mandminlabel")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.8)
+        .attr("y", height + 10)
+        .text(MANDMINLABELS[2])
+        .call(wrap2, width * 0.22, width * 0.75);
+}
+
+function mobileYears(div) {
+    var $div = $(div);
+
+    var margin = {
+        top: 20,
+        right: 15,
+        bottom: 80,
+        left: 15
+    };
+
+
+    var width = $div.width() - margin.left - margin.right,
+        height = Math.ceil(width * 1.3) - margin.top - margin.bottom;
+
+    $div.empty();
+
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    data = data_main.mandmin_drug;
+
+    var x = d3.scale.linear()
+        .range([0, width])
+        .domain([0, 1]);
+
+    var y = d3.scale.linear()
+        .range([height - 20, 0])
+        .domain([0, d3.max(data, function (d) {
+            return d.years;
+        })]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .ticks(0)
+        .outerTickSize(0)
+        .orient("bottom");
+
+    svg.append("text")
+        .attr("class", "axistitle graph4")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", -30)
+        .text("Average expected years served");
+
+    var bars = svg.selectAll(".rect")
+        .data(data)
+        .enter()
+        .append("g")
+        .attr("class", "rect");
+
+    var gx = svg.append("g")
+        .attr("class", "x axis-show graph4")
+        .attr("transform", "translate(0," + (height - 20) + ")")
+        .call(xAxis);
+
+
+    bars.append("rect")
+        .attr('class', function (d) {
+            return d.mm_status + " graph4";
+        })
+        .attr("x", function (d) {
+            return x(d.share_cum - d.share);
+        })
+        .attr("width", function (d) {
+            return x(d.share);
+        })
+        .attr("height", function (d) {
+            return y(0) - y(d.years);
+        })
+        .attr("y", function (d) {
+            return y(d.years);
+        });
+
+    bars.append("text")
+        .attr('class', "pointlabel graph4")
+        .attr("x", function (d) {
+            return x(d.share_cum - 0.5 * d.share);
+        })
+        .attr("y", function (d) {
+            return y(d.years) - 10;
+        })
+        .text(function (d) {
+            return d3.format(".1f")(d.years) + " years";
+        })
+        .attr("text-anchor", "middle");
+    
+    //category labels
+    svg.append("text")
+        .attr("class", "catvalue mandminlabel applied")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 4)
+        .text("59%");
+
+    svg.append("text")
+        .attr("class", "graphtitle mandminlabel")
+        .attr("text-anchor", "start")
+        .attr("x", 0)
+        .attr("y", height + 10)
+        .text(MANDMINLABELS[0])
+        .call(wrap2, width * 0.4, 0);
+
+    svg.append("text")
+        .attr("class", "catvalue mandminlabel notapplied")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.6)
+        .attr("y", height + 4)
+        .text("19%");
+
+    svg.append("text")
+        .attr("class", "graphtitle mandminlabel")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.6)
+        .attr("y", height + 10)
+        .text(MANDMINLABELS[1])
+        .call(wrap2, width * 0.2, width * 0.5);
+
+    svg.append("text")
+        .attr("class", "catvalue mandminlabel notapplicable")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.8)
+        .attr("y", height + 4)
+        .text("22%");
+
+    svg.append("text")
+        .attr("class", "graphtitle mandminlabel")
+        .attr("text-anchor", "start")
+        .attr("x", width * 0.8)
+        .attr("y", height + 10)
+        .text(MANDMINLABELS[2])
+        .call(wrap2, width * 0.22, width * 0.8);
+
+}
+
+
+function mobileRace(div) {
+    var $div = $(div);
+
+    data = data_main.race;
+
+    var margin = {
+        top: 20,
+        right: 15,
+        bottom: 35,
+        left: 60
+    };
+
+
+    var width = $div.width() - margin.left - margin.right,
+        height = Math.ceil(width * 1) - margin.top - margin.bottom;
+
+    $div.empty();
+
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var y = d3.scale.linear()
+        .domain([0, 220000])
+        .range([height, 0], .1);
+
+    var x = d3.scale.linear()
+        .domain(d3.extent(data, function (d) {
+            return d.year;
+        }))
+        .range([0, width]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(function (d) {
+            return formatYear(d);
+        })
+        .tickValues(mainyears);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(-width)
+        .ticks(5)
+        .orient("left");
+
+    var gy = svg.append("g")
+        .attr("class", "y axis graphrace")
+        .call(yAxis);
+
+    gy.selectAll("text")
+        .attr("dx", -8);
+
+    gy.selectAll("g").filter(function (d) {
+            return d;
+        })
+        .classed("minor", true);
+
+    svg.append("text")
+        .attr("class", "axistitle linesaxis")
+        .attr("text-anchor", "start")
+        .attr("x", -margin.left)
+        .attr("y", -5)
+        .text("Federal prison population");
+
+    var nest = d3.nest()
+        .key(function (d) {
+            return d.race;
+        })
+        .sortKeys(function (a, b) {
+            return RACEORDER.indexOf(a) - RACEORDER.indexOf(b);
+        })
+
+    var stack = d3.layout.stack()
+        .offset("zero")
+        .values(function (d) {
+            return d.values;
+        })
+        .x(function (d) {
+            return d.year;
+        })
+        .y(function (d) {
+            return d.pop_total;
+        });
+
+    var layers = stack(nest.entries(data));
+
+    var area = d3.svg.area()
+        .interpolate("cardinal")
+        .x(function (d) {
+            return x(d.year);
+        })
+        .y0(function (d) {
+            return y(d.y0);
+        })
+        .y1(function (d) {
+            return y(d.y0 + d.y);
+        });
+
+    var line1 = d3.svg.line()
+        .interpolate("cardinal")
+        .x(function (d) {
+            return x(d.year);
+        })
+        .y(function (d) {
+            return y(d.y + d.y0);
+        });
+
+    var racegroups = svg.selectAll(".racegroup")
+        .data(layers)
+        .enter().append("g")
+        .attr("class", "racegroup");
+
+    racegroups.append("path")
+        .attr("class", function (d) {
+            return d.key + " layer graphrace";
+        })
+        .attr("d", function (d) {
+            return area(d.values);
+        });
+
+    racegroups.append("path")
+        .attr("class", function (d) {
+            return d.key + " chartline graphrace";
+        })
+        .attr("d", function (d) {
+            return line1(d.values);
+        });
+
+    racegroups.append("text")
+        .datum(function (d) {
+            return {
+                name: d.key,
+                value: d.values[d.values.length - 1]
+            };
+        })
+        .attr("class", function (d) {
+            return d.name + " pointlabel graphrace";
+        })
+        .attr("text-anchor", "end")
+        .attr("x", function (d) {
+            return x(d.value.year) - 10;
+        })
+        .attr("y", function (d) {
+            return y(d.value.y0 + d.value.y * 0.5) + 2;
+        })
+        .text(function (d) {
+            return (d.name).capitalize();
+        });
+
+    var gx = svg.append("g")
+        .attr("class", "x axis-show graphrace")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+}
+
+function mobileConclusion(div) {
+    var $div = $(div);
+
+    var margin = {
+        top: 20,
+        right: 15,
+        bottom: 35,
+        left: 60
+    };
+
+    var width = $div.width() - margin.left - margin.right,
+        height = Math.ceil(width * 1) - margin.top - margin.bottom;
+
+    $div.empty();
+
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    data = data_main.jointimpact;
+
+    var LINEVARS = ["pop_baseline", "pop_jointimpact"];
+    var LABELS = ["No policy changes", "All recommended interventions"];
+
+    var y = d3.scale.linear()
+        .domain([0, 220000])
+        .range([height, 0], .1)
+
+    var x = d3.scale.linear()
+        .domain(d3.extent(data, function (d) {
+            return d.year;
+        }))
+        .range([0, width]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(function (d) {
+            return formatYear(d);
+        })
+        .ticks(5);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(-width)
+        .ticks(5)
+        .orient("left");
+
+    var gy = svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    gy.selectAll("text")
+        .attr("dx", -8);
+
+    gy.selectAll("g").filter(function (d) {
+            return d;
+        })
+        .classed("minor", true);
+
+    svg.append("text")
+        .attr("class", "axistitle linesaxis")
+        .attr("text-anchor", "start")
+        .attr("x", -margin.left)
+        .attr("y", -5)
+        .text("Federal prison population");
+
+    var gx = svg.append("g")
+        .attr("class", "x axis-show")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    var line = d3.svg.line()
+        .interpolate("cardinal")
+        .x(function (d) {
+            return x(d.year);
+        })
+        .y(function (d) {
+            return y(d.number);
+        });
+
+    var types = LINEVARS.map(function (name) {
+        return {
+            name: name,
+            values: data.map(function (d) {
+                return {
+                    year: d.year,
+                    number: +d[name]
+                };
+            })
+        };
+    });
+
+    var lines = svg.selectAll(".chartline")
+        .data(types)
+        .enter().append("g")
+        .attr("class", "chartline");
+
+    lines.append("path")
+        .attr("class", function (d) {
+            return d.name;
+        })
+        .attr("d", function (d) {
+            return line(d.values);
+        });
+
+    //direct line labels
+    lines.append("text")
+        .datum(function (d) {
+            return {
+                name: d.name,
+                value: d.values[d.values.length - 1]
+            };
+        })
+        .attr("class", "pointlabel")
+        .attr("text-anchor", "end")
+        .attr("x", function (d) {
+            return x(d.value.year);
+        })
+        .attr("y", function (d) {
+            if (d.name == "pop_baseline") {
+                return y(d.value.number) - 15;
+            } else {
+                return y(d.value.number) + 15;
+            }
+        })
+        .text(function (d, i) {
+            return LABELS[i];
+        });
 }

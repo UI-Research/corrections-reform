@@ -305,6 +305,10 @@ h4 {
     .section {
         margin-bottom: 25px;
     }
+    .catvalue {
+        font-size: 18px;
+        font-weight: 700;
+    }
 }
 
 @media only screen and (min-width: 768px) {
@@ -319,6 +323,10 @@ h4 {
     }
     .section {
         margin-bottom: 250px;
+    }
+    .catvalue {
+        font-size: 22px;
+        font-weight: 700;
     }
 }
 
@@ -583,11 +591,6 @@ span.pink {
     background-color: rgba(236, 0, 139, 0.2);
 }
 
-.catvalue {
-    font-size: 22px;
-    font-weight: 700;
-}
-
 .bar {
     fill: #1696d2;
 }
@@ -641,5 +644,12 @@ span.pink {
     }
     h1.projtitle {
         padding: 10px;
+    }
+    #titleholder {
+        position: relative;
+        top: 30px;
+    }
+    p.large {
+        font-size: 18px;
     }
 }

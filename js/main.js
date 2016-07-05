@@ -4,7 +4,6 @@ var map_data_url = "data/judicialdistricts.json",
     data,
     VALUE,
     districts,
-    $mobilegrowth = $("#mobilegrowth"),
     $graphic1 = $("#graphic1"),
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
@@ -15,6 +14,7 @@ var blue5 = ["#b0d5f1", "#82c4e9", "#1696d2", "#00578b", "#00152A"];
 var BREAKS = [1000, 1500, 2000, 3000];
 var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
 var GROWTHTYPE = "total";
+var RACEORDER = ["other", "white", "black", "hispanic"];
 var FOOTNOTE = "The total federal prison population includes a small share of special populations, including pretrial holds and those convicted of DC code felonies.This feature focuses on the federally sentenced population, examining the years for which we have data, 1994– 2014.";
 
 var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleStandingLine", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
@@ -606,7 +606,6 @@ function graph1() {
     //time served bars
     function init4() {
         data = data_main.mandmin_drug;
-        var LABELS = ["Applied", "Not applied", "Not applicable"];
 
         var x = d3.scale.linear()
             .range([0, width])
@@ -1085,7 +1084,7 @@ function graph2() {
     function initRace() {
         data = data_main.race;
 
-        var ORDER = ["other", "white", "black", "hispanic"]
+        //var ORDER = ["other", "white", "black", "hispanic"]
 
         var y = d3.scale.linear()
             .domain([0, 220000])
@@ -1135,7 +1134,7 @@ function graph2() {
                 return d.race;
             })
             .sortKeys(function (a, b) {
-                return ORDER.indexOf(a) - ORDER.indexOf(b);
+                return RACEORDER.indexOf(a) - RACEORDER.indexOf(b);
             })
 
         var stack = d3.layout.stack()
@@ -1827,11 +1826,17 @@ $(document).ready(function () {
 
         function drawgraphs() {
             console.log("Drawing mobile graphs");
-            mobileGrowth();
+            mobileGrowth("#mobilegrowth");
+            mobileMm("#mobilemm");
+            mobileYears("#mobileyears");
+
+            mobileRace("#mobilerace")
+            mobileConclusion("#mobileconclusion");
         }
 
     } else {
         console.log("I'm on desktop");
+
         function drawgraphs() {
             console.log("Drawing desktop graphs");
             graph1();
