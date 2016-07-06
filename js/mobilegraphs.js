@@ -15,7 +15,8 @@ function mobileGrowth(div) {
     };
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+        height = Math.max(275 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.1) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -154,7 +155,8 @@ function mobileDrivers(div) {
     };
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+        height = Math.max(275 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.1) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -373,7 +375,8 @@ function mobileOffense(div) {
 
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+        height = Math.max(275 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.1) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -532,7 +535,8 @@ function mobileMm(div) {
 
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.3) - margin.top - margin.bottom;
+        height = Math.max(300 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.3) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -634,7 +638,8 @@ function mobileYears(div) {
 
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.3) - margin.top - margin.bottom;
+        height = Math.max(300 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.3) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -774,7 +779,8 @@ function mobileRace(div) {
 
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+        height = Math.max(275 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.1) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -935,7 +941,8 @@ function mobileCh(div) {
 
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+        height = Math.max(275 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.1) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -1086,7 +1093,8 @@ function mobileSecurity(div) {
 
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+        height = Math.max(275 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.1) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
@@ -1208,7 +1216,8 @@ function mobileConclusion(div) {
     };
 
     var width = $div.width() - margin.left - margin.right,
-        height = Math.ceil(width * 1.1) - margin.top - margin.bottom;
+        height = Math.max(275 - margin.top - margin.bottom,
+            Math.min(Math.ceil(width * 1.1) - margin.top - margin.bottom, windowHeight - 100 - margin.top - margin.bottom));
 
     $div.empty();
 
