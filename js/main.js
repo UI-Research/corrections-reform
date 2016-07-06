@@ -1900,7 +1900,7 @@ function graph3() {
 $(document).ready(function () {
     console.log("window width is " + $(window).width());
 
-    if ($(window).width() <= 768) {
+    if ($(window).width() <= 750) {
         console.log("I'm on mobile!");
 
         var drawgraphs = function () {
