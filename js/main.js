@@ -405,9 +405,7 @@ function graph1() {
         dispatch.on("intoGrowthLines", function () {
 
             //if the type is total then we rescale the standing line, otherwise hide it and scale the y axis instead
-            if (GROWTHTYPE == "total") {
-                dispatch.rescaleStandingLine(1994, 2014);
-            } else if (GROWTHTYPE != "total") {
+            if (GROWTHTYPE != "total") {
                 d3.selectAll(".lines0")
                     .attr("opacity", 0)
 
@@ -428,6 +426,9 @@ function graph1() {
                 .duration(500)
                 .attr("opacity", 1)
 
+            if (GROWTHTYPE == "total") {
+                dispatch.rescaleStandingLine(1994, 2014);
+            }
         })
 
         dispatch.on("changeGrowthLines", function (type) {
@@ -1902,7 +1903,7 @@ $(document).ready(function () {
     if ($(window).width() <= 768) {
         console.log("I'm on mobile!");
 
-        function drawgraphs() {
+        var drawgraphs = function () {
             console.log("Drawing mobile graphs");
 
             mobileGrowth("#mobilegrowth");
@@ -1921,7 +1922,7 @@ $(document).ready(function () {
     } else {
         console.log("I'm on desktop");
 
-        function drawgraphs() {
+        var drawgraphs = function () {
             console.log("Drawing desktop graphs");
             graph1();
             graph2();
