@@ -1902,7 +1902,7 @@ $(document).ready(function () {
     console.log("window inner height is " + $(window).innerHeight());
     windowHeight = $(window).innerHeight();
 
-    if ($(window).innerWidth() <= 768) {
+    if ($(window).innerWidth() < 768) {
         console.log("I'm on mobile!");
 
         var drawgraphs = function () {
