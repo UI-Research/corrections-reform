@@ -4,6 +4,7 @@ var map_data_url = "data/judicialdistricts.json",
     data,
     VALUE,
     districts,
+    windowHeight,
     $graphic1 = $("#graphic1"),
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
@@ -121,7 +122,7 @@ function graph1() {
     };
 
     var width = $graphic1.width() - margin.left - margin.right,
-        height = 450;
+        height = Math.min(450, windowHeight - 100 - margin.top - margin.bottom);
 
     //VALUE = "pop_total";
 
@@ -875,7 +876,7 @@ function graph2() {
     };
 
     var width = $graphic1.width() - margin.left - margin.right,
-        height = 450;
+        height = Math.min(450, windowHeight - 100 - margin.top - margin.bottom);
 
 
     $graphic2.empty();
@@ -1768,7 +1769,7 @@ function graph3() {
     };
 
     var width = $graphic1.width() - margin.left - margin.right,
-        height = 450;
+        height = Math.min(450, windowHeight - 100 - margin.top - margin.bottom);
 
     $graphic3.empty();
 
@@ -1799,7 +1800,7 @@ function graph3() {
         .tickFormat(function (d) {
             return d;
         })
-        .ticks(10);
+        .ticks(5);
 
     var yAxis = d3.svg.axis()
         .scale(y)
@@ -1873,18 +1874,17 @@ function graph3() {
                 value: d.values[d.values.length - 1]
             };
         })
-        /*.attr("transform", function (d) {
-            return "translate(" + x(d.value.year) + "," + y(d.value.number) + ")";
-        })*/
-        /*.attr("x", 3)
-        .attr("dy", ".35em")*/
         .attr("class", "pointlabel")
         .attr("text-anchor", "end")
         .attr("x", function (d) {
             return x(d.value.year);
         })
         .attr("y", function (d) {
-            return y(d.value.number) - 15;
+            if (d.name == "pop_baseline") {
+                return y(d.value.number) - 15;
+            } else {
+                return y(d.value.number) + 15;
+            }
         })
         .text(function (d, i) {
             return LABELS[i];
@@ -1899,8 +1899,10 @@ function graph3() {
 
 $(document).ready(function () {
     console.log("window width is " + $(window).width());
+    console.log("window inner height is " + $(window).innerHeight());
+    windowHeight = $(window).innerHeight();
 
-    if ($(window).width() <= 750) {
+    if ($(window).innerWidth() <= 768) {
         console.log("I'm on mobile!");
 
         var drawgraphs = function () {
