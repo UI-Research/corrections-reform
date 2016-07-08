@@ -134,7 +134,7 @@ function mobileGrowth(div) {
                 return y(d.value.number) - 40;
             } else {
                 //return y(d.value.number) + 70;
-                return y(150000) + 15
+                return y(120000) + 15
             }
         })
         .text(function (d, i) {
