@@ -8,7 +8,7 @@ function mobileGrowth(div) {
     var $div = $(div);
 
     var margin = {
-        top: 20,
+        top: 30,
         right: 15,
         bottom: 35,
         left: 60
@@ -119,7 +119,7 @@ function mobileGrowth(div) {
         .attr("opacity", 1);
 
     //direct line labels
-    /*lines0.append("text")
+    lines0.append("text")
         .datum(function (d) {
             return {
                 name: d.name,
@@ -131,16 +131,17 @@ function mobileGrowth(div) {
         .attr("x", x(2016))
         .attr("y", function (d) {
             if (d.name == "pop_total") {
-                return y(d.value.number) - 20;
+                return y(d.value.number) - 40;
             } else {
                 //return y(d.value.number) + 70;
-                return y(150000) + 12
+                return y(150000) + 15
             }
         })
         .text(function (d, i) {
             return LABELS[i];
         })
-        .attr("opacity", 1);*/
+        .attr("opacity", 1)
+        .call(wrap2, width * 0.5, width);
 
 }
 
