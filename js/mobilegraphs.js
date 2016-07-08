@@ -500,7 +500,12 @@ function mobileOffense(div) {
             return line2(d.values);
         });
 
-    segments.append("text")
+    var labels = svg.selectAll(".offenselabel")
+        .data(layers)
+        .enter().append("g")
+        .attr("class", "offenselabel");
+
+    labels.append("text")
         .datum(function (d) {
             return {
                 name: d.key,
@@ -528,9 +533,9 @@ function mobileMm(div) {
 
     var margin = {
         top: 20,
-        right: 15,
+        right: 8,
         bottom: 80,
-        left: 15
+        left: 8
     };
 
 
@@ -590,7 +595,7 @@ function mobileMm(div) {
         .attr("opacity", 1);
 
     svg.append("text")
-        .attr("class", "graphtitle mandminlabel")
+        .attr("class", "axis mandminlabel")
         .attr("text-anchor", "start")
         .attr("x", 0)
         .attr("y", height + 10)
@@ -607,7 +612,7 @@ function mobileMm(div) {
         .attr("opacity", 1);
 
     svg.append("text")
-        .attr("class", "graphtitle mandminlabel")
+        .attr("class", "axis mandminlabel")
         .attr("text-anchor", "start")
         .attr("x", width * 0.6)
         .attr("y", height + 10)
@@ -624,7 +629,7 @@ function mobileMm(div) {
         .attr("opacity", 1);
 
     svg.append("text")
-        .attr("class", "graphtitle mandminlabel")
+        .attr("class", "axis mandminlabel")
         .attr("text-anchor", "start")
         .attr("x", width * 0.8)
         .attr("y", height + 10)
@@ -1183,7 +1188,12 @@ function mobileRace(div) {
             return line1(d.values);
         });
 
-    racegroups.append("text")
+    var labels = svg.selectAll(".racelabel")
+        .data(layers)
+        .enter().append("g")
+        .attr("class", "racelabel");
+
+    labels.append("text")
         .datum(function (d) {
             return {
                 name: d.key,
