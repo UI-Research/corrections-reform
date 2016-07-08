@@ -52,6 +52,30 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+function wrap(text, width) {
+    text.each(function () {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = parseFloat(text.attr("dy")),
+            tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+            }
+        }
+    });
+}
+
 function wrap2(text, width, startingx) {
     text.each(function () {
         var text = d3.select(this),
@@ -1897,9 +1921,14 @@ function graph3() {
         .on('active', function (i) {});
 }
 
+function resize() {
+    console.log("container width is " + $("#container1").width());
+}
+
 $(document).ready(function () {
     console.log("window width is " + $(window).width());
     console.log("window inner height is " + $(window).innerHeight());
+
     windowHeight = $(window).innerHeight();
 
     if ($(window).innerWidth() < 768) {
@@ -1914,6 +1943,7 @@ $(document).ready(function () {
             mobileMm("#mobilemm");
             mobileYears("#mobileyears");
 
+            mobileMap("#mobilemap");
             mobileRace("#mobilerace");
             mobileCh("#mobilech");
             mobileSecurity("#mobilesecurity");
@@ -1932,7 +1962,6 @@ $(document).ready(function () {
         }
     }
 
-
     $(window).load(function () {
         console.log("window loaded");
         if (Modernizr.svg) { // if svg is supported, draw dynamic chart
@@ -1942,7 +1971,7 @@ $(document).ready(function () {
                     data_main = json;
                     districts = mapjson;
                     drawgraphs();
-                    window.onresize = drawgraphs();
+                    ("#container1").onresize = resize;
                 });
             });
         }

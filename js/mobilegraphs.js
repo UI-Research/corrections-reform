@@ -632,7 +632,7 @@ function mobileYears(div) {
     var margin = {
         top: 20,
         right: 15,
-        bottom: 80,
+        bottom: 70,
         left: 15
     };
 
@@ -651,9 +651,14 @@ function mobileYears(div) {
 
     data = data_main.mandmin_drug;
 
-    var x = d3.scale.linear()
+    /*var x = d3.scale.linear()
         .range([0, width])
-        .domain([0, 1]);
+        .domain([0, 1]);*/
+    var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width], .1)
+        .domain(data.map(function (d) {
+            return d.mm_status;
+        }));
 
     var y = d3.scale.linear()
         .range([height - 20, 0])
@@ -663,8 +668,10 @@ function mobileYears(div) {
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .ticks(0)
-        .outerTickSize(0)
+        .tickSize(0)
+        .tickFormat(function (d, i) {
+            return MANDMINLABELS[i];
+        })
         .orient("bottom");
 
     svg.append("text")
@@ -680,13 +687,7 @@ function mobileYears(div) {
         .append("g")
         .attr("class", "rect");
 
-    var gx = svg.append("g")
-        .attr("class", "x axis-show graph4")
-        .attr("transform", "translate(0," + (height - 20) + ")")
-        .call(xAxis);
-
-
-    bars.append("rect")
+    /*bars.append("rect")
         .attr('class', function (d) {
             return d.mm_status + " graph4";
         })
@@ -694,7 +695,7 @@ function mobileYears(div) {
             return x(d.share_cum - d.share);
         })
         .attr("width", function (d) {
-            return x(d.share);
+            return x.range;
         })
         .attr("height", function (d) {
             return y(0) - y(d.years);
@@ -714,10 +715,46 @@ function mobileYears(div) {
         .text(function (d) {
             return d3.format(".1f")(d.years) + " years";
         })
-        .attr("text-anchor", "middle");
+        .attr("text-anchor", "middle");*/
+
+    bars.append("rect")
+        .attr("class", function (d) {
+            return d.mm_status;
+        })
+        .attr("x", function (d) {
+            return x(d.mm_status);
+        })
+        .attr("width", x.rangeBand())
+        .attr("y", function (d) {
+            return y(d.years);
+        })
+        .attr("height", function (d) {
+            return height - y(d.years);
+        });
+
+    bars.append("text")
+        .attr("class", "pointlabel")
+        .attr("y", function (d) {
+            return y(d.years) - 8;
+        })
+        .attr("x", function (d) {
+            return x(d.mm_status) + x.rangeBand() / 2;
+        })
+        .attr("text-anchor", "middle")
+        .text(function (d) {
+            return d3.format(".1f")(d.years) + " years";
+        });
+
+
+    var gx = svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .attr("class", "x axis-show graphsecurity")
+        .call(xAxis)
+        .selectAll(".tick text")
+        .call(wrap, x.rangeBand());
 
     //category labels
-    svg.append("text")
+    /*svg.append("text")
         .attr("class", "catvalue mandminlabel applied")
         .attr("text-anchor", "start")
         .attr("x", 0)
@@ -760,10 +797,252 @@ function mobileYears(div) {
         .attr("x", width * 0.8)
         .attr("y", height + 10)
         .text(MANDMINLABELS[2])
-        .call(wrap2, width * 0.22, width * 0.8);
+        .call(wrap2, width * 0.22, width * 0.8);*/
 
 }
 
+function mobileMap(div) {
+    var $div = $(div);
+    var $legend = $("#mobilelegend");
+
+    var margin = {
+        top: 15,
+        right: 20,
+        bottom: 15,
+        left: 20
+    };
+
+
+    var width = $div.width() - margin.left - margin.right,
+        height = Math.ceil(width * 0.75) - margin.top - margin.bottom;
+
+    $div.empty();
+    $legend.empty();
+
+    var svg = d3.select(div).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    //map setup
+    var projection = d3.geo.albersUsa()
+        .scale(width * 1.4)
+        .translate([width / 2, height / 2]);
+
+    var color = d3.scale.linear()
+        .domain(BREAKS)
+        .range(blue5);
+
+    var path = d3.geo.path()
+        .projection(projection);
+
+    var dt = data_main.districtsentences;
+    var complexes = data_main.complexzips;
+    var zbd = data_main.zipsbydistrict;
+
+    //no Virgin Islands, Guam, Puerto Rico districts or prisons
+    dt = dt.filter(function (d) {
+        return d.districtcode != "VI" & d.districtcode != "GU" & d.districtcode != "PR";
+    });
+
+    complexes = complexes.filter(function (d) {
+        return d.zip != "00965";
+    });
+
+    zbd = zbd.filter(function (d) {
+        return d.districtcode != "VI" & d.districtcode != "GU" & d.districtcode != "PR" & d.zip != "00965" & d.zip != "";
+    });
+
+    //make an array for the district centroid coordinates and zip complex coordinates
+    zbd.forEach(function (d) {
+        d.sentences = +d.sentences;
+        var position = projection(d);
+        d.complex = projection([+d.zip_long, +d.zip_lat]);
+        d.district = projection([+d.centroid_long, +d.centroid_lat]);
+    })
+
+    //nest by district
+    var zdt = d3.nest()
+        .key(function (d) {
+            return d.districtcode;
+        })
+        .sortKeys(d3.ascending)
+        .entries(zbd);
+
+    dt.forEach(function (d) {
+        d.sentences = +d.sentences;
+        d[0] = +d.longitude;
+        d[1] = +d.latitude;
+        var position = projection(d);
+        d.centroidx = position[0];
+        d.centroidy = position[1];
+        d.lines = zdt.filter(function (district) {
+            return district.key == d.districtcode;
+        })[0];
+    })
+
+    complexes.forEach(function (d) {
+        d.sentences = +d.sentences;
+        d[0] = +d.longitude;
+        d[1] = +d.latitude;
+        var position = projection(d);
+        d.complexx = position[0];
+        d.complexy = position[1];
+    });
+
+    //judicial districts boundaries
+    svg.append("g")
+        .attr("class", "districts graphmap")
+        .selectAll("path")
+        .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
+        .enter().append("path")
+        .attr("d", path)
+        .attr("class", "district")
+        .attr("code", function (d) {
+            return d.properties.code;
+        })
+        .attr("fill", function (d) {
+            return color(d.properties.sentences);
+        })
+        .on("mouseover", function (d) {
+            if (d.properties.code != "AK") {
+                d3.selectAll(".hovered")
+                    .classed("hovered", false);
+                d3.selectAll("." + d3.select(this).attr("code"))
+                    .classed("hovered", true);
+                d3.select(this).classed("hovered", true);
+                //d3.select(this).moveToFront();
+            } else {
+                //Alaska is being a special browser crashing snowflake with this.classed
+                d3.select(this).attr("fill", "#fdbf11")
+                d3.selectAll(".AK")
+                    .classed("hovered", true);
+            }
+        })
+        .on("mouseout", function (d) {
+            d3.select(this).attr("fill", function (d) {
+                return color(d.properties.sentences);
+            });
+            d3.selectAll(".hovered")
+                .classed("hovered", false);
+        })
+
+    //prison complexes
+    var complex = svg.append("g")
+        .attr("class", "complexes graphmap")
+        .selectAll("g")
+        .data(complexes.sort(function (a, b) {
+            return b.sentences - a.sentences;
+        }))
+        .enter().append("g")
+        .attr("class", "complex");
+
+    complex.append("circle")
+        .attr("cx", function (d) {
+            return d.complexx;
+        })
+        .attr("cy", function (d) {
+            return d.complexy;
+        })
+        .attr("r", function (d, i) {
+            return Math.sqrt(d.sentences) / 10;
+        })
+        .attr("class", function (d) {
+            return "zip_" + d.zip
+        });
+
+    //district centroids - don't draw, but that's where the lines emanate from
+    var centroid = svg.append("g")
+        .attr("class", "centroids graphmap")
+        .selectAll("g")
+        .data(dt)
+        .enter().append("g")
+        .attr("class", function (d) {
+            return d.districtcode + " centroid";
+        })
+        .attr("temp", function (d) {
+            return d.lines.key;
+        })
+
+    centroid.append("g")
+        .attr("class", function (d) {
+            return d.districtcode + " sentence-arcs graphmap";
+        })
+        .selectAll("path")
+        .data(function (d) {
+            return d.lines.values;
+        })
+        .enter().append("line")
+        .attr("zip", function (d) {
+            d3.select("circle.zip_" + d.zip)
+                .classed(d.districtcode, true)
+            return d.zip;
+        })
+        .attr("x1", function (d) {
+            return d.district[0];
+        })
+        .attr("y1", function (d) {
+            return d.district[1];
+        })
+        .attr("x2", function (d) {
+            return d.complex[0];
+        })
+        .attr("y2", function (d) {
+            return d.complex[1];
+        })
+
+    //we want one region to be selected by default for users to see
+    d3.selectAll(".KS, [code='KS']").classed("hovered", true);
+
+    var legsvg = d3.select("#mobilelegend").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", 50 + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    //legend in separate SVG
+    var lp_w = 0,
+        ls_w = width / 5,
+        ls_h = 20;
+
+    var legend = legsvg.selectAll("g.legend")
+        .data(LEGENDBREAKS)
+        .enter().append("g")
+        .attr("class", "legend");
+
+    legend.append("text")
+        .data(LEGENDBREAKS)
+        .attr("class", "pointlabel graphmap")
+        .attr("x", function (d, i) {
+            return (i * ls_w) + lp_w - 2;
+        })
+        .attr("y", 50)
+        .attr("text-anchor", "middle")
+        .text(function (d) {
+            return d3.format(",")(d);
+        });
+
+    legend.append("rect")
+        .data(blue5)
+        .attr("class", "graphmap")
+        .attr("x", function (d, i) {
+            return (i * ls_w) + lp_w;
+        })
+        .attr("y", 15)
+        .attr("width", ls_w)
+        .attr("height", ls_h)
+        .style("fill", function (d, i) {
+            return blue5[i];
+        })
+
+    legsvg.append("text")
+        .attr("class", "axistitle graphmap")
+        .attr("text-anchor", "start")
+        .attr("x", lp_w)
+        .attr("y", 10)
+        .text("Number of people sentenced");
+}
 
 function mobileRace(div) {
     var $div = $(div);
