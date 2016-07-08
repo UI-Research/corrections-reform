@@ -5,6 +5,10 @@ var map_data_url = "data/judicialdistricts.json",
     VALUE,
     districts,
     windowHeight,
+    containerWidth,
+    isMobile,
+    resizeTimer,
+    drawgraphs,
     $graphic1 = $("#graphic1"),
     $graphic2 = $("#graphic2"),
     $graphic3 = $("#graphic3");
@@ -1921,18 +1925,16 @@ function graph3() {
         .on('active', function (i) {});
 }
 
-function resize() {
-    console.log("container width is " + $("#container1").width());
-}
-
 $(document).ready(function () {
     console.log("window width is " + $(window).width());
     console.log("window inner height is " + $(window).innerHeight());
-
+    containerWidth = $("#container1").width();
     windowHeight = $(window).innerHeight();
+
 
     if ($(window).innerWidth() < 768) {
         console.log("I'm on mobile!");
+        isMobile = true;
 
         var drawgraphs = function () {
             console.log("Drawing mobile graphs");
@@ -1953,12 +1955,60 @@ $(document).ready(function () {
 
     } else {
         console.log("I'm on desktop");
+        isMobile = false;
 
         var drawgraphs = function () {
             console.log("Drawing desktop graphs");
             graph1();
             graph2();
             graph3();
+        }
+    }
+
+    function resize() {
+        //if the container is resized, redraw the graphs
+        //don't need to redraw if the window is resized but not the container
+        if ((containerWidth - $("#container1").width()) != 0) {
+            containerWidth = $("#container1").width();
+            console.log($("#container1").width());
+
+            //switch between mobile and desktop if crossing the threshold
+            //otherwise, just drawgraphs
+            if ($(window).innerWidth() < 768) {
+                var drawgraphs = function () {
+
+                    mobileGrowth("#mobilegrowth");
+                    mobileDrivers("#mobiledrivers");
+                    mobileOffense("#mobileoffense");
+                    mobileMm("#mobilemm");
+                    mobileYears("#mobileyears");
+
+                    mobileMap("#mobilemap");
+                    mobileRace("#mobilerace");
+                    mobileCh("#mobilech");
+                    mobileSecurity("#mobilesecurity");
+
+                    mobileConclusion("#mobileconclusion");
+                }
+
+                if (!isMobile) {
+                    isMobile = true;
+                }
+                drawgraphs();
+            } else if ($(window).innerWidth() >= 768) {
+                console.log($("#graphic1").width());
+                var drawgraphs = function () {
+                    console.log("Drawing desktop graphs");
+                    graph1();
+                    graph2();
+                    graph3();
+                }
+                if (isMobile) {
+                    isMobile = false;
+                }
+
+                drawgraphs();
+            }
         }
     }
 
@@ -1971,7 +2021,15 @@ $(document).ready(function () {
                     data_main = json;
                     districts = mapjson;
                     drawgraphs();
-                    ("#container1").onresize = resize;
+
+                    //on resize, fire resize function but only after a small delay
+                    //prevents it from resizing constantly while dragging the window size
+                    window.onresize = function () {
+                        clearTimeout(resizeTimer);
+                        resizeTimer = setTimeout(function () {
+                            resize();
+                        }, 250);
+                    };
                 });
             });
         }
