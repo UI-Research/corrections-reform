@@ -145,7 +145,7 @@ function graph1() {
     var margin = {
         top: 60,
         right: 15,
-        bottom: 75,
+        bottom: 95,
         left: 70
     };
 
@@ -1810,7 +1810,7 @@ function graph3() {
     data = data_main.jointimpact;
 
     var LINEVARS = ["pop_baseline", "pop_jointimpact"];
-    var LABELS = ["No policy changes", "All recommended interventions"];
+    var LABELS = ["No policy changes", "All recommended reforms"];
 
     var y = d3.scale.linear()
         .domain([0, 220000])
@@ -1989,12 +1989,16 @@ $(document).ready(function () {
                     mobileSecurity("#mobilesecurity");
 
                     mobileConclusion("#mobileconclusion");
+
+                    //make sure everything is opacity 1
+                    d3.selectAll("svg").selectAll("*")
+                        .attr("opacity", 1)
                 }
 
                 if (!isMobile) {
                     isMobile = true;
                 }
-                drawgraphs();
+
             } else if ($(window).innerWidth() >= 768) {
                 console.log($("#graphic1").width());
                 var drawgraphs = function () {
@@ -2007,8 +2011,8 @@ $(document).ready(function () {
                     isMobile = false;
                 }
 
-                drawgraphs();
             }
+            drawgraphs();
         }
     }
 

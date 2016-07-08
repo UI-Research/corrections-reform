@@ -71,7 +71,7 @@ function mobileGrowth(div) {
         .orient("bottom");
 
     var gx = svg.append("g")
-        .attr("class", "x axis-show axisyears")
+        .attr("class", "x axis-show")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
@@ -111,7 +111,7 @@ function mobileGrowth(div) {
 
     lines0.append("path")
         .attr("class", function (d) {
-            return d.name + " graph0 chartline";
+            return d.name + " chartline";
         })
         .attr("d", function (d) {
             return line1(d.values);
@@ -171,7 +171,7 @@ function mobileDrivers(div) {
         .domain([0, 220000]);
 
     svg.append("text")
-        .attr("class", "axistitle linesaxis")
+        .attr("class", "axistitle")
         .attr("text-anchor", "start")
         .attr("x", -margin.left)
         .attr("y", -25)
@@ -184,7 +184,7 @@ function mobileDrivers(div) {
         .orient("left");
 
     var gy = svg.append("g")
-        .attr("class", "y axis linesaxis")
+        .attr("class", "y axis mobilelinesaxis")
         .call(yAxis);
 
     gy.selectAll("text")
@@ -217,7 +217,7 @@ function mobileDrivers(div) {
         .tickValues(mainyears);
 
     var gx = svg.append("g")
-        .attr("class", "x axis-show axis1")
+        .attr("class", "x axis-show")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
@@ -251,7 +251,7 @@ function mobileDrivers(div) {
 
     lines.append("path")
         .attr("class", function (d) {
-            return d.name + " graph1 chartline";
+            return d.name + " chartline";
         })
         .attr("d", function (d) {
             return line1(d.values);
@@ -259,7 +259,7 @@ function mobileDrivers(div) {
 
     //direct line labels
     lines.append("text")
-        .attr("class", "pointlabel graph1")
+        .attr("class", "pointlabel")
         .attr("text-anchor", "end")
         .attr("x", x(2014))
         /*.attr("y", function (d) {
@@ -300,7 +300,7 @@ function mobileDrivers(div) {
             })
             .orient("left");
 
-        d3.selectAll(".linesaxis")
+        d3.selectAll(".mobilelinesaxis")
             .transition()
             .duration(1000)
             .ease("cubic-in-out")
@@ -405,7 +405,7 @@ function mobileOffense(div) {
         .tickValues(mainyears);
 
     var gx = svg.append("g")
-        .attr("class", "x axis-show axis1")
+        .attr("class", "x axis-show")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 
@@ -486,7 +486,7 @@ function mobileOffense(div) {
 
     segments.append("path")
         .attr("class", function (d) {
-            return d.key + " layer graph2";
+            return d.key + " layer";
         })
         .attr("d", function (d) {
             return area(d.values);
@@ -494,7 +494,7 @@ function mobileOffense(div) {
 
     segments.append("path")
         .attr("class", function (d) {
-            return d.key + " chartline graph2";
+            return d.key + " chartline";
         })
         .attr("d", function (d) {
             return line2(d.values);
@@ -508,7 +508,7 @@ function mobileOffense(div) {
             };
         })
         .attr("class", function (d) {
-            return d.name + " pointlabel graph2";
+            return d.name + " pointlabel";
         })
         .attr("text-anchor", "end")
         .attr("x", function (d) {
@@ -577,7 +577,8 @@ function mobileMm(div) {
             return d.ydig * (height / 10) - 20;
         })
         .attr("rx", 2 * circleradius)
-        .attr("ry", 2 * circleradius);
+        .attr("ry", 2 * circleradius)
+        .attr("opacity", 1);
 
     //category labels
     svg.append("text")
@@ -585,13 +586,15 @@ function mobileMm(div) {
         .attr("text-anchor", "start")
         .attr("x", 0)
         .attr("y", height + 4)
-        .text("59%");
+        .text("59%")
+        .attr("opacity", 1);
 
     svg.append("text")
         .attr("class", "graphtitle mandminlabel")
         .attr("text-anchor", "start")
         .attr("x", 0)
         .attr("y", height + 10)
+        .attr("opacity", 1)
         .text(MANDMINLABELS[0])
         .call(wrap2, width * 0.4, 0);
 
@@ -600,13 +603,15 @@ function mobileMm(div) {
         .attr("text-anchor", "start")
         .attr("x", width * 0.5)
         .attr("y", height + 4)
-        .text("19%");
+        .text("19%")
+        .attr("opacity", 1);
 
     svg.append("text")
         .attr("class", "graphtitle mandminlabel")
         .attr("text-anchor", "start")
         .attr("x", width * 0.6)
         .attr("y", height + 10)
+        .attr("opacity", 1)
         .text(MANDMINLABELS[1])
         .call(wrap2, width * 0.2, width * 0.5);
 
@@ -615,13 +620,15 @@ function mobileMm(div) {
         .attr("text-anchor", "start")
         .attr("x", width * 0.75)
         .attr("y", height + 4)
-        .text("22%");
+        .text("22%")
+        .attr("opacity", 1);
 
     svg.append("text")
         .attr("class", "graphtitle mandminlabel")
         .attr("text-anchor", "start")
         .attr("x", width * 0.8)
         .attr("y", height + 10)
+        .attr("opacity", 1)
         .text(MANDMINLABELS[2])
         .call(wrap2, width * 0.22, width * 0.75);
 }
@@ -675,7 +682,7 @@ function mobileYears(div) {
         .orient("bottom");
 
     svg.append("text")
-        .attr("class", "axistitle graph4")
+        .attr("class", "axistitle")
         .attr("text-anchor", "start")
         .attr("x", 0)
         .attr("y", -30)
@@ -748,7 +755,7 @@ function mobileYears(div) {
 
     var gx = svg.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .attr("class", "x axis-show graphsecurity")
+        .attr("class", "x axis-show")
         .call(xAxis)
         .selectAll(".tick text")
         .call(wrap, x.rangeBand());
@@ -893,7 +900,7 @@ function mobileMap(div) {
 
     //judicial districts boundaries
     svg.append("g")
-        .attr("class", "districts graphmap")
+        .attr("class", "districts")
         .selectAll("path")
         .data(topojson.feature(districts, districts.objects.JudicialDistricts_Final).features)
         .enter().append("path")
@@ -930,7 +937,7 @@ function mobileMap(div) {
 
     //prison complexes
     var complex = svg.append("g")
-        .attr("class", "complexes graphmap")
+        .attr("class", "complexes")
         .selectAll("g")
         .data(complexes.sort(function (a, b) {
             return b.sentences - a.sentences;
@@ -954,7 +961,7 @@ function mobileMap(div) {
 
     //district centroids - don't draw, but that's where the lines emanate from
     var centroid = svg.append("g")
-        .attr("class", "centroids graphmap")
+        .attr("class", "centroids")
         .selectAll("g")
         .data(dt)
         .enter().append("g")
@@ -967,7 +974,7 @@ function mobileMap(div) {
 
     centroid.append("g")
         .attr("class", function (d) {
-            return d.districtcode + " sentence-arcs graphmap";
+            return d.districtcode + " sentence-arcs";
         })
         .selectAll("path")
         .data(function (d) {
@@ -1013,7 +1020,7 @@ function mobileMap(div) {
 
     legend.append("text")
         .data(LEGENDBREAKS)
-        .attr("class", "pointlabel graphmap")
+        .attr("class", "pointlabel")
         .attr("x", function (d, i) {
             return (i * ls_w) + lp_w - 2;
         })
@@ -1037,7 +1044,7 @@ function mobileMap(div) {
         })
 
     legsvg.append("text")
-        .attr("class", "axistitle graphmap")
+        .attr("class", "axistitle")
         .attr("text-anchor", "start")
         .attr("x", lp_w)
         .attr("y", 10)
@@ -1094,7 +1101,7 @@ function mobileRace(div) {
         .orient("left");
 
     var gy = svg.append("g")
-        .attr("class", "y axis graphrace")
+        .attr("class", "y axis")
         .call(yAxis);
 
     gy.selectAll("text")
@@ -1162,7 +1169,7 @@ function mobileRace(div) {
 
     racegroups.append("path")
         .attr("class", function (d) {
-            return d.key + " layer graphrace";
+            return d.key + " layer";
         })
         .attr("d", function (d) {
             return area(d.values);
@@ -1170,7 +1177,7 @@ function mobileRace(div) {
 
     racegroups.append("path")
         .attr("class", function (d) {
-            return d.key + " chartline graphrace";
+            return d.key + " chartline";
         })
         .attr("d", function (d) {
             return line1(d.values);
@@ -1184,7 +1191,7 @@ function mobileRace(div) {
             };
         })
         .attr("class", function (d) {
-            return d.name + " pointlabel graphrace";
+            return d.name + " pointlabel";
         })
         .attr("text-anchor", "end")
         .attr("x", function (d) {
@@ -1198,7 +1205,7 @@ function mobileRace(div) {
         });
 
     var gx = svg.append("g")
-        .attr("class", "x axis-show graphrace")
+        .attr("class", "x axis-show")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
 }
@@ -1251,16 +1258,16 @@ function mobileCh(div) {
         })
         .orient("bottom");
 
-    var bars = svg.selectAll(".chbar")
+    var bars = svg.selectAll(".bar")
         .data(data, function (d) {
             return d.category;
         })
         .enter()
         .append("g")
-        .attr("class", "chbar");
+        .attr("class", "bar");
 
     bars.append("rect")
-        .attr("class", "graphch bar")
+        .attr("class", "bar")
         .attr("x", function (d) {
             return x(d.category);
         })
@@ -1273,7 +1280,7 @@ function mobileCh(div) {
         });
 
     bars.append("text")
-        .attr("class", "pointlabel graphch")
+        .attr("class", "pointlabel")
         .attr("y", function (d) {
             return y(d.number) - 8;
         })
@@ -1287,18 +1294,18 @@ function mobileCh(div) {
 
     var gx = svg.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .attr("class", "x axis-show graphch")
+        .attr("class", "x axis-show")
         .call(xAxis);
 
     svg.append("text")
-        .attr("class", "axistitle graphch")
+        .attr("class", "axistitle")
         .attr("text-anchor", "middle")
         .attr("x", width / 2)
         .attr("y", height + 30)
         .text("Criminal history category");
 
     svg.append("text")
-        .attr("class", "axis graphch")
+        .attr("class", "axis")
         .attr("text-anchor", "middle")
         .attr("x", 0)
         .attr("y", height + 10)
@@ -1306,7 +1313,7 @@ function mobileCh(div) {
         .call(wrap2, x.rangeBand(), x.rangeBand() / 2);
 
     svg.append("text")
-        .attr("class", "axis graphch")
+        .attr("class", "axis")
         .attr("text-anchor", "middle")
         .attr("x", width)
         .attr("y", height + 10)
@@ -1412,7 +1419,7 @@ function mobileSecurity(div) {
         .attr("class", "securitybar");
 
     securitybars.append("rect")
-        .attr("class", "graphsecurity bar")
+        .attr("class", "bar")
         .attr("x", function (d) {
             return x(d.security);
         })
@@ -1425,7 +1432,7 @@ function mobileSecurity(div) {
         });
 
     securitybars.append("text")
-        .attr("class", "pointlabel graphsecurity")
+        .attr("class", "pointlabel")
         .attr("y", function (d) {
             return y(d.number) - 8;
         })
@@ -1439,7 +1446,7 @@ function mobileSecurity(div) {
 
     var gx = svg.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .attr("class", "x axis-show graphsecurity")
+        .attr("class", "x axis-show")
         .call(xAxis);
 
     dispatch.on("changeSecurityBars", function (type) {
@@ -1509,7 +1516,7 @@ function mobileConclusion(div) {
     data = data_main.jointimpact;
 
     var LINEVARS = ["pop_baseline", "pop_jointimpact"];
-    var LABELS = ["No policy changes", "All recommended interventions"];
+    var LABELS = ["No policy changes", "All recommended reforms"];
 
     var y = d3.scale.linear()
         .domain([0, 220000])

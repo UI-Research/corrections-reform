@@ -352,6 +352,22 @@ h4 {
         font-size: 22px;
         font-weight: 700;
     }
+    .graphic.graph-scroll-fixed {
+        position: fixed;
+        top: 0px;
+        margin-top: 100px;
+    }
+    .graphic.graph-scroll-below {
+        position: absolute;
+        bottom: 0px;
+        /*margin-top: 100px;*/
+        /*top: 100px;*/
+        /*top: 700px;*/
+    }
+    #graphic3.graph-scroll-below {
+        position: absolute;
+        top: 800px;
+    }
 }
 
 .subsection.graph-scroll-active {
@@ -361,29 +377,6 @@ h4 {
 .graphic {
     margin-top: 100px;
     width: 100%;
-}
-
-.graphic.graph-scroll-fixed {
-    position: fixed;
-    top: 0px;
-    margin-top: 100px;
-}
-
-.graphic.graph-scroll-below {
-    position: absolute;
-    bottom: 0px;
-    /*margin-top: 100px;*/
-    /*top: 100px;*/
-    /*top: 700px;*/
-}
-
-#graphic3.graph-scroll-below {
-    position: absolute;
-    top: 800px;
-}
-
-svg {
-    /*border: 1px solid #1696d2;*/
 }
 
 
