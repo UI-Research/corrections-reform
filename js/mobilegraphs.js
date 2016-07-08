@@ -126,7 +126,7 @@ function mobileGrowth(div) {
                 value: d.values[d.values.length - 3]
             };
         })
-        .attr("class", "pointlabel graph0")
+        .attr("class", "pointlabel")
         .attr("text-anchor", "end")
         .attr("x", x(2016))
         .attr("y", function (d) {
@@ -563,16 +563,16 @@ function mobileMm(div) {
         }
     });
 
-    var cells = svg.append("g")
-        .attr("class", "cells")
+    var circlecells = svg.append("g")
+        .attr("class", "circlecells")
         .selectAll("g")
         .data(cellsdt)
         .enter().append("g")
-        .attr("class", "cell");
+        .attr("class", "circlecell");
 
-    cells.append("rect")
+    circlecells.append("rect")
         .attr("class", function (d) {
-            return d.group + " circle";
+            return d.group;
         })
         .attr("x", function (d) {
             return d.xdig * (width / 10);
