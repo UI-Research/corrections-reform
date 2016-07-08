@@ -1037,7 +1037,6 @@ function mobileMap(div) {
 
     legend.append("rect")
         .data(blue5)
-        .attr("class", "graphmap")
         .attr("x", function (d, i) {
             return (i * ls_w) + lp_w;
         })

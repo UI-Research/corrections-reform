@@ -1148,9 +1148,14 @@ function graph2() {
         //we want one region to be selected by default for users to see
         d3.selectAll(".KS, [code='KS']").classed("hovered", true);
 
-        var lp_w = width / 2,
-            ls_w = 40,
-            ls_h = 20;
+        if (width < 450) {
+            var lp_w = 6;
+            var ls_w = (width - 12) / 5;
+        } else {
+            var lp_w = width / 2;
+            var ls_w = 40;
+        }
+        var ls_h = 20;
 
         var legend = svg.selectAll("g.legend")
             .data(LEGENDBREAKS)
