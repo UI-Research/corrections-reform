@@ -455,9 +455,9 @@ function graph1() {
                 .duration(500)
                 .attr("opacity", 1)
 
-            if (GROWTHTYPE == "total") {
+            /*if (GROWTHTYPE == "total") {
                 dispatch.rescaleStandingLine(1994, 2014);
-            }
+            }*/
         })
 
         dispatch.on("changeGrowthLines", function (type) {
@@ -821,7 +821,7 @@ function graph1() {
                 if (y.domain()[1] != 220000) {
                     dispatch.rescaleYAxis1(220000);
                 }
-                dispatch.rescaleStandingLine(1980, 2016);
+                //dispatch.rescaleStandingLine(1980, 2016);
 
             } else if (i == 1) {
                 if (x.domain()[0] != 1994) {
@@ -965,6 +965,10 @@ function graph2() {
             .call(yAxis)
             .each('interrupt', function () {
                 console.log("yikes fedpop axis");
+                d3.select(this)
+                    .transition()
+                    .duration(0)
+                    .call(yAxis)
             });
 
         gy.selectAll("text")
