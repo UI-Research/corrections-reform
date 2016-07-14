@@ -241,7 +241,11 @@ function graph1() {
             .ease("cubic-in-out")
             .call(yAxis)
             .each('interrupt', function () {
-                console.log("yikes fedpop axis");
+                console.log("yikes fedpop axis 1");
+                d3.select(this)
+                    .transition()
+                    .duration(0)
+                    .call(yAxis);
             });
 
         gy.selectAll("text")
@@ -1222,31 +1226,6 @@ function graph2() {
             })
             .ticks(10);
 
-        /*var yAxis = d3.svg.axis()
-            .scale(y)
-            .tickSize(-width)
-            .ticks(5)
-            .orient("left");
-
-        var gy = svg.append("g")
-            .attr("class", "y axis graphrace")
-            .call(yAxis);
-
-        gy.selectAll("text")
-            .attr("dx", -8);
-
-        gy.selectAll("g").filter(function (d) {
-                return d;
-            })
-            .classed("minor", true);*/
-
-        /*svg.append("text")
-            .attr("class", "axistitle graphrace")
-            .attr("text-anchor", "middle")
-            .attr("x", 0)
-            .attr("y", -5)
-            .text("Federal prison population");*/
-
         var nest = d3.nest()
             .key(function (d) {
                 return d.race;
@@ -1391,20 +1370,6 @@ function graph2() {
             })
             .attr("opacity", 0);
 
-        /*bars.append("text")
-            .attr("class", "pointlabel graphch")
-            .attr("y", function (d) {
-                return y(d.number) - 8;
-            })
-            .attr("x", function (d) {
-                return x(d.category) + x.rangeBand() / 2;
-            })
-            .attr("text-anchor", "middle")
-            .text(function (d) {
-                return d3.format(",.0f")(d.number);
-            })
-            .attr("opacity", 0);*/
-
         var gx = svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .attr("class", "x axis-show graphch")
@@ -1463,20 +1428,18 @@ function graph2() {
                 })
                 .each('interrupt', function () {
                     console.log("yikes bars");
+                    d3.select(this)
+                        .data(data, function (d) {
+                            return d.category;
+                        })
+                        .transition()
+                        .attr("y", function (d) {
+                            return y(d.number);
+                        })
+                        .attr("height", function (d) {
+                            return height - y(d.number);
+                        });
                 });
-
-            /*bars.selectAll("text")
-                .data(data, function (d) {
-                    return d.category;
-                })
-                .transition()
-                .duration(500)
-                .attr("y", function (d) {
-                    return y(d.number) - 8;
-                })
-                .text(function (d) {
-                    return d3.format(",.0f")(d.number);
-                })*/
 
             dispatch.rescaleYAxis(d3.max(data, function (d) {
                 return d.number;
@@ -1492,7 +1455,6 @@ function graph2() {
             }), function (d) {
                 return d.number;
             });
-            console.log(maxy);
 
             var graphOn = d3.selectAll("rect.graphch").attr("height");
 
@@ -1516,7 +1478,12 @@ function graph2() {
                     .attr("height", height / 2)
                     .transition()
                     .duration(500)
-                    .attr("opacity", 0);
+                    .attr("opacity", 0)
+                    .each('interrupt', function () {
+                        d3.select(this)
+                            .transition()
+                            .attr("opacity", 0);
+                    });
 
                 //then emerge the new bars from that
                 d3.selectAll("rect.graphch")
@@ -1535,6 +1502,16 @@ function graph2() {
                     })
                     .each('interrupt', function () {
                         console.log("yikes intoChBars");
+                        d3.select(this)
+                            .transition()
+                            .attr("width", x.rangeBand())
+                            .attr("y", function (d) {
+                                return y(d.number);
+                            })
+                            .attr("height", function (d) {
+                                return height - y(d.number);
+                            })
+                            .attr("opacity", 1);
                     });
 
                 dispatch.rescaleYAxis(maxy);
@@ -1621,20 +1598,6 @@ function graph2() {
             .attr("height", height / 2)
             .attr("opacity", 0);
 
-        /*securitybars.append("text")
-            .attr("class", "pointlabel graphsecurity")
-            .attr("y", function (d) {
-                return y(d[VALUE]) - 8;
-            })
-            .attr("x", function (d) {
-                return x(d.security) + x.rangeBand() / 2;
-            })
-            .attr("text-anchor", "middle")
-            .text(function (d) {
-                return d3.format(",.0f")(d[VALUE]);
-            })
-            .attr("opacity", 0);*/
-
         var gx = svg.append("g")
             .attr("transform", "translate(0," + height + ")")
             .attr("class", "x axis-show graphsecurity")
@@ -1705,7 +1668,12 @@ function graph2() {
                 .attr("height", height / 2)
                 .transition()
                 .duration(500)
-                .attr("opacity", 0);
+                .attr("opacity", 0)
+                .each('interrupt', function () {
+                    d3.select(this)
+                        .transition()
+                        .attr("opacity", 0);
+                });
 
             //then emerge the new bars from that
             d3.selectAll("rect.graphsecurity")
@@ -1724,6 +1692,16 @@ function graph2() {
                 })
                 .each('interrupt', function () {
                     console.log("yikes intoSecurityBars");
+                    d3.select(this)
+                        .transition()
+                        .attr("width", x.rangeBand())
+                        .attr("y", function (d) {
+                            return y(d.number);
+                        })
+                        .attr("height", function (d) {
+                            return height - y(d.number);
+                        })
+                        .attr("opacity", 1);
                 });
 
 
