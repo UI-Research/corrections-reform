@@ -244,7 +244,7 @@ function graph1() {
                 console.log("yikes fedpop axis 1");
                 d3.select(this)
                     .transition()
-                    .duration(0)
+                    .duration(500)
                     .call(yAxis);
             });
 
@@ -971,7 +971,7 @@ function graph2() {
                 console.log("yikes fedpop axis");
                 d3.select(this)
                     .transition()
-                    .duration(0)
+                    .duration(500)
                     .call(yAxis)
             });
 
@@ -1694,6 +1694,7 @@ function graph2() {
                     console.log("yikes intoSecurityBars");
                     d3.select(this)
                         .transition()
+                        .duration(0)
                         .attr("width", x.rangeBand())
                         .attr("y", function (d) {
                             return y(d.number);
