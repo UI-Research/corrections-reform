@@ -337,7 +337,7 @@ function graph1() {
             .attr("x", x(2016))
             .attr("y", function (d) {
                 if (d.name == "pop_total") {
-                    return y(d.value.number) - 20;
+                    return y(d.value.number) - 30;
                 } else {
                     //return y(d.value.number) + 70;
                     return y(150000) + 12
@@ -346,7 +346,8 @@ function graph1() {
             .text(function (d, i) {
                 return LABELS[i];
             })
-            .attr("opacity", 1);
+            .attr("opacity", 1)
+            .call(wrap2, width * 0.5, width);
 
         dispatch.on("rescaleStandingLine", function (startyear, stopyear) {
             x.domain([startyear, stopyear]);
