@@ -206,21 +206,19 @@ h4.subsectiontitle {
     /*display: table;*/
 }
 
-#titleholder {
-    /*display: table-cell;
-    vertical-align: middle;
-    padding-top: 10px;*/
-    /*position: relative;
-    top: 70%;*/
-}
-
 h1.projtitle {
     background-color: rgba(0, 0, 0, 0.5);
     padding: 10px 30px;
-    font-size: 30px;
+    font-size: 36px;
     font-weight: 700;
     color: #ffffff;
     display: inline-block;
+    line-height: 1.1em;
+}
+
+.subtitle {
+    font-size: 24px;
+    text-transform: uppercase;
 }
 
 
@@ -643,10 +641,17 @@ span.pink {
     }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 1000px) {
     #titleholder {
         position: relative;
-        top: 55%;
+        top: 65%;
+    }
+}
+
+@media (max-width: 999px) {
+    #titleholder {
+        position: relative;
+        top: 50%;
     }
 }
 
@@ -660,6 +665,9 @@ span.pink {
     }
     h1.projtitle {
         padding: 10px;
+    }
+    .subtitle {
+        font-size: 20px;
     }
     #titleholder {
         position: relative;
