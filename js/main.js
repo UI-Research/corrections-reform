@@ -21,6 +21,7 @@ var LEGENDBREAKS = [250, 1000, 1500, 2000, 3000, 13000];
 var GROWTHTYPE = "total";
 var RACEORDER = ["other", "white", "black", "hispanic"];
 var FOOTNOTE = "The total federal prison population includes a small share of special populations, such as pretrial holds and those convicted of DC Code felonies. This feature focuses on the federally sentenced population only, in the years for which we have data, 1994–2014.";
+var MAPNOTE = "This map shows the number of people sentenced in each federal judicial district and the location of all federal prisons, including privately operated prisons. Yellow lines indicate the distance between a district and a prison housing at least 15 people sentenced in that district. The size of each circle is proportional to the total number of people housed in that facility in fiscal year 2014, from the smallest (103 people) to the largest (6,731 people)."
 
 var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleYAxis1", "rescaleStandingLine", "intoGrowthLines", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
@@ -1205,6 +1206,14 @@ function graph2() {
             .attr("x", lp_w)
             .attr("y", 10)
             .text("Number of people sentenced");
+
+        svg.append("text")
+            .attr("class", "footnote graphmap")
+            .attr("text-anchor", "start")
+            .attr("x", 0)
+            .attr("y", height)
+            .text(MAPNOTE)
+            .call(wrap2, width + 40, -40);
     }
 
     function initRace() {
