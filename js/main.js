@@ -822,9 +822,6 @@ function graph1() {
                     .transition()
                     .duration(500)
                     .attr("opacity", 1)
-                
-                d3.selectAll(".axisyears)
-                     .attr("opacity", 1)        
 
                 dispatch.rescaleXAxis(1980, 2016);
                 if (y.domain()[1] != 220000) {
