@@ -823,6 +823,10 @@ function graph1() {
                     .duration(500)
                     .attr("opacity", 1)
 
+                //sometimes the axis freaks out if you scroll really fast up and down
+                d3.selectAll(".axisyears")
+                    .attr("opacity", 1);
+
                 dispatch.rescaleXAxis(1980, 2016);
                 if (y.domain()[1] != 220000) {
                     dispatch.rescaleYAxis1(220000);
@@ -970,7 +974,7 @@ function graph2() {
             .ease("cubic-in-out")
             .call(yAxis)
             .each('interrupt', function () {
-                console.log("yikes fedpop axis");
+                //console.log("yikes fedpop axis");
                 d3.select(this)
                     .transition()
                     .duration(500)
@@ -1356,7 +1360,7 @@ function graph2() {
             })
             .orient("bottom");
 
-        console.log(y(0.5))
+        //console.log(y(0.5))
 
         var bars = svg.selectAll(".chbar")
             .data(data, function (d) {
@@ -1437,7 +1441,7 @@ function graph2() {
                     return height - y(d.number);
                 })
                 .each('interrupt', function () {
-                    console.log("yikes bars");
+                    //console.log("yikes bars");
                     d3.select(this)
                         .data(data, function (d) {
                             return d.category;
@@ -1511,7 +1515,7 @@ function graph2() {
                         return height - y(d.number);
                     })
                     .each('interrupt', function () {
-                        console.log("yikes intoChBars");
+                        //console.log("yikes intoChBars");
                         d3.select(this)
                             .transition()
                             .attr("width", x.rangeBand())
@@ -1701,7 +1705,7 @@ function graph2() {
                     return height - y(d.number);
                 })
                 .each('interrupt', function () {
-                    console.log("yikes intoSecurityBars");
+                    //console.log("yikes intoSecurityBars");
                     d3.select(this)
                         .transition()
                         .duration(0)
@@ -1924,18 +1928,18 @@ function graph3() {
 }
 
 $(document).ready(function () {
-    console.log("window width is " + $(window).width());
-    console.log("window inner height is " + $(window).innerHeight());
+    //console.log("window width is " + $(window).width());
+    //console.log("window inner height is " + $(window).innerHeight());
     containerWidth = $("#container1").width();
     windowHeight = $(window).innerHeight();
 
 
     if ($(window).innerWidth() < 768) {
-        console.log("I'm on mobile!");
+        //console.log("I'm on mobile!");
         isMobile = true;
 
         var drawgraphs = function () {
-            console.log("Drawing mobile graphs");
+            //console.log("Drawing mobile graphs");
 
             mobileGrowth("#mobilegrowth");
             mobileDrivers("#mobiledrivers");
@@ -1952,11 +1956,11 @@ $(document).ready(function () {
         }
 
     } else {
-        console.log("I'm on desktop");
+        //console.log("I'm on desktop");
         isMobile = false;
 
         var drawgraphs = function () {
-            console.log("Drawing desktop graphs");
+            //console.log("Drawing desktop graphs");
             graph1();
             graph2();
             graph3();
@@ -1968,7 +1972,7 @@ $(document).ready(function () {
         //don't need to redraw if the window is resized but not the container
         if ((containerWidth - $("#container1").width()) != 0) {
             containerWidth = $("#container1").width();
-            console.log($("#container1").width());
+            //console.log($("#container1").width());
 
             //switch between mobile and desktop if crossing the threshold
             //otherwise, just drawgraphs
@@ -2000,7 +2004,7 @@ $(document).ready(function () {
             } else if ($(window).innerWidth() >= 768) {
                 console.log($("#graphic1").width());
                 var drawgraphs = function () {
-                    console.log("Drawing desktop graphs");
+                    //console.log("Drawing desktop graphs");
                     graph1();
                     graph2();
                     graph3();
@@ -2015,9 +2019,9 @@ $(document).ready(function () {
     }
 
     $(window).load(function () {
-        console.log("window loaded");
+        //console.log("window loaded");
         if (Modernizr.svg) { // if svg is supported, draw dynamic chart
-            console.log("modernizr success")
+            //console.log("modernizr success")
             d3.json(main_data_url, function (json) {
                 d3.json(map_data_url, function (mapjson) {
                     data_main = json;
