@@ -1,0 +1,29 @@
+{
+  "name": "corrections-reform",
+  "version": "1.0.0",
+  "description": "corrections reform feature",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UrbanInstitute/corrections-reform.git"
+  },
+  "author": "Hannah Recht",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/UrbanInstitute/corrections-reform/issues"
+  },
+  "homepage": "https://github.com/UrbanInstitute/corrections-reform#readme"
+}

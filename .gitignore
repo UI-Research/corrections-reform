@@ -4,3 +4,4 @@ shp/
 .Rproj.user
 data/original/
 data/csv
+node_modules/
