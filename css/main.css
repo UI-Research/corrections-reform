@@ -644,7 +644,7 @@ span.pink {
 @media (min-width: 1000px) {
     #titleholder {
         position: relative;
-        top: 65%;
+        top: 50%;
     }
 }
 
@@ -671,7 +671,7 @@ span.pink {
     }
     #titleholder {
         position: relative;
-        top: 30px;
+        top: 50px;
     }
     p.large {
         font-size: 18px;
