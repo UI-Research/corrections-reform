@@ -105,7 +105,7 @@ h4.subsectiontitle {
 /* dropdowns for mobile */
 
 .styled-select.filter select {
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 .styled-select option {
@@ -122,12 +122,12 @@ h4.subsectiontitle {
     line-height: 1;
     border: 0;
     border-radius: 0;
-    -webkit-appearance: none;
-    pointer-events: none;
+    /*-webkit-appearance: none;*/
+    /*pointer-events: none;*/
 }
 
 .styled-select select::-ms-expand {
-    display: none !important;
+    /*display: none !important;*/
 }
 
 .styled-select {
@@ -334,7 +334,7 @@ h4 {
 @media only screen and (min-width: 768px) {
     .mobilegraphic,
     .mobile,
-    .styled-select {
+     {
         display: none;
     }
     .subsection {

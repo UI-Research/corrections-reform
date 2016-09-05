@@ -26,20 +26,20 @@ var MAPNOTE = "This map shows the number of people sentenced in each federal jud
 var dispatch = d3.dispatch("rescaleXAxis", "rescaleYAxis", "rescaleYAxis1", "rescaleStandingLine", "intoGrowthLines", "changeGrowthLines", "intoChBars", "changeChBars", "intoSecurityBars", "changeSecurityBars");
 
 //dropdowns
-$(".styled-select").click(function () {
-    var element = $(this).children("select")[0],
-        worked = false;
-    if (document.createEvent) { // all browsers
-        var e = document.createEvent("MouseEvents");
-        e.initMouseEvent("mousedown", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        worked = element.dispatchEvent(e);
-    } else if (element.fireEvent) { // ie
-        worked = element.fireEvent("onmousedown");
-    }
-    if (!worked) { // unknown browser / error
-        alert("It didn't worked in your browser.");
-    }
-});
+// $(".styled-select").click(function () {
+//     var element = $(this).children("select")[0],
+//         worked = false;
+//     if (document.createEvent) { // all browsers
+//         var e = document.createEvent("MouseEvents");
+//         e.initMouseEvent("mousedown", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+//         worked = element.dispatchEvent(e);
+//     } else if (element.fireEvent) { // ie
+//         worked = element.fireEvent("onmousedown");
+//     }
+//     if (!worked) { // unknown browser / error
+//         alert("It didn't worked in your browser.");
+//     }
+// });
 
 var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 if (isFirefox) {
